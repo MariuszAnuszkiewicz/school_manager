@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\RegisterUserNotification;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => ['required', 'date'],
-            'phone' => ['required', 'string', 'max:15'],
+            'phone' => ['nullable', 'string', 'max:15'],
         ]);
     }
 
@@ -68,13 +69,15 @@ class RegisterController extends Controller
     public function createPupil(Request $request)
     {
         $data = array_merge([], $request->all());
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'date_of_birth' => $data['date_of_birth'],
             'phone' => $data['phone'],
+            'avatar' => public_path('images\user\avatars\user-avatar.png')
         ])->assignRole('pupil');
+        $user->notify(new RegisterUserNotification($user));
         return redirect('login');
     }
 
@@ -87,13 +90,15 @@ class RegisterController extends Controller
     public function createTeacher(Request $request)
     {
         $data = array_merge([], $request->all());
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'date_of_birth' => $data['date_of_birth'],
             'phone' => $data['phone'],
+            'avatar' => public_path('images\user\avatars\user-avatar.png')
         ])->assignRole('teacher');
+        $user->notify(new RegisterUserNotification($user));
         return redirect('login');
     }
 }
