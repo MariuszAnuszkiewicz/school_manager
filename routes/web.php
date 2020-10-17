@@ -34,7 +34,7 @@ Route::get('/', function () {
     Route::post('create-teacher', [RegisterController::class, 'createTeacher'])->name('create_teacher');
 /*********************************************************************************************************************/
 
-// login system endpoints
+// inside system endpoints
 /*********************************************************************************************************************/
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
