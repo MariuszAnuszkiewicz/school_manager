@@ -11,7 +11,7 @@ class RegisterUserNotification extends Notification
 {
     use Queueable;
 
-    const SUBJECT = 'Nowy Użytkownik';
+    const SUBJECT = 'New User';
     public $user;
 
     /**
@@ -45,11 +45,11 @@ class RegisterUserNotification extends Notification
     {
         return (new MailMessage)
             ->subject(self::SUBJECT)
-            ->greeting('Witaj,')
-            ->subject('Twoje konto zostało utworzone.')
-            ->line("Zostałeś dodany do aplikacji jako: " . $this->user->email)
-            ->action('Zaloguj się', config('app.url') . '/login')
-            ->line('Miłego Dnia.');
+            ->greeting('Hi,')
+            ->subject('Your account has been created.')
+            ->line("You are is added like: " . $this->user->email)
+            ->action('Log In', config('app.url') . '/login')
+            ->line('Have a nice day!');
     }
 
     /**
