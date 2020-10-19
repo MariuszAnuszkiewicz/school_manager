@@ -11,4 +11,9 @@ class ClassInSchool extends Model
     public $table = 'class_in_school';
     public $timestamps = false;
     protected $fillable = ['name'];
+
+    public function pupil()
+    {
+        return $this->hasOne(Pupil::class);
+    }
 }
