@@ -26,4 +26,9 @@ class Pupil extends Model
     {
         return $this->belongsToMany(Comment::class);
     }
+
+    public function presence()
+    {
+        return $this->hasOne(Presence::class);
+    }
 }
