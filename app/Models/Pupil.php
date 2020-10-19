@@ -21,4 +21,9 @@ class Pupil extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function comments()
+    {
+        return $this->belongsToMany(Comment::class);
+    }
 }
