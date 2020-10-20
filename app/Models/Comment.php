@@ -5,14 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Semester extends Model
+class Comment extends Model
 {
     use HasFactory;
-    public $timestamps = false;
-    protected $fillable = ['name'];
+
+    public $timestamps = true;
+    protected $fillable = [
+        'teacher_id',
+        'comment',
+    ];
 
     public function pupils()
     {
         return $this->belongsToMany(Pupil::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
     }
 }
