@@ -11,4 +11,9 @@ class Rating extends Model
 
     public $timestamps = true;
     protected $fillable = ['rating'];
+
+    public function pupils()
+    {
+        return $this->belongsToMany(Pupil::class);
+    }
 }

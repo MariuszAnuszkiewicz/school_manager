@@ -31,4 +31,9 @@ class Pupil extends Model
     {
         return $this->hasOne(Presence::class);
     }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(Rating::class);
+    }
 }
