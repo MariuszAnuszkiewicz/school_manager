@@ -9,7 +9,7 @@ class Rating extends Model
 {
     use HasFactory;
 
-    public $timestamps = true;
+    public $timestamps = false;
     protected $fillable = ['rating'];
 
     public function pupils()
