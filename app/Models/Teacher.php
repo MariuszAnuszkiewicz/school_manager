@@ -24,6 +24,6 @@ class Teacher extends Model
 
     public function pupils()
     {
-        return $this->hasMany(Pupil::class);
+        return $this->belongsToMany(Pupil::class);
     }
 }
