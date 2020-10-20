@@ -19,4 +19,9 @@ class LessonPlan extends Model
         'thursday',
         'friday'
     ];
+
+    public function classInSchool()
+    {
+        return $this->belongsTo(ClassInSchool::class);
+    }
 }
