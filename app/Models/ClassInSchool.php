@@ -18,8 +18,8 @@ class ClassInSchool extends Model
         return $this->hasOne(LessonPlan::class);
     }
 
-    public function pupil()
+    public function pupils()
     {
-        return $this->hasOne(Pupil::class);
+        return $this->hasMany(Pupil::class);
     }
 }
