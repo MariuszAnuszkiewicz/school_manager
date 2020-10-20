@@ -46,4 +46,9 @@ class Pupil extends Model
     {
         return $this->belongsToMany(Subject::class);
     }
+
+    public function semesters()
+    {
+        return $this->belongsToMany(Semester::class);
+    }
 }
