@@ -41,4 +41,9 @@ class Pupil extends Model
     {
         return $this->belongsToMany(Teacher::class);
     }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
 }
