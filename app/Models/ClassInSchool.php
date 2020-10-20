@@ -16,6 +16,7 @@ class ClassInSchool extends Model
     public function lessonPlan()
     {
         return $this->hasOne(LessonPlan::class);
+    }
 
     public function pupil()
     {
