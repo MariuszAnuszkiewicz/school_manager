@@ -36,4 +36,9 @@ class Pupil extends Model
     {
         return $this->belongsToMany(Rating::class);
     }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class);
+    }
 }

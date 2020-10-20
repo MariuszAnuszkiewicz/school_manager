@@ -21,4 +21,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function pupils()
+    {
+        return $this->hasMany(Pupil::class);
+    }
 }
