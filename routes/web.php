@@ -37,11 +37,11 @@ Route::get('/', function () {
 
 // inside system endpoints
 /*********************************************************************************************************************/
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+    /*  pupil zone */
     Route::group([
         'prefix' => 'pupil',
-        'middleware' => 'api',
+        'middleware' => 'auth',
     ], function () {
         Route::resource('events', EventController::class)->only(['index']);
     });
