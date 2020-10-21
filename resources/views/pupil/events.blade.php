@@ -9,12 +9,12 @@
                 <div class="card">
                     <table class="table table-bordered">
                         <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Day</th>
-                            <th>Hour Start</th>
-                            <th>Hour End</th>
-                        </tr>
+                            <tr>
+                                <th>Title</th>
+                                <th>Day</th>
+                                <th>Hour Start</th>
+                                <th>Hour End</th>
+                            </tr>
                         </thead>
                         @foreach ($events as $event)
                             <tbody>

@@ -10,5 +10,15 @@ class Event extends Model
     use HasFactory;
 
     public $timestamps = true;
-    protected $fillable = ['title', 'start', 'end'];
+    protected $fillable = [
+        'title',
+        'day',
+        'hour_start',
+        'hour_end'
+    ];
+
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class);
+    }
 }
