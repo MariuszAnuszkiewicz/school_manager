@@ -9,6 +9,6 @@ class EventController extends Controller
 {
     public function index()
     {
-        
+        dd(Event::all());
     }
 }

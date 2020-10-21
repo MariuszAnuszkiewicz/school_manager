@@ -31,7 +31,7 @@ class LoginController extends Controller
     protected function authenticated()
     {
         if (auth()->user()->roles->last()->name == 'pupil') {
-            return redirect('/pupil/pupils');
+            return redirect('/pupil/events');
         }
     }
 
