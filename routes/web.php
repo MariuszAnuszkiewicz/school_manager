@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\EventController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +38,14 @@ Route::get('/', function () {
 // inside system endpoints
 /*********************************************************************************************************************/
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    Route::group([
+        'prefix' => 'pupil',
+        'middleware' => 'api',
+    ], function () {
+        Route::resource('events', EventController::class)->only(['index']);
+    });
+
 
 
 /*********************************************************************************************************************/
