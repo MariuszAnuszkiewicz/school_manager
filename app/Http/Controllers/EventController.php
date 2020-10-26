@@ -10,12 +10,14 @@ class EventController extends Controller
     public function index(Request $request, Event $event)
     {
         $this->authorize('index', $event);
-        $view = [];
-        if ($request->isMethod('get')) {
-            $view['events'] = Event::all();
+        if ($request->ajax()) {
+            return response()->json(['events' => Event::latest()->paginate(5)]);
         }
-        return view('pupil.events', [
-            'events' => $view['events']
-        ]);
+        return view('pupil.events');
+    }
+
+    public function destroy($id)
+    {
+        Event::find($id)->delete();
     }
 }
