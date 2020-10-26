@@ -43,7 +43,8 @@ Route::get('/', function () {
         'prefix' => 'pupil',
         'middleware' => 'auth',
     ], function () {
-        Route::resource('events', EventController::class)->only(['index']);
+        Route::resource('events', EventController::class)->only(['index', 'destroy']);
+        //Route::get('events', [EventController::class, 'index'])->name('event_index');
     });
 
 
