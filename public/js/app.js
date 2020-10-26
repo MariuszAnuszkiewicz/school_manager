@@ -1947,10 +1947,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       events: {},
+      teachers: {},
       quantityRows: 0,
       showHide: '',
       message: {
@@ -1983,6 +1987,9 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('events?page=' + page).then(function (response) {
         _this2.events = response.data.events;
+        _this2.teachers = response.data.teachers;
+        console.log(_this2.events);
+        console.log(_this2.teachers);
       });
     },
     deleteEvent: function deleteEvent(event) {
@@ -38872,7 +38879,7 @@ var render = function() {
           [
             _c(
               "div",
-              { staticClass: "container col-md-10 mt-5" },
+              { staticClass: "container col-md-12 mt-5" },
               [
                 _vm._m(0),
                 _vm._v(" "),
@@ -38881,8 +38888,12 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "tbody",
-                    _vm._l(_vm.events.data, function(event) {
+                    _vm._l(_vm.events.data, function(event, index) {
                       return _c("tr", { key: event.id }, [
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _vm._v(_vm._s(_vm.teachers[index]))
+                        ]),
+                        _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
                           _vm._v(_vm._s(event.title))
                         ]),
@@ -38951,6 +38962,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
+        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Teacher")]),
+        _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Title")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Day")]),

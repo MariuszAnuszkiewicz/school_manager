@@ -4,12 +4,14 @@
             <p :style="flashStyle.p">{{ message.text }}</p>
         </div>
         <div v-if="(this.quantityRows > 0) ? this.showHide = 'block' : this.showHide = 'none'"
-             :style="{ display: this.showHide }" class="row justify-content-center">
-            <div class="container col-md-10 mt-5">
+            :style="{ display: this.showHide }"
+            class="row justify-content-center">
+            <div class="container col-md-12 mt-5">
                 <div class="card-body"><h5><strong class="header-text">Scheduling Tests</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
+                            <th class="text-center pt-2">Teacher</th>
                             <th class="text-center pt-2">Title</th>
                             <th class="text-center pt-2">Day</th>
                             <th class="text-center pt-2">Hour Start</th>
@@ -18,7 +20,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="event in events.data" :key="event.id">
+                        <tr v-for="(event, index) in events.data" :key="event.id">
+                            <td class="text-center pt-3">{{ teachers[index] }}</td>
                             <td class="text-center pt-3">{{ event.title }}</td>
                             <td class="text-center pt-3">{{ event.day }}</td>
                             <td class="text-center pt-3">{{ event.hour_start }}</td>
@@ -42,6 +45,7 @@ export default {
     data() {
         return {
             events: {},
+            teachers: {},
             quantityRows: 0,
             showHide: '',
             message: {
@@ -72,6 +76,10 @@ export default {
             }
             axios.get('events?page=' + page).then(response => {
                 this.events = response.data.events
+                this.teachers = response.data.teachers
+
+                console.log(this.events)
+                console.log(this.teachers)
             });
         },
 
