@@ -1,11 +1,9 @@
 <template>
     <div class="container">
-        <div v-if="(this.quantityRows === 0)" :style="flashStyle" class="flex flash-container">
-            <p :style="flashStyle.p">{{ message.text }}</p>
+        <div :style="switchStyleFlash" class="flex flash-container">
+            <p>{{ message.text }}</p>
         </div>
-        <div v-if="(this.quantityRows > 0) ? this.showHide = 'block' : this.showHide = 'none'"
-            :style="{ display: this.showHide }"
-            class="row justify-content-center">
+        <div :style="{ display: this.showHide }" class="row justify-content-center">
             <div class="container col-md-12 mt-5">
                 <div class="card-body"><h5><strong class="header-text">Scheduling Tests</strong></h5></div>
                 <table class="table table-striped">
@@ -46,24 +44,30 @@ export default {
         return {
             events: {},
             teachers: {},
-            quantityRows: 0,
+            switchStyleFlash: '',
             showHide: '',
             message: {
-                text: 'There are no any content.',
+                text: 'There are no any events.',
             },
             flashStyle: {
                 'position': 'relative',
                 'top': '100px',
                 'left': '38.7%',
-                'display': 'block',
                 'background-color': 'rgba(245, 34, 70, 0.3)',
                 'width': '250px',
                 'height': '35px',
                 'text-align': 'center',
                 'border-radius': '7px',
-                p: {
+                show: {
+                    'display': 'block',
                     'position': 'relative',
-                    'top': '4px',
+                    'top': '100px',
+                    'left': '38.7%',
+                    'background-color': 'rgba(245, 34, 70, 0.3)',
+                    'width': '250px',
+                    'height': '35px',
+                    'text-align': 'center',
+                    'border-radius': '7px',
                 }
             },
         }
@@ -77,29 +81,27 @@ export default {
             axios.get('events?page=' + page).then(response => {
                 this.events = response.data.events
                 this.teachers = response.data.teachers
-
-                console.log(this.events)
-                console.log(this.teachers)
+                this.changeStyle()
             });
         },
-
         deleteEvent(event) {
             let _this = this;
             axios.delete('events/' + event.id).then(response => {
-                _this.getEvents();
+               _this.getEvents()
             });
         },
-
-        resultCount() {
-            axios.get('events').then(response => {
-                this.quantityRows = Object.values(response.data.events)[1].length
-            });
+        changeStyle() {
+            if (this.events.data.length < 1) {
+                this.showHide = 'none'
+                this.switchStyleFlash = this.flashStyle.show
+            } else {
+                this.switchStyleFlash = this.flashStyle
+            }
         }
     },
 
     mounted() {
         this.getEvents()
-        this.resultCount()
     },
 }
 </script>
@@ -113,5 +115,9 @@ export default {
     }
     .flash-container {
         display: none;
+    }
+    .flash-container p {
+        position: relative;
+        top: 4px;
     }
 </style>
