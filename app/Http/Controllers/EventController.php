@@ -17,6 +17,8 @@ class EventController extends Controller
                $teachers[] = $teacher->user->name;
             }
         }
+        //dd($events);
+        //dd($teachers);
         if ($request->ajax()) {
             return response()->json(['events' => $events, 'teachers' => $teachers]);
         }

@@ -1948,31 +1948,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       events: {},
       teachers: {},
-      quantityRows: 0,
+      switchStyleFlash: '',
       showHide: '',
       message: {
-        text: 'There are no any content.'
+        text: 'There are no any events.'
       },
       flashStyle: {
         'position': 'relative',
         'top': '100px',
         'left': '38.7%',
-        'display': 'block',
         'background-color': 'rgba(245, 34, 70, 0.3)',
         'width': '250px',
         'height': '35px',
         'text-align': 'center',
         'border-radius': '7px',
-        p: {
+        show: {
+          'display': 'block',
           'position': 'relative',
-          'top': '4px'
+          'top': '100px',
+          'left': '38.7%',
+          'background-color': 'rgba(245, 34, 70, 0.3)',
+          'width': '250px',
+          'height': '35px',
+          'text-align': 'center',
+          'border-radius': '7px'
         }
       }
     };
@@ -1988,8 +1992,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('events?page=' + page).then(function (response) {
         _this2.events = response.data.events;
         _this2.teachers = response.data.teachers;
-        console.log(_this2.events);
-        console.log(_this2.teachers);
+
+        _this2.changeStyle();
       });
     },
     deleteEvent: function deleteEvent(event) {
@@ -1999,17 +2003,17 @@ __webpack_require__.r(__webpack_exports__);
         _this.getEvents();
       });
     },
-    resultCount: function resultCount() {
-      var _this3 = this;
-
-      axios.get('events').then(function (response) {
-        _this3.quantityRows = Object.values(response.data.events)[1].length;
-      });
+    changeStyle: function changeStyle() {
+      if (this.events.data.length < 1) {
+        this.showHide = 'none';
+        this.switchStyleFlash = this.flashStyle.show;
+      } else {
+        this.switchStyleFlash = this.flashStyle;
+      }
     }
   },
   mounted: function mounted() {
     this.getEvents();
-    this.resultCount();
   }
 });
 
@@ -6466,7 +6470,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-38924998] {\n    font-size: 12px;\n}\n.header-text[data-v-38924998] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-38924998] {\n    display: none;\n}\n", ""]);
+exports.push([module.i, "\nbutton[data-v-38924998] {\n    font-size: 12px;\n}\n.header-text[data-v-38924998] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-38924998] {\n    display: none;\n}\n.flash-container p[data-v-38924998] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
 
 // exports
 
@@ -38855,92 +38859,82 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    this.quantityRows === 0
-      ? _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.flashStyle },
-          [
-            _c("p", { style: _vm.flashStyle.p }, [
-              _vm._v(_vm._s(_vm.message.text))
-            ])
-          ]
-        )
-      : _vm._e(),
+    _c(
+      "div",
+      { staticClass: "flex flash-container", style: _vm.switchStyleFlash },
+      [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
+    ),
     _vm._v(" "),
-    (this.quantityRows > 0
-    ? (this.showHide = "block")
-    : (this.showHide = "none"))
-      ? _c(
+    _c(
+      "div",
+      {
+        staticClass: "row justify-content-center",
+        style: { display: this.showHide }
+      },
+      [
+        _c(
           "div",
-          {
-            staticClass: "row justify-content-center",
-            style: { display: this.showHide }
-          },
+          { staticClass: "container col-md-12 mt-5" },
           [
-            _c(
-              "div",
-              { staticClass: "container col-md-12 mt-5" },
-              [
-                _vm._m(0),
-                _vm._v(" "),
-                _c("table", { staticClass: "table table-striped" }, [
-                  _vm._m(1),
-                  _vm._v(" "),
-                  _c(
-                    "tbody",
-                    _vm._l(_vm.events.data, function(event, index) {
-                      return _c("tr", { key: event.id }, [
-                        _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(_vm.teachers[index]))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(event.title))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(event.day))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(event.hour_start))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(event.hour_end))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger",
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.deleteEvent(event)
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "fas fa-trash" })]
-                          )
-                        ])
-                      ])
-                    }),
-                    0
-                  )
-                ]),
-                _vm._v(" "),
-                _c("pagination", {
-                  attrs: { data: _vm.events },
-                  on: { "pagination-change-page": _vm.getEvents }
-                })
-              ],
-              1
-            )
-          ]
+            _vm._m(0),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.events.data, function(event, index) {
+                  return _c("tr", { key: event.id }, [
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(_vm.teachers[index]))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(event.title))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(event.day))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(event.hour_start))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(event.hour_end))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.deleteEvent(event)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fas fa-trash" })]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _c("pagination", {
+              attrs: { data: _vm.events },
+              on: { "pagination-change-page": _vm.getEvents }
+            })
+          ],
+          1
         )
-      : _vm._e()
+      ]
+    )
   ])
 }
 var staticRenderFns = [

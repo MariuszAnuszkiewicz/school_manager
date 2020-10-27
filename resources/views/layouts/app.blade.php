@@ -22,6 +22,7 @@
           crossorigin="anonymous">
 
     <!-- Styles -->
+    <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('lib/bootstrap.css') }}" rel="stylesheet">
 </head>
 <body>
