@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comment;
+use App\Models\Message;
 use Illuminate\Database\Seeder;
 
-class CommentTableSeeder extends Seeder
+class MessageTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class CommentTableSeeder extends Seeder
      */
     public function run()
     {
-        Comment::factory(10)->create();
+        Message::factory(10)->create();
     }
 }

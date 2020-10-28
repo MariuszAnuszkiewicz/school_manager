@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MessageController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,6 +45,7 @@ Route::get('/', function () {
         'middleware' => 'auth',
     ], function () {
         Route::resource('events', EventController::class)->only(['index', 'destroy']);
+        Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
         //Route::get('events', [EventController::class, 'index'])->name('event_index');
     });
 

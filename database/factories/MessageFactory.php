@@ -2,19 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Comment;
+use App\Models\Message;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CommentFactory extends Factory
+class MessageFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Comment::class;
+    protected $model = Message::class;
 
     /**
      * Define the model's default state.
@@ -25,7 +25,7 @@ class CommentFactory extends Factory
     {
         return [
             'teacher_id' => Teacher::where('user_id', User::role('teacher')->first()->id)->first()->id,
-            'comment' => $this->faker->realText($maxNbChars = 200, $indexSize = 2),
+            'message' => $this->faker->realText($maxNbChars = 200, $indexSize = 2),
         ];
     }
 }

@@ -1,6 +1,9 @@
 <div class="container">
-    <a class="navbar-brand" href="{{ url('/home') }}">
-        {{ config('app.name') }}
+    <a class="navbar-brand" href="{{ url('/') }}">
+        @php
+            $subName = explode(',', config('app.name'));
+        @endphp
+        {{ $subName[0] . ' ' . $subName[1] }}
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
         <span class="navbar-toggler-icon"></span>
