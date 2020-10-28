@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\LessonPlanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +47,7 @@ Route::get('/', function () {
     ], function () {
         Route::resource('events', EventController::class)->only(['index', 'destroy']);
         Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
+        Route::resource('lesson-plan', LessonPlanController::class)->only(['index']);
         //Route::get('events', [EventController::class, 'index'])->name('event_index');
     });
 
