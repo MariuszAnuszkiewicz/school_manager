@@ -31,4 +31,9 @@ class Teacher extends Model
     {
         return $this->belongsToMany(Event::class);
     }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
 }
