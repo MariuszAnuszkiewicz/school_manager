@@ -7,6 +7,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LessonPlanController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\PupilController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,7 +50,8 @@ Route::get('/', function () {
         Route::resource('events', EventController::class)->only(['index', 'destroy']);
         Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
         Route::resource('lesson-plan', LessonPlanController::class)->only(['index']);
-        //Route::get('events', [EventController::class, 'index'])->name('event_index');
+        Route::get('my-teachers', [SubjectController::class, 'myTeachers']);
+        Route::post('send-email', [PupilController::class, 'sendEmail']);
     });
 
 
