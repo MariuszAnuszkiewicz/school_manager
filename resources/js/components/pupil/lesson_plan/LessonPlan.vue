@@ -8,7 +8,7 @@
                 <div class="card-body"><h5><strong class="header-text">Lesson Plan</strong></h5></div>
                 <div class="text-center pb-3">
                     <h5 class="pt-3 pb-0">
-                        <strong>You Belong to Class:
+                        <strong>Your Class:
                             <p class="d-inline text-danger">{{ this.class }}</p>
                         </strong>
                     </h5>
