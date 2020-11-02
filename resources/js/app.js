@@ -7,7 +7,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 // pupil zone \\
 /*********************************************************************************************************************/
 
-    Vue.component('events', require('./components/events/Events.vue').default);
+    Vue.component('events', require('./components/pupil/events/Events.vue').default);
     Vue.component('messages', require('./components/messages/Messages.vue').default);
     Vue.component('single-message', require('./components/messages/SingleMessage.vue').default);
     Vue.component('lesson-plan', require('./components/pupil/lesson_plan/LessonPlan.vue').default);
