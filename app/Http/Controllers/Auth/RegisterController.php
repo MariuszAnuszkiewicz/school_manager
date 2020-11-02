@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegisterUserNotification;
 use App\Providers\RouteServiceProvider;
+use App\Models\Pupil;
 use App\Models\User;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -77,6 +79,10 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'avatar' => public_path('images\user\avatars\user-avatar.png')
         ])->assignRole('pupil');
+        Pupil::create([
+            'user_id' => $user->id,
+            'class_in_school_id' => null,
+        ]);
         $user->notify(new RegisterUserNotification($user));
         return redirect('login');
     }
@@ -98,6 +104,9 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'avatar' => public_path('images\user\avatars\user-avatar.png')
         ])->assignRole('teacher');
+        Teacher::create([
+            'user_id' => $user->id
+        ]);
         $user->notify(new RegisterUserNotification($user));
         return redirect('login');
     }

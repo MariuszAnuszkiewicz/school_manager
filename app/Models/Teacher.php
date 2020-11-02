@@ -17,9 +17,9 @@ class Teacher extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function messages()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Message::class);
     }
 
     public function pupils()
@@ -30,5 +30,10 @@ class Teacher extends Model
     public function events()
     {
         return $this->belongsToMany(Event::class);
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
     }
 }

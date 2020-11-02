@@ -22,9 +22,9 @@ class Pupil extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function messages()
     {
-        return $this->belongsToMany(Comment::class);
+        return $this->belongsToMany(Message::class);
     }
 
     public function presence()
