@@ -4,6 +4,15 @@ window.Vue = require('vue');
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 
+// user profile zone \\
+/*********************************************************************************************************************/
+
+    Vue.component('user-profile', require('./components/user_profile/UserProfile.vue').default);
+    Vue.component('my-edit-profile', require('./components/user_profile/modals/MyEditProfile.vue').default);
+
+/*********************************************************************************************************************/
+
+
 // pupil zone \\
 /*********************************************************************************************************************/
 

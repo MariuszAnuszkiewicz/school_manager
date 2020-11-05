@@ -11,8 +11,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('lib/jquery.js') }}" defer></script>
-    <script src="{{ asset('lib/bootstrap.js') }}" defer></script>
+    <script src="{{ asset('lib/js/jquery.js') }}" defer></script>
+    <script src="{{ asset('lib/js/bootstrap.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -22,8 +22,7 @@
           crossorigin="anonymous">
 
     <!-- Styles -->
-    <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('lib/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('lib/css/bootstrap.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
