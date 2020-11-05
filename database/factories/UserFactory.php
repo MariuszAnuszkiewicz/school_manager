@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'date_of_birth' => $this->faker->dateTimeBetween('1974-11-08', '2011-12-30')->format('Y-m-d'),
             'phone' => $this->faker->phoneNumber,
-            'avatar' => public_path('images/user/avatars/user-avatar.png'),
+            'avatar' => 'user-avatar.png',
         ];
     }
 }

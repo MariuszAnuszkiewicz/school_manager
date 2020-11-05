@@ -9,6 +9,8 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LessonPlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\PupilController;
+use App\Http\Controllers\UserProfileController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,7 +44,17 @@ Route::get('/', function () {
 // inside system endpoints
 /*********************************************************************************************************************/
 
-    /*  pupil zone */
+     /* user profile zone */
+    Route::group([
+        'prefix' => 'user_profile',
+        'middleware' => 'auth',
+    ], function () {
+        Route::get('user/{id}', [UserProfileController::class, 'show'])->name('user_profile');
+        Route::post('user', [UserProfileController::class, 'updateAvatar']);
+        Route::put('user/{id}', [UserProfileController::class, 'updateProfile']);
+    });
+
+    /* pupil zone */
     Route::group([
         'prefix' => 'pupil',
         'middleware' => 'auth',

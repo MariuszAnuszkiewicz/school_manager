@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "form-data": "^3.0.0",
         "laravel-vue-pagination": "^2.3.1",
         "vue-axios": "^3.1.2",
         "vue-json-pretty": "^1.7.1",
