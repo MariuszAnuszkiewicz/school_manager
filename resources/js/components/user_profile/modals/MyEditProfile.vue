@@ -77,7 +77,6 @@ export default {
     },
     methods: {
         userUpdate() {
-            let self = this
             let id = window.location.href.split('/').pop();
                 axios.put('/user_profile/user/' + id, {
                     name: this.user.name,
@@ -86,14 +85,7 @@ export default {
                 }).then(function (response) {
 
                 }).catch(function (error) {
-                    console.log(error.response.data);
-                    console.error('error-xx')
-                    //this.error_name = error.response.data.error.name
-                    console.log(email[0])
-                    console.log(error.email[0])
-                    self.error_email = error.email;
-                    console.log(self.error_email)
-                    //this.error_phone = error.response.data.error.phone
+                   
                 });
                 this.confirmUpdate();
         },
