@@ -22,7 +22,7 @@
                             <input type="file" name="picture" class="btn btn-light form-control-file" id="inputPicture"
                                    v-on:change="handleFileUpload($event)">
                         </label>
-                        <button class="upload-btn btn btn-success" v-on:click="uploadConfirm()">Upload Image</button>
+                        <button class="upload-btn btn btn-success" id="uploadConfirm" v-on:click="uploadConfirm()">Upload Image</button>
                     </form>
                     <div class="edit-btn-wrapper mt-2">
                         <button id="edit-profile-btn" class="btn btn-blue" @click="openModal()">
@@ -33,6 +33,9 @@
                 <div class="flash-wrapper">
                     <div v-if="this.confirm === true" :style="flashStyle.show" class="flex flash-container">
                         <p>{{ message.text }}</p>
+                    </div>
+                    <div v-if="this.confirm === false && this.errors.length > 0" :style="errorsStyle" class="flex flash-container">
+                        <p>{{ errors[1] }}</p>
                     </div>
                 </div>
             </div>
@@ -64,6 +67,7 @@ export default {
             showPreview: false,
             imagePreview: '',
             confirm: false,
+            errors: [],
             message: {
                 text: 'Your avatar has been updated successfully.',
             },
@@ -81,6 +85,17 @@ export default {
                     'border-radius': '7px',
                 }
             },
+            errorsStyle: {
+                'display': 'block',
+                'position': 'relative',
+                'top': '10px',
+                'left': '29.6%',
+                'background-color': 'rgba(245, 34, 70, 0.3)',
+                'width': '450px',
+                'height': '35px',
+                'text-align': 'center',
+                'border-radius': '7px',
+            }
         }
     },
     methods: {
@@ -110,11 +125,20 @@ export default {
             }
         },
         submitForm() {
+            let self = this;
             let formData = new FormData(document.getElementById('uploadForm'));
             formData.append('picture', document.querySelector('#inputPicture').files[0]);
             axios.post('/user_profile/user', formData)
                 .then(response => {
-            }).catch((err) => console.log(err));
+            }).catch(function (error) {
+                let quantityItems = error.response.data.errors.picture.length;
+                let uploadConfirmBtn = document.getElementById("uploadConfirm");
+                uploadConfirmBtn.addEventListener('click', function () {
+                    for (let i = 0; i < quantityItems; i++) {
+                        self.errors.push(error.response.data.errors.picture[i]);
+                    }
+                }.bind(this), false);
+            });
         },
         uploadConfirm() {
             if (this.imagePreview !== '') {

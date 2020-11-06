@@ -29,7 +29,7 @@ class UserProfileController extends Controller
 
     public function updateAvatar(UpdatePictureRequest $request)
     {
-        $request->validated();
+        $validator = $request->validated();
         $authUser = auth()->user();
         if ($request->ajax()) {
             if ($request->hasFile('picture')) {
@@ -52,6 +52,9 @@ class UserProfileController extends Controller
                         unlink($path[$i]);
                     }
                 }
+            }
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 200]);
             }
         }
     }

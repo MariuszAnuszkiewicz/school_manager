@@ -2618,6 +2618,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2633,6 +2636,7 @@ __webpack_require__.r(__webpack_exports__);
       showPreview: false,
       imagePreview: '',
       confirm: false,
+      errors: [],
       message: {
         text: 'Your avatar has been updated successfully.'
       },
@@ -2649,6 +2653,17 @@ __webpack_require__.r(__webpack_exports__);
           'text-align': 'center',
           'border-radius': '7px'
         }
+      },
+      errorsStyle: {
+        'display': 'block',
+        'position': 'relative',
+        'top': '10px',
+        'left': '29.6%',
+        'background-color': 'rgba(245, 34, 70, 0.3)',
+        'width': '450px',
+        'height': '35px',
+        'text-align': 'center',
+        'border-radius': '7px'
       }
     };
   },
@@ -2683,10 +2698,17 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     submitForm: function submitForm() {
+      var self = this;
       var formData = new FormData(document.getElementById('uploadForm'));
       formData.append('picture', document.querySelector('#inputPicture').files[0]);
-      axios.post('/user_profile/user', formData).then(function (response) {})["catch"](function (err) {
-        return console.log(err);
+      axios.post('/user_profile/user', formData).then(function (response) {})["catch"](function (error) {
+        var quantityItems = error.response.data.errors.picture.length;
+        var uploadConfirmBtn = document.getElementById("uploadConfirm");
+        uploadConfirmBtn.addEventListener('click', function () {
+          for (var i = 0; i < quantityItems; i++) {
+            self.errors.push(error.response.data.errors.picture[i]);
+          }
+        }.bind(this), false);
       });
     },
     uploadConfirm: function uploadConfirm() {
@@ -2767,6 +2789,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user'],
   data: function data() {
@@ -2775,6 +2800,9 @@ __webpack_require__.r(__webpack_exports__);
       email: '',
       phone: '',
       confirm: false,
+      error_name: '',
+      error_email: '',
+      error_phone: '',
       message: {
         text: 'Your personal data has been updated successfully.'
       },
@@ -2797,13 +2825,20 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     userUpdate: function userUpdate() {
+      var self = this;
       var id = window.location.href.split('/').pop();
       axios.put('/user_profile/user/' + id, {
         name: this.user.name,
         email: this.user.email,
         phone: this.user.phone
-      }).then(function (response) {})["catch"](function (response) {
-        console.log(response);
+      }).then(function (response) {})["catch"](function (error) {
+        console.log(error.response.data);
+        console.error('error-xx'); //this.error_name = error.response.data.error.name
+
+        console.log(email[0]);
+        console.log(error.email[0]);
+        self.error_email = error.email;
+        console.log(self.error_email); //this.error_phone = error.response.data.error.phone
       });
       this.confirmUpdate();
     },
@@ -40841,6 +40876,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "upload-btn btn btn-success",
+                      attrs: { id: "uploadConfirm" },
                       on: {
                         click: function($event) {
                           return _vm.uploadConfirm()
@@ -40879,6 +40915,17 @@ var render = function() {
                     style: _vm.flashStyle.show
                   },
                   [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            this.confirm === false && this.errors.length > 0
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "flex flash-container",
+                    style: _vm.errorsStyle
+                  },
+                  [_c("p", [_vm._v(_vm._s(_vm.errors[1]))])]
                 )
               : _vm._e()
           ])
@@ -40981,7 +41028,9 @@ var render = function() {
                     }
                   }
                 })
-              ])
+              ]),
+              _vm._v(" "),
+              _c("small", [_vm._v(_vm._s(_vm.error_name) + " ")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -41013,7 +41062,9 @@ var render = function() {
                     }
                   }
                 })
-              ])
+              ]),
+              _vm._v(" "),
+              _c("small", [_vm._v(_vm._s(_vm.error_email) + " ")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -41045,7 +41096,9 @@ var render = function() {
                     }
                   }
                 })
-              ])
+              ]),
+              _vm._v(" "),
+              _c("small", [_vm._v(_vm._s(_vm.error_phone) + " ")])
             ])
           ]),
           _vm._v(" "),
@@ -53272,7 +53325,8 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js"); //Vue.use(Vuelidate)
+
 Vue.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js")); // user profile zone \\
 
 /*********************************************************************************************************************/
