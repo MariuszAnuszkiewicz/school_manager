@@ -17,12 +17,12 @@
                     </div>
                 </div>
                 <div id="upload-wrapper" class="large-12 medium-12 small-12 cell">
-                    <form @submit.prevent="submitForm()" id="uploadForm" enctype="multipart/form-data">
+                    <form @submit.once.prevent="submitForm()" id="uploadForm" enctype="multipart/form-data">
                         <label id="label-upload"><strong><p class="text-center pt-2"><i class="fas fa-folder-open"></i></p></strong>
                             <input type="file" name="picture" class="btn btn-light form-control-file" id="inputPicture"
                                    v-on:change="handleFileUpload($event)">
                         </label>
-                        <button class="upload-btn btn btn-success" id="uploadConfirm" v-on:click="uploadConfirm()">Upload Image</button>
+                        <button class="upload-btn btn btn-success" id="uploadConfirm" v-on:click.once="uploadConfirm()">Upload Image</button>
                     </form>
                     <div class="edit-btn-wrapper mt-2">
                         <button id="edit-profile-btn" class="btn btn-blue" @click="openModal()">
@@ -124,7 +124,7 @@ export default {
                 let uploadConfirmBtn = document.getElementById("uploadConfirm");
                 uploadConfirmBtn.addEventListener('click', function () {
                     for (let i = 0; i < quantityItems; i++) {
-                        self.errors.push(error.response.data.errors.picture[i]);
+                      self.errors.push(error.response.data.errors.picture[i]);
                     }
                 }.bind(this), false);
             });

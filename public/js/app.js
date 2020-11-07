@@ -40953,7 +40953,7 @@ var render = function() {
                   {
                     attrs: { id: "uploadForm", enctype: "multipart/form-data" },
                     on: {
-                      submit: function($event) {
+                      "~submit": function($event) {
                         $event.preventDefault()
                         return _vm.submitForm()
                       }
@@ -40984,7 +40984,7 @@ var render = function() {
                         staticClass: "upload-btn btn btn-success",
                         attrs: { id: "uploadConfirm" },
                         on: {
-                          click: function($event) {
+                          "~click": function($event) {
                             return _vm.uploadConfirm()
                           }
                         }
