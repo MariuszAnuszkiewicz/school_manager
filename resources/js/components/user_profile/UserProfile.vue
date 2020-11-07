@@ -34,10 +34,8 @@
                     <div v-if="this.confirm === true" :style="flashStyle.show" class="flex flash-container">
                         <p>{{ message.text }}</p>
                     </div>
-                    <div v-if="this.confirm === false && this.errors.length > 0" :style="errorsStyle" class="flex flash-container">
-                        <p>{{ errors[1] }}</p>
-                    </div>
                 </div>
+                <error-display :errors="errors" :confirm="confirm"></error-display>
             </div>
         </div>
         <my-edit-profile :user="user" v-if="showModal === true">
@@ -53,9 +51,11 @@
 
 <script>
 import MyEditProfile from "./modals/MyEditProfile";
+import ErrorDisplay from "../global/ErrorDisplay";
 export default {
     components: {
-        MyEditProfile
+        MyEditProfile,
+        ErrorDisplay
     },
     data() {
         return {
@@ -85,17 +85,6 @@ export default {
                     'border-radius': '7px',
                 }
             },
-            errorsStyle: {
-                'display': 'block',
-                'position': 'relative',
-                'top': '10px',
-                'left': '29.6%',
-                'background-color': 'rgba(245, 34, 70, 0.3)',
-                'width': '450px',
-                'height': '35px',
-                'text-align': 'center',
-                'border-radius': '7px',
-            }
         }
     },
     methods: {

@@ -11,19 +11,16 @@
                             <label id="label-name"><strong><p class="paragraph-name">Name:</p></strong>
                                <input type="text" v-model="user.name" id="name" class="ml-2" size="40">
                             </label>
-                            <small >{{ error_name }} </small>
                         </div>
                         <div class="form-group">
                             <label id="label-email"><strong><p class="paragraph-email">Email:</p></strong>
                                <input type="text" v-model="user.email" id="email" class="ml-2" size="40">
                             </label>
-                            <small >{{ error_email }} </small>
                         </div>
                         <div class="form-group">
                             <label id="label-phone"><strong><p class="paragraph-phone">Phone:</p></strong>
                                <input type="text" v-model="user.phone" id="phone" class="ml-2" size="40">
                             </label>
-                            <small >{{ error_phone }} </small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -52,9 +49,6 @@ export default {
             email: '',
             phone: '',
             confirm: false,
-            error_name : '',
-            error_email : '',
-            error_phone: '',
             message: {
                 text: 'Your personal data has been updated successfully.',
             },
