@@ -2825,21 +2825,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     userUpdate: function userUpdate() {
-      var self = this;
       var id = window.location.href.split('/').pop();
       axios.put('/user_profile/user/' + id, {
         name: this.user.name,
         email: this.user.email,
         phone: this.user.phone
-      }).then(function (response) {})["catch"](function (error) {
-        console.log(error.response.data);
-        console.error('error-xx'); //this.error_name = error.response.data.error.name
-
-        console.log(email[0]);
-        console.log(error.email[0]);
-        self.error_email = error.email;
-        console.log(self.error_email); //this.error_phone = error.response.data.error.phone
-      });
+      }).then(function (response) {})["catch"](function (error) {});
       this.confirmUpdate();
     },
     confirmUpdate: function confirmUpdate() {
@@ -53325,8 +53316,7 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js"); //Vue.use(Vuelidate)
-
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 Vue.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js")); // user profile zone \\
 
 /*********************************************************************************************************************/
