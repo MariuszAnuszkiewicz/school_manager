@@ -3,6 +3,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('error-display', require('./components/global/ErrorDisplay.vue').default);
 
 // user profile zone \\
 /*********************************************************************************************************************/
@@ -24,6 +25,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
     Vue.component('my-teachers-modal', require('./components/pupil/modals/MyTeachersModal.vue').default);
 
 /*********************************************************************************************************************/
+
 const app = new Vue({
     el: '#app',
 });
