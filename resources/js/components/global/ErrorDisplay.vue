@@ -1,7 +1,7 @@
 <template>
-    <div v-if="this.errors.length > 0 && this.confirm === false" :style="{display: 'block'}" class="errors-wrapper">
+    <div v-if="this.errors.length > 0" :style="{display: 'block'}" class="errors-wrapper">
         <div v-if="this.errors.length > 0 && this.confirm === false" :style="{display: 'block'}" class="error-container">
-            <p v-for="error in showErrors()" :key="error.id">{{ error }}</p>
+            <p v-for="err in showErrors()">{{ err }}</p>
         </div>
     </div>
 </template>
@@ -11,7 +11,6 @@ export default {
     props: ['errors', 'confirm'],
     data() {
         return {
-           error: false,
 
         }
     },

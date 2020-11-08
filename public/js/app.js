@@ -1919,9 +1919,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['errors', 'confirm'],
   data: function data() {
-    return {
-      error: false
-    };
+    return {};
   },
   methods: {
     showErrors: function showErrors() {
@@ -2731,8 +2729,12 @@ __webpack_require__.r(__webpack_exports__);
         var quantityItems = error.response.data.errors.picture.length;
         var uploadConfirmBtn = document.getElementById("uploadConfirm");
         uploadConfirmBtn.addEventListener('click', function () {
-          for (var i = 0; i < quantityItems; i++) {
-            self.errors.push(error.response.data.errors.picture[i]);
+          if (self.picture.name !== undefined) {
+            for (var i = 0; i < quantityItems; i++) {
+              self.errors.push(error.response.data.errors.picture[i]);
+            }
+
+            self.errors.splice(quantityItems, self.errors.length);
           }
         }.bind(this), false);
       });
@@ -40098,7 +40100,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return this.errors.length > 0 && this.confirm === false
+  return this.errors.length > 0
     ? _c(
         "div",
         { staticClass: "errors-wrapper", style: { display: "block" } },
@@ -40107,8 +40109,8 @@ var render = function() {
             ? _c(
                 "div",
                 { staticClass: "error-container", style: { display: "block" } },
-                _vm._l(_vm.showErrors(), function(error) {
-                  return _c("p", { key: error.id }, [_vm._v(_vm._s(error))])
+                _vm._l(_vm.showErrors(), function(err) {
+                  return _c("p", [_vm._v(_vm._s(err))])
                 }),
                 0
               )
@@ -40953,7 +40955,7 @@ var render = function() {
                   {
                     attrs: { id: "uploadForm", enctype: "multipart/form-data" },
                     on: {
-                      "~submit": function($event) {
+                      submit: function($event) {
                         $event.preventDefault()
                         return _vm.submitForm()
                       }
@@ -40985,6 +40987,7 @@ var render = function() {
                         attrs: { id: "uploadConfirm" },
                         on: {
                           "~click": function($event) {
+                            $event.stopPropagation()
                             return _vm.uploadConfirm()
                           }
                         }
