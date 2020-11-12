@@ -9,11 +9,16 @@ class Rating extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = ['rating'];
 
     public function pupils()
     {
         return $this->belongsToMany(Pupil::class);
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class)->withTimestamps();
     }
 }
