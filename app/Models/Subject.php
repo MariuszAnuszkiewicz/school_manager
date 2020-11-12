@@ -9,7 +9,7 @@ class Subject extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = ['name'];
 
     public function pupils()
@@ -20,5 +20,10 @@ class Subject extends Model
     public function teachers()
     {
         return $this->belongsToMany(Teacher::class);
+    }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(Rating::class)->withTimestamps();
     }
 }

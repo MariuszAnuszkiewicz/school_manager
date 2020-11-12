@@ -64,6 +64,8 @@ Route::get('/', function () {
         Route::resource('lesson-plan', LessonPlanController::class)->only(['index']);
         Route::get('my-teachers', [SubjectController::class, 'myTeachers']);
         Route::post('send-email', [PupilController::class, 'sendEmail']);
+        Route::get('my-grades/{subject}', [PupilController::class, 'myGrades'])->where('subject', '[0-9]+');
+
     });
 
 

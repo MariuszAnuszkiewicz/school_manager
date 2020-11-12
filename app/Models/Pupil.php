@@ -51,4 +51,5 @@ class Pupil extends Model
     {
         return $this->belongsToMany(Semester::class);
     }
+
 }
