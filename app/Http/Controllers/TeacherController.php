@@ -45,8 +45,8 @@ class TeacherController extends Controller
                     $data[] = $ids[$i];
                 }
                 $teacher->pupils()->sync($data);
+                return response()->json(['message' => 'pupils has been assign to classes']);
             }
-            return response()->json(['message' => $request->pupils]);
         }
     }
 }
