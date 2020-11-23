@@ -10,6 +10,7 @@ use App\Http\Controllers\LessonPlanController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\PupilController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\TeacherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,12 @@ Route::get('/', function () {
 
     });
 
-
+    /* teacher zone */
+    Route::group([
+        'prefix' => 'teacher',
+        'middleware' => 'auth',
+    ], function () {
+         Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
+    });
 
 /*********************************************************************************************************************/
