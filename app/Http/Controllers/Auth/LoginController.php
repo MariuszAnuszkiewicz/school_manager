@@ -33,6 +33,9 @@ class LoginController extends Controller
         if (auth()->user()->roles->last()->name == 'pupil') {
             return redirect('/pupil/events');
         }
+        if (auth()->user()->roles->last()->name == 'teacher') {
+            return redirect('/teacher/pupils');
+        }
     }
 
     /**

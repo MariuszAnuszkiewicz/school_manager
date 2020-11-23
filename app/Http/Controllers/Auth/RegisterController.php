@@ -77,7 +77,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'date_of_birth' => $data['date_of_birth'],
             'phone' => $data['phone'],
-            'avatar' => public_path('images\user\avatars\user-avatar.png')
+            'avatar' => 'user-avatar.png',
         ])->assignRole('pupil');
         Pupil::create([
             'user_id' => $user->id,
@@ -102,7 +102,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'date_of_birth' => $data['date_of_birth'],
             'phone' => $data['phone'],
-            'avatar' => public_path('images\user\avatars\user-avatar.png')
+            'avatar' => 'user-avatar.png',
         ])->assignRole('teacher');
         Teacher::create([
             'user_id' => $user->id
