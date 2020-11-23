@@ -2868,20 +2868,16 @@ __webpack_require__.r(__webpack_exports__);
     submitForm: function submitForm() {
       var _this2 = this;
 
-      if (this.selected !== []) {
+      if (this.selected.length > 0) {
         var formData = new FormData(document.getElementById('classesForm'));
         formData.append('class_assign', document.querySelector('#selectClass').value);
         formData.append('pupils', this.selected);
         axios.post('pupils', formData).then(function (response) {
-          if (response.data.message !== '') {
-            _this2.message.text = response.data.message;
-            _this2.isUpdate = true;
-          } else {
-            _this2.isUpdate = false;
-          }
+          _this2.message.text = response.data.message;
         })["catch"](function (error) {
           console.log(error.response.data);
         });
+        this.isUpdate = true;
         this.showInfo();
       }
     },
