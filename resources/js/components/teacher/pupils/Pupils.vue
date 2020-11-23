@@ -109,20 +109,16 @@ export default {
             this.showWarning()
         },
         submitForm() {
-            if (this.selected !== []) {
+            if (this.selected.length > 0) {
                 let formData = new FormData(document.getElementById('classesForm'));
                 formData.append('class_assign', document.querySelector('#selectClass').value);
                 formData.append('pupils', this.selected);
                 axios.post('pupils', formData).then(response => {
-                    if (response.data.message !== '')  {
-                        this.message.text = response.data.message;
-                        this.isUpdate = true;
-                    } else {
-                        this.isUpdate = false;
-                    }
+                    this.message.text = response.data.message;
                 }).catch(function (error) {
                     console.log(error.response.data)
                 });
+                this.isUpdate = true;
                 this.showInfo()
             }
         },
