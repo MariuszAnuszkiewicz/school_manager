@@ -2819,24 +2819,32 @@ __webpack_require__.r(__webpack_exports__);
       isSelected: false,
       switchStyleFlash: '',
       showHide: '',
+      isUpdate: false,
       message: {
         text: 'There are no any pupils.'
       },
-      flashStyle: {
-        'position': 'relative',
-        'top': '100px',
-        'left': '38.7%',
-        'background-color': 'rgba(245, 34, 70, 0.3)',
-        'width': '250px',
-        'height': '35px',
-        'text-align': 'center',
-        'border-radius': '7px',
+      flashStyleWarning: {
+        'display': 'none',
         show: {
           'display': 'block',
           'position': 'relative',
           'top': '100px',
           'left': '38.7%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
+          'width': '250px',
+          'height': '35px',
+          'text-align': 'center',
+          'border-radius': '7px'
+        }
+      },
+      flashStyleInfo: {
+        'display': 'none',
+        show: {
+          'display': 'block',
+          'position': 'relative',
+          'top': '150px',
+          'left': '38.7%',
+          'background-color': 'rgba(60, 204, 102, 0.3)',
           'width': '250px',
           'height': '35px',
           'text-align': 'center',
@@ -2854,20 +2862,27 @@ __webpack_require__.r(__webpack_exports__);
         _this.pupils = response.data.pupils;
         _this.classes_in_school = response.data.classes_in_school;
         _this.assign_classes = response.data.assign_classes;
-
-        _this.changeStyle();
       });
+      this.showWarning();
     },
     submitForm: function submitForm() {
+      var _this2 = this;
+
       if (this.selected !== []) {
         var formData = new FormData(document.getElementById('classesForm'));
         formData.append('class_assign', document.querySelector('#selectClass').value);
         formData.append('pupils', this.selected);
         axios.post('pupils', formData).then(function (response) {
-          console.log(response.data);
+          if (response.data.message !== '') {
+            _this2.message.text = response.data.message;
+            _this2.isUpdate = true;
+          } else {
+            _this2.isUpdate = false;
+          }
         })["catch"](function (error) {
           console.log(error.response.data);
         });
+        this.showInfo();
       }
     },
     selectAll: function selectAll() {
@@ -2888,12 +2903,19 @@ __webpack_require__.r(__webpack_exports__);
         this.isSelected = false;
       }
     },
-    changeStyle: function changeStyle() {
+    showWarning: function showWarning() {
       if (this.pupils.length < 1) {
         this.showHide = 'none';
-        this.switchStyleFlash = this.flashStyle.show;
+        this.switchStyleFlash = this.flashStyleWarning.show;
       } else {
-        this.switchStyleFlash = this.flashStyle;
+        this.switchStyleFlash = this.flashStyleWarning;
+      }
+    },
+    showInfo: function showInfo() {
+      if (this.isUpdate === true) {
+        this.switchStyleFlash = this.flashStyleInfo.show;
+      } else {
+        this.switchStyleFlash = this.flashStyleInfo;
       }
     }
   },
