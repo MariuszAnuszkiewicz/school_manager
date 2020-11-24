@@ -42,9 +42,16 @@ class TeacherController extends Controller
                 $ids = explode(",", $request->pupils);
                 Pupil::whereIn('id', $ids)->update(['class_in_school_id' => (int) $request->class_assign]);
                 for ($i = 0; $i < count($ids); $i++) {
-                    $data[] = $ids[$i];
+                    $data[] = (int) $ids[$i];
                 }
-                $teacher->pupils()->sync($data);
+                $tableIds = [];
+                foreach ($teacher->pupils as $pupil) {
+                    $tableIds[] = $pupil->id;
+                }
+                if ($tableIds != $data) {
+                    $uniqueIds = array_diff($data, $tableIds);
+                    $teacher->pupils()->attach($uniqueIds);
+                }
                 return response()->json(['message' => 'pupils has been assign to classes']);
             }
         }
