@@ -32,6 +32,8 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
 /*********************************************************************************************************************/
 
    Vue.component('pupils', require('./components/teacher/pupils/Pupils.vue').default);
+   Vue.component('selected-pupils', require('./components/teacher/pupils/SelectedPupils.vue').default);
+   Vue.component('send-message', require('./components/teacher/modals/SendMessage.vue').default);
 
 
 /*********************************************************************************************************************/
