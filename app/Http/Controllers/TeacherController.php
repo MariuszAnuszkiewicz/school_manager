@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClassInSchool;
 use App\Models\Pupil;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -54,6 +55,50 @@ class TeacherController extends Controller
                 }
                 return response()->json(['message' => 'pupils has been assign to classes']);
             }
+        }
+    }
+
+    public function selectedPupils(Request $request)
+    {
+        $teacher = auth()->user()->teacher;
+        $data = [];
+        foreach ($teacher->pupils as $pupil) {
+            $data['users'][] = isset($pupil->user) ? $pupil->user: null;
+            $data['pupils'][] = isset($pupil) ? $pupil: null;
+            $data['assign_classes'][] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
+        }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'users' => $data['users'],
+                    'pupils' => $data['pupils'],
+                    'assign_classes' => $data['assign_classes'],
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any pupils"]);
+            }
+        }
+        return view('teacher.selected_pupils');
+    }
+
+    public function deletePupils(Request $request)
+    {
+        auth()->user()->teacher->pupils()->detach($request->selected);
+        return response()->json(['message' => 'pupils has been deleted']);
+    }
+
+    public function sendMessage(Request $request)
+    {
+        if ($request->ajax()) {
+            $message = Message::create([
+                'teacher_id' => auth()->user()->teacher->id,
+                'message' => $request->message,
+            ]);
+            $switchSingleMultipleIds = isset($request->pupil_id) ? $request->pupil_id : $request->selected;
+            $message->pupils()->attach($switchSingleMultipleIds);
+            return response()->json(['message' => 'Message send successfully']);
         }
     }
 }

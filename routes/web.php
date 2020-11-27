@@ -75,6 +75,9 @@ Route::get('/', function () {
         'middleware' => 'auth',
     ], function () {
          Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
+         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
+         Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
+         Route::post('send-message', [TeacherController::class, 'sendMessage']);
     });
 
 /*********************************************************************************************************************/
