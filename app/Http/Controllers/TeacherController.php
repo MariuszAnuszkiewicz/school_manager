@@ -113,7 +113,7 @@ class TeacherController extends Controller
         foreach ($data['my_messages'] as $message) {
             $data['pupils'][] = $message->pupils;
         }
-        if (!empty($data)) {
+        if ($data['my_messages']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
                     'teacher' => $data['teacher'],

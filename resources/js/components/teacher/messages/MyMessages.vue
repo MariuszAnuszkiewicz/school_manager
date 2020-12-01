@@ -1,10 +1,15 @@
 <template>
     <div class="container">
-        <div :style="switchFlashStyle" class="flex flash-container">
-          <p>{{ message_text }}</p>
-        </div>
         <div class="row justify-content-center">
-            <div class="col mt-5">
+            <div :style="switchFlashStyle" class="flex flash-container">
+                <div v-if="errors.length > 0" v-for="error in errors" class="error-explode">
+                   <p>{{ error }}</p>
+                </div>
+                <div v-else>
+                   <p>{{ message_text }}</p>
+                </div>
+            </div>
+            <div v-if="errors.length === 0" :style="{ display: 'block' }" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">My Messages</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="thead-dark">
@@ -82,20 +87,35 @@ export default {
             switchFlashStyle: '',
             showHide: '',
             flashStyleInfo: {
-            'display': 'none',
-              show: {
-                'display': 'block',
-                'position': 'relative',
-                'top': '25px',
-                'left': '33%',
-                'background-color': 'rgba(60, 204, 102, 0.3)',
-                'width': '333px',
-                'height': '35px',
-                'text-align': 'center',
-                'border-radius': '7px',
-                'padding-bottom': '10px',
-              }
-          },
+             'display': 'none',
+                show: {
+                  'display': 'block',
+                  'position': 'relative',
+                  'top': '25px',
+                  'left': '33%',
+                  'background-color': 'rgba(60, 204, 102, 0.3)',
+                  'width': '333px',
+                  'height': '35px',
+                  'text-align': 'center',
+                  'border-radius': '7px',
+                  'padding-bottom': '10px',
+                }
+            },
+            flashStyleWarning: {
+             'display': 'none',
+                show: {
+                  'display': 'block',
+                  'position': 'relative',
+                  'top': '25px',
+                  'left': '0%',
+                  'background-color': 'rgba(245, 34, 70, 0.3)',
+                  'width': '333px',
+                  'height': '35px',
+                  'text-align': 'center',
+                  'border-radius': '7px',
+                  'padding-bottom': '10px',
+                }
+            },
             message: {
                text: '',
             },
@@ -107,10 +127,20 @@ export default {
                 page = 1;
             }
             axios.get('my-messages?page=' + page).then(response => {
-                this.teacher = response.data.teacher
-                this.my_messages = response.data.my_messages
+                if (response.data.my_messages !== undefined) {
+                   this.my_messages = response.data.my_messages
+                } else {
+                  this.errors.push(response.data.message)
+                    for (let i = 0; i < this.errors.length; i++) {
+                        if (this.errors[i] !== undefined) {
+                            this.switchFlashStyle = this.flashStyleWarning.show;
+                        } else {
+                            this.switchFlashStyle = this.flashStyleInfo;
+                        }
+                    }
+                }
+                this.teacher = response.data.teacher;
                 this.pupils = response.data.pupils
-                console.log(this.my_messages.data[0].message.length)
             });
         },
         openModal(message, message_id) {
