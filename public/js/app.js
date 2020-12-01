@@ -2822,6 +2822,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2851,6 +2856,21 @@ __webpack_require__.r(__webpack_exports__);
           'padding-bottom': '10px'
         }
       },
+      flashStyleWarning: {
+        'display': 'none',
+        show: {
+          'display': 'block',
+          'position': 'relative',
+          'top': '25px',
+          'left': '0%',
+          'background-color': 'rgba(245, 34, 70, 0.3)',
+          'width': '333px',
+          'height': '35px',
+          'text-align': 'center',
+          'border-radius': '7px',
+          'padding-bottom': '10px'
+        }
+      },
       message: {
         text: ''
       }
@@ -2865,10 +2885,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       axios.get('my-messages?page=' + page).then(function (response) {
+        if (response.data.my_messages !== undefined) {
+          _this.my_messages = response.data.my_messages;
+        } else {
+          _this.errors.push(response.data.message);
+
+          for (var i = 0; i < _this.errors.length; i++) {
+            if (_this.errors[i] !== undefined) {
+              _this.switchFlashStyle = _this.flashStyleWarning.show;
+            } else {
+              _this.switchFlashStyle = _this.flashStyleInfo;
+            }
+          }
+        }
+
         _this.teacher = response.data.teacher;
-        _this.my_messages = response.data.my_messages;
         _this.pupils = response.data.pupils;
-        console.log(_this.my_messages.data[0].message.length);
+        console.log(_this.my_messages);
+        console.log(_this.errors.length);
       });
     },
     openModal: function openModal(message, message_id) {
@@ -42530,190 +42564,204 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        [_c("p", [_vm._v(_vm._s(_vm.message_text))])]
-      ),
-      _vm._v(" "),
       _c("div", { staticClass: "row justify-content-center" }, [
         _c(
           "div",
-          { staticClass: "col mt-5" },
-          [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("table", { staticClass: "table table-striped" }, [
-              _vm._m(1),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "custom-control text-center pt-2 bg-warning"
-                    },
-                    [
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c("input", {
-                        staticClass: "select-all d-inline-block ml-2",
-                        attrs: { type: "checkbox", id: "select-all" },
-                        on: {
-                          click: function($event) {
-                            return _vm.selectAll()
-                          }
-                        }
-                      })
-                    ]
-                  ),
+          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+          _vm._l(_vm.errors, function(error) {
+            return _vm.errors.length > 0
+              ? _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(error))])
+                ])
+              : _c("div", [_c("p", [_vm._v(_vm._s(_vm.message_text))])])
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _vm.errors.length === 0
+          ? _c(
+              "div",
+              { staticClass: "col mt-5", style: { display: "block" } },
+              [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("table", { staticClass: "table table-striped" }, [
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
-                    "div",
-                    {
-                      staticClass:
-                        "col-md-12  text-center d-inline-block pt-2 pb-2 bg-light"
-                    },
+                    "tbody",
                     [
                       _c(
-                        "button",
+                        "div",
                         {
-                          staticClass: "btn btn-outline-danger",
-                          on: {
-                            click: function($event) {
-                              return _vm.deleteSelected()
-                            }
-                          }
+                          staticClass:
+                            "custom-control text-center pt-2 bg-warning"
                         },
-                        [_c("i", { staticClass: "fas fa-trash" })]
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.my_messages.data, function(my_message, index) {
-                    return _c("tr", { key: my_message.id }, [
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.selected,
-                              expression: "selected"
-                            }
-                          ],
-                          staticClass: "messages-select",
-                          attrs: { type: "checkbox" },
-                          domProps: {
-                            value: my_message.id,
-                            checked: Array.isArray(_vm.selected)
-                              ? _vm._i(_vm.selected, my_message.id) > -1
-                              : _vm.selected
-                          },
-                          on: {
-                            change: [
-                              function($event) {
-                                var $$a = _vm.selected,
-                                  $$el = $event.target,
-                                  $$c = $$el.checked ? true : false
-                                if (Array.isArray($$a)) {
-                                  var $$v = my_message.id,
-                                    $$i = _vm._i($$a, $$v)
-                                  if ($$el.checked) {
-                                    $$i < 0 &&
-                                      (_vm.selected = $$a.concat([$$v]))
-                                  } else {
-                                    $$i > -1 &&
-                                      (_vm.selected = $$a
-                                        .slice(0, $$i)
-                                        .concat($$a.slice($$i + 1)))
-                                  }
-                                } else {
-                                  _vm.selected = $$c
-                                }
-                              },
-                              function($event) {
-                                return _vm.unSelectAll()
-                              }
-                            ]
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(_vm.teacher))
-                      ]),
-                      _vm._v(" "),
-                      _vm.pupils.data[index][0]
-                        ? _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(_vm.pupils.data[index][0].id))
-                          ])
-                        : _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s("empty"))
-                          ]),
-                      _vm._v(" "),
-                      my_message.message.length > 35
-                        ? _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(
-                              _vm._s(my_message.message.slice(0, 35) + " ... ")
-                            )
-                          ])
-                        : _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(my_message.message))
-                          ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(
-                          _vm._s(
-                            _vm._f("formatDate")(
-                              my_message.created_at,
-                              my_message.created_at
-                            )
-                          )
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-2" }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-success",
-                            attrs: { id: "edit-message" },
+                        [
+                          _vm._m(2),
+                          _vm._v(" "),
+                          _c("input", {
+                            staticClass: "select-all d-inline-block ml-2",
+                            attrs: { type: "checkbox", id: "select-all" },
                             on: {
                               click: function($event) {
-                                return _vm.openModal(
-                                  my_message.message,
-                                  my_message.id
-                                )
+                                return _vm.selectAll()
                               }
                             }
-                          },
-                          [_c("i", { staticClass: "fas fa-edit" })]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "a",
-                          {
-                            attrs: { href: "single-message/" + my_message.id }
-                          },
-                          [_vm._m(3, true)]
-                        )
-                      ])
-                    ])
-                  })
-                ],
-                2
-              )
-            ]),
-            _vm._v(" "),
-            _c("pagination", {
-              attrs: { data: _vm.my_messages },
-              on: { "pagination-change-page": _vm.getMyMessages }
-            })
-          ],
-          1
-        )
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-md-12  text-center d-inline-block pt-2 pb-2 bg-light"
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-outline-danger",
+                              on: {
+                                click: function($event) {
+                                  return _vm.deleteSelected()
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fas fa-trash" })]
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _vm._l(_vm.my_messages.data, function(my_message, index) {
+                        return _c("tr", { key: my_message.id }, [
+                          _c("td", { staticClass: "text-center pt-3" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.selected,
+                                  expression: "selected"
+                                }
+                              ],
+                              staticClass: "messages-select",
+                              attrs: { type: "checkbox" },
+                              domProps: {
+                                value: my_message.id,
+                                checked: Array.isArray(_vm.selected)
+                                  ? _vm._i(_vm.selected, my_message.id) > -1
+                                  : _vm.selected
+                              },
+                              on: {
+                                change: [
+                                  function($event) {
+                                    var $$a = _vm.selected,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = my_message.id,
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          (_vm.selected = $$a.concat([$$v]))
+                                      } else {
+                                        $$i > -1 &&
+                                          (_vm.selected = $$a
+                                            .slice(0, $$i)
+                                            .concat($$a.slice($$i + 1)))
+                                      }
+                                    } else {
+                                      _vm.selected = $$c
+                                    }
+                                  },
+                                  function($event) {
+                                    return _vm.unSelectAll()
+                                  }
+                                ]
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "text-center pt-3" }, [
+                            _vm._v(_vm._s(_vm.teacher))
+                          ]),
+                          _vm._v(" "),
+                          _vm.pupils.data[index][0]
+                            ? _c("td", { staticClass: "text-center pt-3" }, [
+                                _vm._v(_vm._s(_vm.pupils.data[index][0].id))
+                              ])
+                            : _c("td", { staticClass: "text-center pt-3" }, [
+                                _vm._v(_vm._s("empty"))
+                              ]),
+                          _vm._v(" "),
+                          my_message.message.length > 35
+                            ? _c("td", { staticClass: "text-center pt-3" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    my_message.message.slice(0, 35) + " ... "
+                                  )
+                                )
+                              ])
+                            : _c("td", { staticClass: "text-center pt-3" }, [
+                                _vm._v(_vm._s(my_message.message))
+                              ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "text-center pt-3" }, [
+                            _vm._v(
+                              _vm._s(
+                                _vm._f("formatDate")(
+                                  my_message.created_at,
+                                  my_message.created_at
+                                )
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "text-center pt-2" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: { id: "edit-message" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openModal(
+                                      my_message.message,
+                                      my_message.id
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-edit" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                attrs: {
+                                  href: "single-message/" + my_message.id
+                                }
+                              },
+                              [_vm._m(3, true)]
+                            )
+                          ])
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                ]),
+                _vm._v(" "),
+                _c("pagination", {
+                  attrs: { data: _vm.my_messages },
+                  on: { "pagination-change-page": _vm.getMyMessages }
+                })
+              ],
+              1
+            )
+          : _vm._e()
       ]),
       _vm._v(" "),
       _vm.showModal === true
