@@ -78,6 +78,10 @@ Route::get('/', function () {
          Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
          Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
          Route::post('send-message', [TeacherController::class, 'sendMessage']);
+         Route::get('my-messages', [TeacherController::class, 'myMessages']);
+         Route::put('update-message/{id}', [TeacherController::class, 'updateMessage'])->where('id', '[0-9]+');
+         Route::post('delete-messages', [TeacherController::class, 'deleteMessages']);
+         Route::get('single-message/{id}', [TeacherController::class, 'singleMessage'])->where('id', '[0-9]+');
     });
 
 /*********************************************************************************************************************/

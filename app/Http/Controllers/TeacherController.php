@@ -6,6 +6,9 @@ use App\Models\ClassInSchool;
 use App\Models\Pupil;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 class TeacherController extends Controller
 {
@@ -101,4 +104,71 @@ class TeacherController extends Controller
             return response()->json(['message' => 'Message send successfully']);
         }
     }
+
+    public function myMessages(Request $request)
+    {
+        $teacher = auth()->user()->teacher;
+        $data['teacher'] = $teacher->user->name;
+        $data['my_messages'] = $teacher->messages;
+        foreach ($data['my_messages'] as $message) {
+            $data['pupils'][] = $message->pupils;
+        }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'teacher' => $data['teacher'],
+                    'my_messages' => $this->paginate($data['my_messages']),
+                    'pupils' => $this->paginate($data['pupils']),
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any my messages"]);
+            }
+        }
+        return view('teacher.my_messages');
+    }
+
+    public function updateMessage(Request $request)
+    {
+        if ($request->ajax()) {
+            Message::where('id', $request->id)->update(['message' => $request->message]);
+        }
+        return response()->json(['message' => 'Your message has been updated successfully.']);
+    }
+
+    public function deleteMessages(Request $request)
+    {
+        if ($request->ajax()) {
+            if (!empty($request->selected)) {
+                Message::whereIn('id', $request->selected)->delete();
+            }
+        }
+        return response()->json(['message' => 'messages has been deleted']);
+    }
+
+    public function singleMessage(Request $request, $id)
+    {
+        $data['message'] = Message::where('id', $id)->first();
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => $data['message'],
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any my messages"]);
+            }
+        }
+        return view('teacher.single_message');
+    }
+
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ? : 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
+
 }
