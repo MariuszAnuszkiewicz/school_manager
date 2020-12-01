@@ -34,6 +34,9 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('pupils', require('./components/teacher/pupils/Pupils.vue').default);
    Vue.component('selected-pupils', require('./components/teacher/pupils/SelectedPupils.vue').default);
    Vue.component('send-message', require('./components/teacher/modals/SendMessage.vue').default);
+   Vue.component('my-messages', require('./components/teacher/messages/MyMessages.vue').default);
+   Vue.component('edit-message', require('./components/teacher/modals/EditMessage.vue').default);
+   Vue.component('single-message', require('./components/teacher/messages/SingleMessage.vue').default);
 
 
 /*********************************************************************************************************************/
