@@ -38,8 +38,7 @@
                                      @change="unSelectAll()">
                             </td>
                             <td class="text-center pt-3">{{ teacher }}</td>
-                            <td v-if="pupils" class="text-center pt-3">{{ pupils[index] }}</td>
-                            <td v-else class="text-center pt-3">{{ 'empty' }}</td>
+                            <td class="text-center pt-3">{{ pupils[index] }}</td>
                             <td v-if="my_message.message.length > 35" class="text-center pt-3">{{ my_message.message.slice(0, 35) + ' ... ' }}</td>
                             <td v-else class="text-center pt-3">{{ my_message.message }}</td>
                             <td class="text-center pt-3">{{ my_message.created_at | formatDate(my_message.created_at) }}</td>
