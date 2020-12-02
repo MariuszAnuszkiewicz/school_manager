@@ -110,15 +110,21 @@ class TeacherController extends Controller
         $teacher = auth()->user()->teacher;
         $data['teacher'] = $teacher->user->name;
         $data['my_messages'] = $teacher->messages;
+        $ids = [];
         foreach ($data['my_messages'] as $message) {
-            $data['pupils'][] = $message->pupils;
+           if ($message->id) {
+               foreach ($message->pupils as $pupil) {
+                   $ids[$message->id][] = $pupil->id;
+               }
+           }
+           $data['pupils'][] = implode(",", $ids[$message->id]);
         }
         if ($data['my_messages']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
                     'teacher' => $data['teacher'],
                     'my_messages' => $this->paginate($data['my_messages']),
-                    'pupils' => $this->paginate($data['pupils']),
+                    'pupils' => $data['pupils'],
                 ]);
             }
         } else {

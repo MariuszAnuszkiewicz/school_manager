@@ -16,7 +16,7 @@
                         <tr>
                             <th class="text-center pt-2">Select Id</th>
                             <th class="text-center pt-2">Teacher Name</th>
-                            <th class="text-center pt-2">Pupil Id</th>
+                            <th class="text-center pt-2">Pupil Ids</th>
                             <th class="text-center pt-2">My Messages</th>
                             <th class="text-center pt-2">Date</th>
                             <th class="text-center pt-2">Actions</th>
@@ -38,7 +38,7 @@
                                      @change="unSelectAll()">
                             </td>
                             <td class="text-center pt-3">{{ teacher }}</td>
-                            <td v-if="pupils.data[index][0]" class="text-center pt-3">{{ pupils.data[index][0].id }}</td>
+                            <td v-if="pupils" class="text-center pt-3">{{ pupils[index] }}</td>
                             <td v-else class="text-center pt-3">{{ 'empty' }}</td>
                             <td v-if="my_message.message.length > 35" class="text-center pt-3">{{ my_message.message.slice(0, 35) + ' ... ' }}</td>
                             <td v-else class="text-center pt-3">{{ my_message.message }}</td>
@@ -128,9 +128,9 @@ export default {
             }
             axios.get('my-messages?page=' + page).then(response => {
                 if (response.data.my_messages !== undefined) {
-                   this.my_messages = response.data.my_messages
+                    this.my_messages = response.data.my_messages
                 } else {
-                  this.errors.push(response.data.message)
+                    this.errors.push(response.data.message)
                     for (let i = 0; i < this.errors.length; i++) {
                         if (this.errors[i] !== undefined) {
                             this.switchFlashStyle = this.flashStyleWarning.show;
