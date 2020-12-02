@@ -2901,8 +2901,6 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.teacher = response.data.teacher;
         _this.pupils = response.data.pupils;
-        console.log(_this.my_messages);
-        console.log(_this.errors.length);
       });
     },
     openModal: function openModal(message, message_id) {
@@ -42688,9 +42686,9 @@ var render = function() {
                             _vm._v(_vm._s(_vm.teacher))
                           ]),
                           _vm._v(" "),
-                          _vm.pupils.data[index][0]
+                          _vm.pupils
                             ? _c("td", { staticClass: "text-center pt-3" }, [
-                                _vm._v(_vm._s(_vm.pupils.data[index][0].id))
+                                _vm._v(_vm._s(_vm.pupils[index]))
                               ])
                             : _c("td", { staticClass: "text-center pt-3" }, [
                                 _vm._v(_vm._s("empty"))
@@ -42825,7 +42823,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Teacher Name")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Pupil Id")]),
+        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Pupil Ids")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("My Messages")]),
         _vm._v(" "),
