@@ -2804,6 +2804,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2814,10 +2815,14 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getPupils: function getPupils() {
+    getPupils: function getPupils(page) {
       var _this = this;
 
-      axios.get('list-emails').then(function (response) {
+      if (typeof page === 'undefined') {
+        page = 1;
+      }
+
+      axios.get('list-emails?page=' + page).then(function (response) {
         _this.pupils = response.data.pupils;
       });
     },
@@ -2825,8 +2830,8 @@ __webpack_require__.r(__webpack_exports__);
       this.isSelected = !this.isSelected;
 
       if (this.isSelected) {
-        for (var i = 0; i < this.pupils.length; i++) {
-          this.selectedEmails.push(this.pupils[i].email);
+        for (var item in this.pupils.data) {
+          this.selectedEmails.push(this.pupils.data[item].email);
         }
       } else {
         this.selectedEmails.splice(0, this.selectedEmails.length);
@@ -42901,7 +42906,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._l(_vm.pupils, function(pupil) {
+                _vm._l(_vm.pupils.data, function(pupil) {
                   return _c("tr", { key: pupil.id }, [
                     _c("td", { staticClass: "text-center pt-3" }, [
                       _c("input", {
@@ -42965,6 +42970,11 @@ var render = function() {
           ])
         ])
       ]),
+      _vm._v(" "),
+      _c("pagination", {
+        attrs: { data: _vm.pupils },
+        on: { "pagination-change-page": _vm.getPupils }
+      }),
       _vm._v(" "),
       _vm.showModal === true
         ? _c("send-emails", { attrs: { selectedEmails: _vm.selectedEmails } }, [

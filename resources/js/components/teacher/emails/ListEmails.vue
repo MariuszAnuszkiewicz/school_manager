@@ -20,7 +20,7 @@
                         <div class="col-md-12 text-center d-inline-block pt-2 pb-2 bg-light">
                             <button class="btn btn-outline-success" @click="openModal()"><i class="fas fa-mail-bulk"></i></button>
                         </div>
-                        <tr v-for="pupil in pupils" :key="pupil.id">
+                        <tr v-for="pupil in pupils.data" :key="pupil.id">
                             <td class="text-center pt-3">
                                 <input type="checkbox" class="pupils-select"
                                        v-model="selectedEmails"
@@ -34,6 +34,7 @@
                 </table>
             </div>
         </div>
+        <pagination :data="pupils" @pagination-change-page="getPupils"></pagination>
         <send-emails :selectedEmails="selectedEmails" v-if="showModal === true">
             <h3 slot="header" class="modal-title">
                 Send Emails
@@ -59,16 +60,19 @@ export default {
         }
     },
     methods: {
-        getPupils() {
-            axios.get('list-emails').then(response => {
+        getPupils(page) {
+            if (typeof page === 'undefined') {
+                page = 1;
+            }
+            axios.get('list-emails?page=' + page).then(response => {
                 this.pupils = response.data.pupils
             });
         },
         selectAll() {
             this.isSelected = !this.isSelected;
             if (this.isSelected) {
-                for (let i = 0; i < this.pupils.length; i++) {
-                    this.selectedEmails.push(this.pupils[i].email);
+                for(let item in this.pupils.data){
+                    this.selectedEmails.push(this.pupils.data[item].email);
                 }
             } else {
                 this.selectedEmails.splice(0, this.selectedEmails.length);
