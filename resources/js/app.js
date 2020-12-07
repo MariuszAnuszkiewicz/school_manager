@@ -37,6 +37,8 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('my-messages', require('./components/teacher/messages/MyMessages.vue').default);
    Vue.component('edit-message', require('./components/teacher/modals/EditMessage.vue').default);
    Vue.component('single-message', require('./components/teacher/messages/SingleMessage.vue').default);
+   Vue.component('list-emails', require('./components/teacher/emails/ListEmails.vue').default);
+   Vue.component('send-emails', require('./components/teacher/modals/SendEmail.vue').default);
 
 
 /*********************************************************************************************************************/

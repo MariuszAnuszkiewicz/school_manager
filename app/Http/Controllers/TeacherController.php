@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendToPupil;
 use App\Models\ClassInSchool;
 use App\Models\Pupil;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 
 class TeacherController extends Controller
 {
@@ -168,6 +171,44 @@ class TeacherController extends Controller
             }
         }
         return view('teacher.single_message');
+    }
+
+    public function listEmails(Request $request)
+    {
+        $teacher = auth()->user()->teacher;
+        $pupils = $teacher->pupils;
+        $data = [];
+        $userIds = [];
+        foreach($pupils as $pupil) {
+            $userIds[] = $pupil->user_id;
+        }
+        $users = User::whereIn('id', $userIds)->get();
+        foreach($users as $user) {
+            $data['pupils'][] = $user;
+        }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'pupils' => $data['pupils'],
+                ]);
+            }
+        }
+        return view('teacher.list_emails');
+    }
+
+    public function sendEmails(Request $request)
+    {
+        if ($request->ajax()) {
+            foreach ($request->selectedEmails as $email) {
+                Mail::to($email)->send(new SendToPupil(
+                    [
+                        'teacher' => auth()->user()->name,
+                        'message' => $request->message,
+                    ]
+                ));
+            }
+        }
+        return response()->json(['message' => 'email has been send']);
     }
 
     public function paginate($items, $perPage = 5, $page = null, $options = [])
