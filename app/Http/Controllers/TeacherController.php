@@ -189,7 +189,7 @@ class TeacherController extends Controller
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'pupils' => $data['pupils'],
+                    'pupils' => $this->paginate($data['pupils']),
                 ]);
             }
         }
