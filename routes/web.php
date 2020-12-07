@@ -74,14 +74,16 @@ Route::get('/', function () {
         'prefix' => 'teacher',
         'middleware' => 'auth',
     ], function () {
-         Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
-         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
-         Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
-         Route::post('send-message', [TeacherController::class, 'sendMessage']);
-         Route::get('my-messages', [TeacherController::class, 'myMessages']);
-         Route::put('update-message/{id}', [TeacherController::class, 'updateMessage'])->where('id', '[0-9]+');
-         Route::post('delete-messages', [TeacherController::class, 'deleteMessages']);
-         Route::get('single-message/{id}', [TeacherController::class, 'singleMessage'])->where('id', '[0-9]+');
+        Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
+        Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
+        Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
+        Route::post('send-message', [TeacherController::class, 'sendMessage']);
+        Route::get('my-messages', [TeacherController::class, 'myMessages']);
+        Route::put('update-message/{id}', [TeacherController::class, 'updateMessage'])->where('id', '[0-9]+');
+        Route::post('delete-messages', [TeacherController::class, 'deleteMessages']);
+        Route::get('single-message/{id}', [TeacherController::class, 'singleMessage'])->where('id', '[0-9]+');
+        Route::get('list-emails', [TeacherController::class, 'listEmails']);
+        Route::post('send-emails', [TeacherController::class, 'sendEmails']);
     });
 
 /*********************************************************************************************************************/
