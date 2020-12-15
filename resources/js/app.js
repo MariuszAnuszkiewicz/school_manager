@@ -39,6 +39,10 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('single-message', require('./components/teacher/messages/SingleMessage.vue').default);
    Vue.component('list-emails', require('./components/teacher/emails/ListEmails.vue').default);
    Vue.component('send-emails', require('./components/teacher/modals/SendEmail.vue').default);
+   Vue.component('assign-rating', require('./components/teacher/pupils/ratings/AssignRating.vue').default);
+   Vue.component('save-rating', require('./components/teacher/modals/SaveRating.vue').default);
+   Vue.component('edit-rating', require('./components/teacher/modals/EditRating.vue').default);
+   Vue.component('delete-rating', require('./components/teacher/modals/DeleteRating.vue').default);
 
 
 /*********************************************************************************************************************/
