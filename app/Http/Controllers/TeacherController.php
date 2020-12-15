@@ -6,12 +6,14 @@ use App\Mail\SendToPupil;
 use App\Models\ClassInSchool;
 use App\Models\Pupil;
 use App\Models\Message;
+use App\Models\Rating;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
@@ -211,11 +213,92 @@ class TeacherController extends Controller
         return response()->json(['message' => 'email has been send']);
     }
 
+    public function assignRating(Request $request)
+    {
+        $teacher = auth()->user()->teacher;
+        $pupils = isset($teacher->pupils) ? $teacher->pupils : null;
+        $data = [];
+        foreach($pupils as $pupil) {
+            $data['users'][] = $pupil->user;
+            $data['pupils'][] = $pupil;
+        }
+        $data['subjects'] = $teacher->subjects;
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'users' => $this->paginate($data['users'], 7),
+                    'pupils' => $this->paginate($data['pupils'], 7),
+                    'subjects' => $data['subjects'],
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any ratings for pupils"]);
+            }
+        }
+        return view('teacher.assign_rating');
+    }
+
+    public function getRatingsByPupilId(Request $request, $id)
+    {
+        $pupils = Pupil::find($id);
+        $data = [];
+        foreach ($pupils->ratings as $rating) {
+            $data['ratings'][] = $rating->rating;
+            $data['create'][] = $rating->pivot->created_at;
+        }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'ratings' => $data['ratings'],
+                    'create' => $data['create'],
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any ratings for pupils"]);
+            }
+        }
+    }
+
+    public function saveRating(Request $request)
+    {
+        $pupilId = User::find($request->userId)->pupil->id;
+        if ($request->ajax()) {
+            Pupil::find($pupilId)->ratings()->attach(['rating_id' => $request->rating]);
+            Pupil::find($pupilId)->semesters()->attach(['semester_id' => $request->semester]);
+            Pupil::find($pupilId)->subjects()->attach(['subject_id' => $request->subject]);
+        }
+        return response()->json(['message' => 'rating has been assign']);
+    }
+
+    public function updateRating(Request $request)
+    {
+        if ($request->ajax()) {
+            DB::table('pupil_rating')->where([
+                ['pupil_id', '=', User::find($request->userId)->pupil->id],
+                ['rating_id', '=', $request->dataRating],
+                ['created_at', '=', $request->dataCreate],
+            ])->update(['rating_id' => $request->rating]);
+        }
+        return response()->json(['message' => 'rating has been updated']);
+    }
+
+    public function deleteRating(Request $request)
+    {
+        list($rating) = $request->rating;
+        list($ratingArg, $createAtArg) = explode("|", $rating);
+        if ($request->ajax()) {
+             Pupil::find(User::find($request->userId)->pupil->id)->ratings()
+                 ->wherePivot('created_at', '=', $createAtArg)->detach($ratingArg);
+        }
+        return response()->json(['message' => 'rating has been deleted']);
+    }
+
     public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ? : 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
-
 }
