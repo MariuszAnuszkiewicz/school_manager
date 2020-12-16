@@ -3248,8 +3248,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['subjects', 'userId', 'ratings', 'create', 'errors'],
+  props: ['subjects', 'userId', 'ratings', 'createAt', 'errors'],
   data: function data() {
     return {
       semesters: {},
@@ -3291,14 +3293,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    ratingDelete: function ratingDelete() {
+    deletePupilRating: function deletePupilRating() {
       var _this = this;
 
       if (this.selected.length > 0) {
-        axios.post('delete-rating', {
+        axios.post('delete-pupil-rating', {
           userId: this.userId,
-          rating: this.selected,
-          subject: this.subjects
+          rating: this.selected
         }).then(function (response) {
           _this.flashText = response.data.message;
           _this.confirm = true;
@@ -3306,6 +3307,26 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response.data);
         });
       }
+    },
+    deleteRatingSubject: function deleteRatingSubject() {
+      var _this2 = this;
+
+      if (this.selected.length > 0) {
+        axios.post('delete-rating-subject', {
+          userId: this.userId,
+          rating: this.selected,
+          subject: this.subjects[0].id
+        }).then(function (response) {
+          _this2.flashText = response.data.message;
+          _this2.confirm = true;
+        })["catch"](function (error) {
+          console.log(error.response.data);
+        });
+      }
+    },
+    deleteMultipleTables: function deleteMultipleTables() {
+      this.deletePupilRating();
+      this.deleteRatingSubject();
     }
   },
   filters: {
@@ -3328,7 +3349,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.ratingDelete();
+    this.deleteRatingSubject();
   }
 });
 
@@ -3527,8 +3548,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['subjects', 'userId', 'ratings', 'create', 'errors'],
+  props: ['subjects', 'userId', 'ratings', 'createAt', 'errors'],
   data: function data() {
     return {
       confirm: false,
@@ -3571,7 +3597,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    ratingUpdate: function ratingUpdate() {
+    pupilRatingUpdate: function pupilRatingUpdate() {
       var _this = this;
 
       var form = this.$refs.ratingForm;
@@ -3580,17 +3606,38 @@ __webpack_require__.r(__webpack_exports__);
       formData.append('dataCreate', this.dataCreate);
       formData.append('rating', this.editRating);
       formData.append('userId', this.userId);
-      axios.post('update-rating', formData).then(function (response) {
+      axios.post('update-pupil-rating', formData).then(function (response) {
         _this.flashText = response.data.message;
         _this.confirm = true;
       })["catch"](function (error) {
         console.log(error.response.data);
       });
     },
+    ratingSubjectUpdate: function ratingSubjectUpdate() {
+      var _this2 = this;
+
+      var form = this.$refs.ratingForm;
+      var formData = new FormData(form);
+      formData.append('dataRating', this.dataRating);
+      formData.append('dataCreate', this.dataCreate);
+      formData.append('rating', this.editRating);
+      formData.append('subject', this.subjects[0].id);
+      axios.post('update-rating-subject', formData).then(function (response) {
+        _this2.flashText = response.data.message;
+        _this2.confirm = true;
+      })["catch"](function (error) {
+        console.log(error.response.data);
+      });
+    },
+    updateMultipleTables: function updateMultipleTables() {
+      this.pupilRatingUpdate();
+      this.ratingSubjectUpdate();
+    },
     onRatingOptions: function onRatingOptions(event, index) {
       this.onOptions = true;
       this.dataRating = event.target.getAttribute('data-rating');
       this.dataCreate = event.target.getAttribute('data-create').split(',')[index];
+      this.editRating = this.dataRating;
       this.dataIndex = index;
     }
   },
@@ -3710,15 +3757,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    ratingSave: function ratingSave() {
+    savePupilRating: function savePupilRating() {
       var _this = this;
 
       if (this.rating.length > 0) {
-        axios.post('save-rating', {
+        axios.post('save-pupil-rating', {
           userId: this.userId,
-          rating: this.rating,
-          semester: this.semester,
-          subject: this.subjects[0].id
+          rating: this.rating
         }).then(function (response) {
           _this.flashText = response.data.message;
           _this.confirm = true;
@@ -3726,10 +3771,27 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response.data);
         });
       }
+    },
+    saveSubjectRating: function saveSubjectRating() {
+      var _this2 = this;
+
+      if (this.rating.length > 0) {
+        axios.post('save-rating-subject', {
+          userId: this.userId,
+          rating: this.rating,
+          subject: this.subjects[0].id
+        }).then(function (response) {
+          _this2.flashText = response.data.message;
+          _this2.confirm = true;
+        })["catch"](function (error) {
+          console.log(error.response.data);
+        });
+      }
+    },
+    saveMultipleTables: function saveMultipleTables() {
+      this.savePupilRating();
+      this.saveSubjectRating();
     }
-  },
-  mounted: function mounted() {
-    this.ratingSave();
   }
 });
 
@@ -4345,6 +4407,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4353,7 +4433,7 @@ __webpack_require__.r(__webpack_exports__);
       subjects: {},
       semesters: {},
       ratings: {},
-      create: {},
+      createAt: {},
       errors: [],
       showModal: {
         save: false,
@@ -4367,8 +4447,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getUsers: function getUsers(page) {
+    getUsers: function getUsers() {
       var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
       if (typeof page === 'undefined') {
         page = 1;
@@ -4385,7 +4467,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('pupil-rating/' + pupilId).then(function (response) {
         _this2.ratings = response.data.ratings;
-        _this2.create = response.data.create;
+        _this2.createAt = response.data.createAt;
 
         if (response.data.message != 'undefined') {
           _this2.errors.push(response.data.message);
@@ -4415,7 +4497,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    console.log(this.showModal["delete"]);
     this.getUsers();
   }
 });
@@ -44399,11 +44480,11 @@ var render = function() {
                                   staticClass: "rating-select ml-2 mt-2",
                                   attrs: { type: "checkbox" },
                                   domProps: {
-                                    value: rating + "|" + _vm.create[index],
+                                    value: rating + "|" + _vm.createAt[index],
                                     checked: Array.isArray(_vm.selected)
                                       ? _vm._i(
                                           _vm.selected,
-                                          rating + "|" + _vm.create[index]
+                                          rating + "|" + _vm.createAt[index]
                                         ) > -1
                                       : _vm.selected
                                   },
@@ -44414,7 +44495,7 @@ var render = function() {
                                         $$c = $$el.checked ? true : false
                                       if (Array.isArray($$a)) {
                                         var $$v =
-                                            rating + "|" + _vm.create[index],
+                                            rating + "|" + _vm.createAt[index],
                                           $$i = _vm._i($$a, $$v)
                                         if ($$el.checked) {
                                           $$i < 0 &&
@@ -44456,8 +44537,8 @@ var render = function() {
                                       "\n                                                " +
                                         _vm._s(
                                           _vm._f("formatDate")(
-                                            _vm.create[index],
-                                            _vm.create[index]
+                                            _vm.createAt[index],
+                                            _vm.createAt[index]
                                           )
                                         ) +
                                         "\n                                            "
@@ -44484,8 +44565,7 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            _vm._s(error) +
-                              "\n                                                                   "
+                            _vm._s(error) + "\n                            "
                           )
                         ]
                       )
@@ -44510,7 +44590,7 @@ var render = function() {
                   on: {
                     "~click": function($event) {
                       $event.preventDefault()
-                      return _vm.ratingDelete()
+                      return _vm.deleteMultipleTables()
                     }
                   }
                 },
@@ -44725,13 +44805,7 @@ var render = function() {
             {
               ref: "ratingForm",
               staticClass: "form-horizontal",
-              attrs: { method: "POST" },
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.ratingUpdate()
-                }
-              }
+              attrs: { method: "POST" }
             },
             [
               _c("div", { staticClass: "modal-header" }, [_vm._t("header")], 2),
@@ -44843,7 +44917,7 @@ var render = function() {
                                                     "p-rating text-left pt-2 pl-3",
                                                   attrs: {
                                                     "data-rating": rating,
-                                                    "data-create": _vm.create
+                                                    "data-create": _vm.createAt
                                                   }
                                                 },
                                                 [
@@ -44949,6 +45023,31 @@ var render = function() {
                                   ),
                                   _vm._v(" "),
                                   _c("td", [
+                                    _vm.onOptions === true &&
+                                    _vm.dataIndex === index
+                                      ? _c("div", [
+                                          _c(
+                                            "p",
+                                            {
+                                              staticClass:
+                                                "text-center pt-2 pl-3"
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                                        " +
+                                                  _vm._s(
+                                                    _vm._f("formatDate")(
+                                                      _vm.createAt[index],
+                                                      _vm.createAt[index]
+                                                    )
+                                                  ) +
+                                                  "\n                                                    "
+                                              )
+                                            ]
+                                          )
+                                        ])
+                                      : _vm._e(),
+                                    _vm._v(" "),
                                     _vm.onOptions === false
                                       ? _c("div", [
                                           _c(
@@ -44962,8 +45061,8 @@ var render = function() {
                                                 "\n                                                        " +
                                                   _vm._s(
                                                     _vm._f("formatDate")(
-                                                      _vm.create[index],
-                                                      _vm.create[index]
+                                                      _vm.createAt[index],
+                                                      _vm.createAt[index]
                                                     )
                                                   ) +
                                                   "\n                                                    "
@@ -45017,7 +45116,7 @@ var render = function() {
                         on: {
                           "~click": function($event) {
                             $event.preventDefault()
-                            return _vm.ratingUpdate()
+                            return _vm.updateMultipleTables()
                           }
                         }
                       },
@@ -45293,7 +45392,7 @@ var render = function() {
                   on: {
                     "~click": function($event) {
                       $event.preventDefault()
-                      return _vm.ratingSave()
+                      return _vm.saveMultipleTables()
                     }
                   }
                 },
@@ -46250,7 +46349,7 @@ var render = function() {
               attrs: {
                 userId: _vm.user.id,
                 ratings: _vm.ratings,
-                create: _vm.create,
+                createAt: _vm.createAt,
                 subjects: _vm.subjects,
                 errors: _vm.errors
               }
@@ -46288,7 +46387,7 @@ var render = function() {
               attrs: {
                 userId: _vm.user.id,
                 ratings: _vm.ratings,
-                create: _vm.create,
+                createAt: _vm.createAt,
                 subjects: _vm.subjects,
                 errors: _vm.errors
               }

@@ -3,7 +3,7 @@
         <div class="editRating">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form @submit.prevent="ratingUpdate()" method="POST" ref="ratingForm" class="form-horizontal">
+                    <form method="POST" ref="ratingForm" class="form-horizontal">
                         <div class="modal-header">
                             <slot name="header"></slot>
                         </div>
@@ -38,7 +38,7 @@
                                                         <strong>
                                                             <p class="p-rating text-left pt-2 pl-3"
                                                                :data-rating="rating"
-                                                               :data-create="create">{{ rating }}
+                                                               :data-create="createAt">{{ rating }}
                                                             </p>
                                                         </strong>
                                                     </div>
@@ -56,9 +56,14 @@
                                                     </div>
                                                 </td>
                                                 <td>
+                                                    <div v-if="onOptions === true && dataIndex === index">
+                                                        <p class="text-center pt-2 pl-3">
+                                                            {{ createAt[index] | formatDate(createAt[index]) }}
+                                                        </p>
+                                                    </div>
                                                     <div v-if="onOptions === false">
                                                         <p class="text-center pt-2 pl-3">
-                                                            {{ create[index] | formatDate(create[index]) }}
+                                                            {{ createAt[index] | formatDate(createAt[index]) }}
                                                         </p>
                                                     </div>
                                                 </td>
@@ -74,7 +79,7 @@
                             </div>
                             <div class="modal-footer">
                                 <slot name="footer"></slot>
-                                <button type="button" id="update-rating" class="btn btn-primary" @click.once.prevent="ratingUpdate()">
+                                <button type="button" id="update-rating" class="btn btn-primary" @click.once.prevent="updateMultipleTables()">
                                     Update Rating
                                 </button>
                             </div>
@@ -93,7 +98,7 @@
 
 <script>
 export default {
-    props: ['subjects', 'userId', 'ratings', 'create', 'errors'],
+    props: ['subjects', 'userId', 'ratings', 'createAt', 'errors'],
     data() {
         return {
             confirm: false,
@@ -136,24 +141,43 @@ export default {
         }
     },
     methods: {
-        ratingUpdate() {
+        pupilRatingUpdate() {
             var form = this.$refs.ratingForm;
             let formData = new FormData(form);
             formData.append('dataRating', this.dataRating);
             formData.append('dataCreate', this.dataCreate);
             formData.append('rating', this.editRating);
             formData.append('userId', this.userId);
-            axios.post('update-rating', formData).then(response => {
+            axios.post('update-pupil-rating', formData).then(response => {
                 this.flashText = response.data.message;
                 this.confirm = true;
             }).catch(function (error) {
                 console.log(error.response.data)
             });
         },
+        ratingSubjectUpdate() {
+            var form = this.$refs.ratingForm;
+            let formData = new FormData(form);
+            formData.append('dataRating', this.dataRating);
+            formData.append('dataCreate', this.dataCreate);
+            formData.append('rating', this.editRating);
+            formData.append('subject', this.subjects[0].id);
+            axios.post('update-rating-subject', formData).then(response => {
+                this.flashText = response.data.message;
+                this.confirm = true;
+            }).catch(function (error) {
+                console.log(error.response.data)
+            });
+        },
+        updateMultipleTables() {
+            this.pupilRatingUpdate();
+            this.ratingSubjectUpdate();
+        },
         onRatingOptions(event, index) {
             this.onOptions = true;
             this.dataRating = event.target.getAttribute('data-rating');
             this.dataCreate = event.target.getAttribute('data-create').split(',')[index];
+            this.editRating = this.dataRating;
             this.dataIndex = index;
         }
     },
