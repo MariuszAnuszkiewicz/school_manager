@@ -36,31 +36,33 @@
                                             <td class="text-danger">
                                                 <input type="checkbox" class="rating-select ml-2 mt-2"
                                                        v-model="selected"
-                                                       :value="rating + '|' + create[index]"
-                                                       >
+                                                       :value="rating + '|' + createAt[index]">
                                             </td>
                                             <td>
-                                                <strong class="text-danger"><p class="p-rating text-left pt-2 pl-3" :data-rating="rating">{{ rating }}</p></strong>
+                                                <strong class="text-danger">
+                                                    <p class="p-rating text-left pt-2 pl-3" :data-rating="rating">{{ rating }}</p>
+                                                </strong>
                                             </td>
                                             <td>
                                                 <p class="text-center pt-2 pl-3">
-                                                    {{ create[index] | formatDate(create[index]) }}
+                                                    {{ createAt[index] | formatDate(createAt[index]) }}
                                                 </p>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div v-else-if="this.ratings === undefined"><p class="text-center pt-1"
-                                                                           :style="flashStyleWarning.show"
-                                                                           v-for="error in errors">{{ error }}
-                                                                       </p>
+                            <div v-else-if="this.ratings === undefined">
+                                <p class="text-center pt-1"
+                                   :style="flashStyleWarning.show"
+                                   v-for="error in errors">{{ error }}
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <slot name="footer"></slot>
-                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="ratingDelete()">
+                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="deleteMultipleTables()">
                             Delete Rating
                         </button>
                     </div>
@@ -77,7 +79,7 @@
 
 <script>
 export default {
-    props: ['subjects', 'userId', 'ratings', 'create', 'errors'],
+    props: ['subjects', 'userId', 'ratings', 'createAt', 'errors'],
     data() {
         return {
             semesters: {},
@@ -119,13 +121,12 @@ export default {
         }
     },
     methods: {
-        ratingDelete() {
+        deletePupilRating() {
             if (this.selected.length > 0) {
-                axios.post('delete-rating',
+                axios.post('delete-pupil-rating',
                     {
                         userId: this.userId,
                         rating: this.selected,
-                        subject: this.subjects,
                     }
                 ).then(response => {
                     this.flashText = response.data.message;
@@ -135,6 +136,26 @@ export default {
                 });
             }
         },
+        deleteRatingSubject() {
+            if (this.selected.length > 0) {
+                axios.post('delete-rating-subject',
+                    {
+                        userId: this.userId,
+                        rating: this.selected,
+                        subject: this.subjects[0].id,
+                    }
+                ).then(response => {
+                    this.flashText = response.data.message;
+                    this.confirm = true;
+                }).catch(function (error) {
+                    console.log(error.response.data)
+                });
+            }
+        },
+        deleteMultipleTables(){
+            this.deletePupilRating();
+            this.deleteRatingSubject();
+        }
     },
     filters: {
         formatDate(value) {
@@ -161,7 +182,7 @@ export default {
         }
     },
     mounted() {
-        this.ratingDelete();
+        this.deleteRatingSubject();
     },
 }
 </script>

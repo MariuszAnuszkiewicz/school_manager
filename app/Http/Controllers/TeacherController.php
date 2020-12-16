@@ -7,6 +7,7 @@ use App\Models\ClassInSchool;
 use App\Models\Pupil;
 use App\Models\Message;
 use App\Models\Rating;
+use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -245,13 +246,13 @@ class TeacherController extends Controller
         $data = [];
         foreach ($pupils->ratings as $rating) {
             $data['ratings'][] = $rating->rating;
-            $data['create'][] = $rating->pivot->created_at;
+            $data['createAt'][] = $rating->pivot->created_at;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
                     'ratings' => $data['ratings'],
-                    'create' => $data['create'],
+                    'createAt' => $data['createAt'],
                 ]);
             }
         } else {
@@ -261,18 +262,23 @@ class TeacherController extends Controller
         }
     }
 
-    public function saveRating(Request $request)
+    public function savePupilRating(Request $request)
     {
         $pupilId = User::find($request->userId)->pupil->id;
         if ($request->ajax()) {
             Pupil::find($pupilId)->ratings()->attach(['rating_id' => $request->rating]);
-            Pupil::find($pupilId)->semesters()->attach(['semester_id' => $request->semester]);
-            Pupil::find($pupilId)->subjects()->attach(['subject_id' => $request->subject]);
         }
         return response()->json(['message' => 'rating has been assign']);
     }
 
-    public function updateRating(Request $request)
+    public function saveRatingSubject(Request $request)
+    {
+        if ($request->ajax()) {
+            Subject::find($request->subject)->ratings()->attach(['rating_id' => $request->rating]);
+        }
+    }
+
+    public function updatePupilRating(Request $request)
     {
         if ($request->ajax()) {
             DB::table('pupil_rating')->where([
@@ -284,13 +290,36 @@ class TeacherController extends Controller
         return response()->json(['message' => 'rating has been updated']);
     }
 
-    public function deleteRating(Request $request)
+    public function updateRatingSubject(Request $request)
+    {
+        if ($request->ajax()) {
+            DB::table('rating_subject')->where([
+                ['rating_id', '=', $request->dataRating],
+                ['subject_id', '=', (int) $request->subject],
+                ['created_at', '=', $request->dataCreate],
+            ])->update(['rating_id' => $request->rating]);
+        }
+        return response()->json(['message' => 'rating has been updated']);
+    }
+
+    public function deletePupilRating(Request $request)
     {
         list($rating) = $request->rating;
         list($ratingArg, $createAtArg) = explode("|", $rating);
         if ($request->ajax()) {
              Pupil::find(User::find($request->userId)->pupil->id)->ratings()
                  ->wherePivot('created_at', '=', $createAtArg)->detach($ratingArg);
+        }
+        return response()->json(['message' => 'rating has been deleted']);
+    }
+
+    public function deleteRatingSubject(Request $request)
+    {
+        list($rating) = $request->rating;
+        list($ratingArg, $createAtArg) = explode("|", $rating);
+        if ($request->ajax()) {
+            Subject::find($request->subject)->ratings()
+                ->wherePivot('created_at', '=', $createAtArg)->detach($ratingArg);
         }
         return response()->json(['message' => 'rating has been deleted']);
     }
