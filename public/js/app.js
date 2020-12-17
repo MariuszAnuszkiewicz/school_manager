@@ -9345,7 +9345,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.table[data-v-735a0bd8] {\n   display: block;\n}\n.table > tr[data-v-735a0bd8] {\n   width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: left;\n   border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: right;\n   border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n   color: #8f8f8f;\n}\n.pag-container[data-v-735a0bd8] {\n   display: block;\n}\n.flash-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n   position: relative;\n   top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n   display: none;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.table[data-v-735a0bd8] {\n   display: block;\n}\n.table > tr[data-v-735a0bd8] {\n   width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: left;\n   border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: right;\n   border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n   color: #8f8f8f;\n}\n.pag-container[data-v-735a0bd8] {\n   display: block;\n}\n.flash-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n   position: relative;\n   top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n   display: none;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -43311,12 +43311,12 @@ var render = function() {
           0
         ),
         _vm._v(" "),
-        _vm.errors
+        _vm.errors[0] === undefined
           ? _c(
               "div",
               {
                 staticClass: "col-md-12 mt-2 mb-4",
-                style: { display: "none" }
+                style: { display: "block" }
               },
               [
                 _c("h5", { staticClass: "text-center" }, [
@@ -43378,7 +43378,7 @@ var render = function() {
                               staticClass: "text-center text-danger yellow-td",
                               attrs: { width: "45%" }
                             },
-                            [_vm._v(_vm._s(_vm.subjects.name))]
+                            [_vm._v(_vm._s(_vm.subjects[0].name))]
                           ),
                           _vm._v(" "),
                           _c(

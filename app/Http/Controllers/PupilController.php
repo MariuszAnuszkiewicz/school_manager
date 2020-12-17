@@ -30,20 +30,14 @@ class PupilController extends Controller
     {
         $authUser = auth()->user();
         if ((int) $id === $authUser->pupil->subjects[0]->id) {
-            foreach (Pupil::find($authUser->pupil->id)->semesters as $semester) {
-                $data['semester'][] = $semester;
-            }
-            foreach ($authUser->pupil->subjects as $subject) {
-                $data['subjects'] = $subject;
-            }
-            foreach ($authUser->pupil->teachers as $teacher) {
-                $data['teacher'][] = $teacher->user->name;
-            }
             foreach ($authUser->pupil->ratings as $key => $rating) {
                 $data['class_name'] = ClassInSchool::find($rating->pivot->pivotParent->class_in_school_id)->name;
-                $data['ratings'][] = $rating;
                 $data['date'][] = $rating->pivot->created_at->format('Y-m-d H:i');
-                $avgArr[] = (int)$data['ratings'][$key]->rating;
+                $data['ratings'][] = $rating;
+                $data['semester'] = $rating->pivot->pivotParent->semesters;
+                $data['subjects'] = $rating->pivot->pivotParent->subjects;
+                $data['teacher'] = $rating->pivot->pivotParent->teachers[0]->user->name;
+                $avgArr[] = (int) $data['ratings'][$key]->rating;
             }
         } else {
             $data = [];
@@ -51,13 +45,14 @@ class PupilController extends Controller
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'semesters' => $data['semester'],
-                    'class_name' => $data['class_name'],
-                    'teacher' => $data['teacher'],
                     'avg' => number_format(array_sum($avgArr) / count($data['ratings']), 2),
-                    'subjects' => $data['subjects'],
-                    'my_grades' => $this->paginate($data['ratings']),
+                    'class_name' => $data['class_name'],
                     'date' => $data['date'],
+                    'my_grades' => $this->paginate($data['ratings']),
+                    'semesters' => $data['semester'],
+                    'subjects' => $data['subjects'],
+                    'teacher' => $data['teacher'],
+                    'subjects' => $data['subjects'],
                 ]);
             }
         } else {

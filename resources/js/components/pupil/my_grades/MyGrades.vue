@@ -7,7 +7,7 @@
                    <p class="text-center">{{ error }}</p>
                </div>
            </div>
-           <div v-if="errors" :style="{ display: 'none' }" class="col-md-12 mt-2 mb-4">
+           <div v-if="errors[0] === undefined" :style="{ display: 'block' }" class="col-md-12 mt-2 mb-4">
                <h5 class="text-center">
                    <strong>Class Name:
                        <p class="d-inline text-danger">{{ class_name }}</p>
@@ -32,7 +32,7 @@
                    </thead>
                    <tbody>
                        <tr v-for="(my_grade, index) in my_grades.data" :key="my_grade.id">
-                          <td class="text-center text-danger yellow-td" width="45%">{{ subjects.name }}</td>
+                          <td class="text-center text-danger yellow-td" width="45%">{{ subjects[0].name }}</td>
                           <td class="text-center green-td" width="14%">{{ my_grade.rating }}</td>
                           <td class="text-center blue-td" width="14%">{{ avg }}</td>
                           <td class="text-center" width="27%">{{ date[index] }}</td>
