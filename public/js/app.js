@@ -43488,7 +43488,7 @@ var render = function() {
                             "td",
                             {
                               staticClass: "text-center green-td",
-                              attrs: { width: "15%" }
+                              attrs: { width: "14%" }
                             },
                             [_vm._v(_vm._s(my_grade.rating))]
                           ),
@@ -43497,7 +43497,7 @@ var render = function() {
                             "td",
                             {
                               staticClass: "text-center blue-td",
-                              attrs: { width: "15%" }
+                              attrs: { width: "14%" }
                             },
                             [_vm._v(_vm._s(_vm.avg))]
                           ),
@@ -43506,7 +43506,7 @@ var render = function() {
                             "td",
                             {
                               staticClass: "text-center",
-                              attrs: { width: "25%" }
+                              attrs: { width: "27%" }
                             },
                             [_vm._v(_vm._s(_vm.date[index]))]
                           )
