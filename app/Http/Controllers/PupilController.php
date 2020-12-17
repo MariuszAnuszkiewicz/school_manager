@@ -52,7 +52,6 @@ class PupilController extends Controller
                     'semesters' => $data['semester'],
                     'subjects' => $data['subjects'],
                     'teacher' => $data['teacher'],
-                    'subjects' => $data['subjects'],
                 ]);
             }
         } else {
