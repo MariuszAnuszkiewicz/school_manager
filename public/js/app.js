@@ -2553,6 +2553,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2585,8 +2586,6 @@ __webpack_require__.r(__webpack_exports__);
     getMyGrades: function getMyGrades(page) {
       var _this = this;
 
-      var self = this;
-
       if (typeof page === 'undefined') {
         page = 1;
       }
@@ -2600,10 +2599,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.subjects = response.data.subjects;
         _this.my_grades = response.data.my_grades;
         _this.date = response.data.date;
-        self.errors.push(response.data.message);
 
-        for (var i = 0; i < self.errors.length; i++) {
-          if (self.errors[i] !== undefined) {
+        _this.errors.push(response.data.message);
+
+        for (var i = 0; i < _this.errors.length; i++) {
+          if (_this.errors[i] !== undefined) {
             _this.switchFlashStyle = _this.flashStyle.show;
           } else {
             _this.switchFlashStyle = _this.flashStyle;
@@ -9345,7 +9345,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.table[data-v-735a0bd8] {\n    display: none;\n}\n.table > tr[data-v-735a0bd8] {\n    width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: left;\n   border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: right;\n   border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n   color: #8f8f8f;\n}\n.pag-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n   position: relative;\n   top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n   display: none;\n}\n.error-explode p[data-v-735a0bd8] {\n   padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.table[data-v-735a0bd8] {\n   display: block;\n}\n.table > tr[data-v-735a0bd8] {\n   width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: left;\n   border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: right;\n   border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n   color: #8f8f8f;\n}\n.pag-container[data-v-735a0bd8] {\n   display: block;\n}\n.flash-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n   position: relative;\n   top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n   display: none;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -43292,45 +43292,44 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.errors[0] === undefined
+      ? _c("div", { staticClass: "card-body" }, [_vm._m(0)])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "div",
-      { staticClass: "row justify-content-center" },
+      { staticClass: "row justify-content-center mt-4" },
       [
-        _c("div", { staticClass: "col-md-12 mt-2 mb-4" }, [
-          _vm.errors
-            ? _c(
-                "h5",
-                { staticClass: "text-center", style: { display: "none" } },
-                [
-                  _c("strong", [
-                    _vm._v("Class Name:\n               "),
-                    _c("p", { staticClass: "d-inline text-danger" }, [
-                      _vm._v(_vm._s(_vm.class_name))
-                    ])
-                  ])
-                ]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.errors
-            ? _c(
-                "div",
-                { staticClass: "card-body", style: { display: "none" } },
-                [_vm._m(0)]
-              )
-            : _vm._e()
-        ]),
-        _vm._v(" "),
         _c(
           "div",
           { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
           _vm._l(_vm.errors, function(error) {
             return _c("div", { staticClass: "error-explode" }, [
-              _c("p", [_vm._v(_vm._s(error))])
+              _c("p", { staticClass: "text-center" }, [_vm._v(_vm._s(error))])
             ])
           }),
           0
         ),
+        _vm._v(" "),
+        _vm.errors
+          ? _c(
+              "div",
+              {
+                staticClass: "col-md-12 mt-2 mb-4",
+                style: { display: "none" }
+              },
+              [
+                _c("h5", { staticClass: "text-center" }, [
+                  _c("strong", [
+                    _vm._v("Class Name:\n                    "),
+                    _c("p", { staticClass: "d-inline text-danger" }, [
+                      _vm._v(_vm._s(_vm.class_name))
+                    ])
+                  ])
+                ])
+              ]
+            )
+          : _vm._e(),
         _vm._v(" "),
         _vm._l(_vm.semesters, function(semester) {
           return _c("div", { staticClass: "sem-1 bg-light" }, [
@@ -43379,7 +43378,7 @@ var render = function() {
                               staticClass: "text-center text-danger yellow-td",
                               attrs: { width: "45%" }
                             },
-                            [_vm._v(_vm._s(_vm.subjects))]
+                            [_vm._v(_vm._s(_vm.subjects.name))]
                           ),
                           _vm._v(" "),
                           _c(
@@ -43388,7 +43387,7 @@ var render = function() {
                               staticClass: "text-center green-td",
                               attrs: { width: "14%" }
                             },
-                            [_vm._v(_vm._s(my_grade))]
+                            [_vm._v(_vm._s(my_grade.rating))]
                           ),
                           _vm._v(" "),
                           _c(
@@ -43482,7 +43481,7 @@ var render = function() {
                               staticClass: "text-center text-danger yellow-td",
                               attrs: { width: "45%" }
                             },
-                            [_vm._v(_vm._s(_vm.subjects))]
+                            [_vm._v(_vm._s(_vm.subjects.name))]
                           ),
                           _vm._v(" "),
                           _c(
