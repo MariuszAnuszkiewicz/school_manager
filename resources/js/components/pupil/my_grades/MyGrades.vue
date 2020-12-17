@@ -63,9 +63,9 @@
                    <tbody>
                    <tr v-for="(my_grade, index) in my_grades.data" :key="my_grade.id">
                        <td class="text-center text-danger yellow-td" width="45%">{{ subjects.name }}</td>
-                       <td class="text-center green-td" width="15%">{{ my_grade.rating }}</td>
-                       <td class="text-center blue-td" width="15%">{{ avg }}</td>
-                       <td class="text-center" width="25%">{{ date[index] }}</td>
+                       <td class="text-center green-td" width="14%">{{ my_grade.rating }}</td>
+                       <td class="text-center blue-td" width="14%">{{ avg }}</td>
+                       <td class="text-center" width="27%">{{ date[index] }}</td>
                    </tr>
                    </tbody>
                </table>
@@ -158,7 +158,7 @@ export default {
       background-color:rgba(60, 179, 78, 0.5);
    }
    .blue-tr {
-       background-color:rgba(175, 225, 240, 0.7);
+      background-color:rgba(175, 225, 240, 0.7);
    }
    .blue-td {
       background-color:rgba(175, 225, 240, 0.5);
