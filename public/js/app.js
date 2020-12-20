@@ -44415,7 +44415,22 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "text-center pt-2" }, [
-                            _vm._m(3, true),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: { id: "edit-message" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openModal(
+                                      my_message.message,
+                                      my_message.id
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-edit" })]
+                            ),
                             _vm._v(" "),
                             _c(
                               "a",
@@ -44424,7 +44439,7 @@ var render = function() {
                                   href: "single-message/" + my_message.id
                                 }
                               },
-                              [_vm._m(4, true)]
+                              [_vm._m(3, true)]
                             )
                           ])
                         ])
@@ -44522,19 +44537,6 @@ var staticRenderFns = [
     return _c("label", { staticClass: "check-all-label" }, [
       _c("strong", [_vm._v("Select All")])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-success",
-        attrs: { id: "edit-message", "pt-3": "" }
-      },
-      [_c("i", { staticClass: "fas fa-edit" })]
-    )
   },
   function() {
     var _vm = this

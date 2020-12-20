@@ -43,7 +43,7 @@
                             <td v-else class="text-center pt-3">{{ my_message.message }}</td>
                             <td class="text-center pt-3">{{ my_message.created_at | formatDate(my_message.created_at) }}</td>
                             <td class="text-center pt-2">
-                               <button id="edit-message" class="btn btn-success"  pt-3>
+                               <button id="edit-message" class="btn btn-success" @click="openModal(my_message.message, my_message.id)">
                                   <i class="fas fa-edit"></i>
                                </button>
                                <a v-bind:href="'single-message/' + my_message.id">
