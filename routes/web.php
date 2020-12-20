@@ -92,6 +92,9 @@ Route::get('/', function () {
         Route::post('update-rating-subject', [TeacherController::class, 'updateRatingSubject']);
         Route::post('delete-pupil-rating', [TeacherController::class, 'deletePupilRating']);
         Route::post('delete-rating-subject', [TeacherController::class, 'deleteRatingSubject']);
+        Route::get('list-ratings', [TeacherController::class, 'listRatings']);
+        Route::get('detail-rating/{id}', [TeacherController::class, 'detailRating'])->where('id', '[0-9]+');
+
 
     });
 

@@ -324,6 +324,66 @@ class TeacherController extends Controller
         return response()->json(['message' => 'rating has been deleted']);
     }
 
+    public function listRatings(Request $request)
+    {
+        $authUser = auth()->user();
+        $data = [];
+        $userIds = [];
+        foreach ($authUser->teacher->pupils as $pupil) {
+            $data['users'][] = $pupil->user;
+            $data['subject'] = $pupil->subjects;
+            foreach ($pupil->ratings as $key => $rating) {
+                $userIds[$pupil->user->id][] = $rating->rating;
+            }
+        }
+        $gradeList = [];
+        foreach ($userIds as $key => $ids) {
+            $gradeList[$key] = implode(", ", $ids);
+        }
+        $data['ratings'] = $gradeList;
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'users' => $this->paginate($data['users'], 7),
+                    'ratings' => $data['ratings'],
+                    'subject' => $data['subject'],
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any ratings for pupils"]);
+            }
+        }
+        return view('teacher.list_ratings');
+    }
+
+    public function detailRating(Request $request, $id)
+    {
+        $data = [];
+        $pupil = Pupil::find(User::find($id)->pupil->id);
+        $data['users'][] = User::find($id);
+        $data['ratings'] = $pupil->ratings;
+        $data['subject'] = $pupil->subjects;
+        foreach ($data['ratings'] as $rating) {
+            $data['created_at'][] = isset($rating->pivot->created_at) ? $rating->pivot->created_at : null;
+        }
+        if (!empty($data['ratings'] && !empty($data['created_at']))) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'users' => $data['users'],
+                    'ratings' => $data['ratings'],
+                    'subject' => $data['subject'],
+                    'createdAt' => isset($data['created_at']) ? $data['created_at'] : null,
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any ratings for pupils"]);
+            }
+        }
+        return view('teacher.detail_ratings');
+    }
+
     public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ? : 1);

@@ -43,6 +43,8 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('save-rating', require('./components/teacher/modals/SaveRating.vue').default);
    Vue.component('edit-rating', require('./components/teacher/modals/EditRating.vue').default);
    Vue.component('delete-rating', require('./components/teacher/modals/DeleteRating.vue').default);
+   Vue.component('list-ratings', require('./components/teacher/pupils/ratings/ListRating.vue').default);
+   Vue.component('detail-rating', require('./components/teacher/pupils/ratings/DetailRating.vue').default);
 
 
 /*********************************************************************************************************************/
