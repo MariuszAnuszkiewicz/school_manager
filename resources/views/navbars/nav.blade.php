@@ -1,10 +1,12 @@
 <div class="container">
-    <a class="navbar-brand" href="{{ url('/') }}">
-        @php
-            $subName = explode(',', config('app.name'));
-        @endphp
-        {{ $subName[0] . ' ' . $subName[1] }}
-    </a>
+    @if (Request::segment(1) === 'teacher')
+        <a class="navbar-brand" href="{{ url('/teacher/pupils') }}">
+            @php
+                $subName = explode(',', config('app.name'));
+            @endphp
+            {{ $subName[0] . ' ' . $subName[1] }}
+        </a>
+    @endif
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -12,7 +14,15 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Left Side Of Navbar -->
         <ul class="navbar-nav mr-auto">
-
+            @auth
+                <div id="nav-container">
+                    @if (Request::segment(1) === 'teacher')
+                        <div class="mt-2">
+                            <teacher-navbar></teacher-navbar>
+                        </div>
+                    @endif
+                </div>
+            @endauth
         </ul>
 
         <!-- Right Side Of Navbar -->

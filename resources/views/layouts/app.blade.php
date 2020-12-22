@@ -25,6 +25,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('lib/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('lib/css/navbar.css') }}" rel="stylesheet">
 
 </head>
 <body>
