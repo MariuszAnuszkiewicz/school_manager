@@ -2179,30 +2179,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       events: {},
       teachers: {},
-      switchStyleFlash: '',
+      errors: [],
+      switchFlashStyle: '',
       showHide: '',
-      message: {
-        text: 'There are no any events.'
-      },
-      flashStyle: {
-        'position': 'relative',
-        'top': '100px',
-        'left': '38.7%',
-        'background-color': 'rgba(245, 34, 70, 0.3)',
-        'width': '250px',
-        'height': '35px',
-        'text-align': 'center',
-        'border-radius': '7px',
+      flashStyleWarning: {
+        'display': 'none',
         show: {
           'display': 'block',
           'position': 'relative',
           'top': '100px',
-          'left': '38.7%',
+          'left': '0%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -2213,7 +2206,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getEvents: function getEvents(page) {
+    getSources: function getSources(page) {
       var _this2 = this;
 
       if (typeof page === 'undefined') {
@@ -2224,27 +2217,29 @@ __webpack_require__.r(__webpack_exports__);
         _this2.events = response.data.events;
         _this2.teachers = response.data.teachers;
 
-        _this2.changeStyle();
+        _this2.errors.push(response.data.message);
+
+        for (var i = 0; i < _this2.errors.length; i++) {
+          if (_this2.errors[i] !== undefined) {
+            _this2.showHide = 'none';
+            _this2.switchFlashStyle = _this2.flashStyleWarning.show;
+          } else {
+            _this2.showHide = 'block';
+            _this2.switchFlashStyle = _this2.flashStyleWarning;
+          }
+        }
       });
     },
     deleteEvent: function deleteEvent(event) {
       var _this = this;
 
       axios["delete"]('events/' + event.id).then(function (response) {
-        _this.getEvents();
+        _this.getSources();
       });
-    },
-    changeStyle: function changeStyle() {
-      if (this.events.data.length < 1) {
-        this.showHide = 'none';
-        this.switchStyleFlash = this.flashStyle.show;
-      } else {
-        this.switchStyleFlash = this.flashStyle;
-      }
     }
   },
   mounted: function mounted() {
-    this.getEvents();
+    this.getSources();
   }
 });
 
@@ -9636,7 +9631,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.burger-btn[data-v-3bca38d2] {\n    position: relative;\n    left: 2%;\n    display: block;\n    padding: 10px;\n    font-size: 18px;\n    background-color: #9c9891;\n    border: none;\n    outline: none;\n    cursor: pointer;\n}\n.links-container[data-v-3bca38d2] {\n    position: relative;\n    top: 5px;\n    width: 295px;\n    height: auto;\n    background-color: #343A40;\n    z-index: 99;\n    float: left;\n    padding-bottom: 25px;\n}\n.close-btn[data-v-3bca38d2] {\n    margin: 5px 5px 5px 5px;\n}\nli.nav[data-v-3bca38d2] {\n    font-family: 'Oswald', sans-serif;\n    list-style-type: none;\n    margin: 7px;\n    font-size: 17px;\n}\na[data-v-3bca38d2] {\n    padding: 2px;\n    font-family: 'Oswald', sans-serif;\n}\nli.nav a[data-v-3bca38d2] {\n    display: block;\n    width: 245px;\n    text-align: center;\n    color: #bebebe;\n}\nli.nav a[data-v-3bca38d2]:hover {\n    background-color: #333333;\n    color: #bebebe;\n    text-decoration: none;\n}\n.sub-menu[data-v-3bca38d2] {\n    position: relative;\n    top: 5px;\n    list-style-type: none;\n}\n.dropdown-submenu[data-v-3bca38d2] {\n    list-style-type: none;\n    width: 245px;\n    display: block;\n}\n#navbarDropdownMenuLink[data-v-3bca38d2] {\n    font-family: 'Oswald', sans-serif;\n    color: #bebebe;\n    text-align: center;\n    font-size: 17px;\n    display: inline-block;\n    width: 85%;\n}\n#navbarDropdownMenuLink[data-v-3bca38d2]::after {\n    position: relative;\n    top: 3px;\n    left: -45px;\n}\n.dropdown-menu[data-v-3bca38d2] {\n    position: relative;\n    background-color: #333333;\n    height: auto;\n}\n.dropdown-submenu > .dropdown-menu[data-v-3bca38d2] {\n    top: 0px;\n    left: 100%;\n    margin-top: -6px;\n    margin-left: -1px;\n}\n.dropdown-submenu > .dropdown-menu > li.nav a[data-v-3bca38d2]:hover {\n    background-color: #0C9A9A;\n    color: #bebebe;\n    text-decoration: none;\n}\n.dropdown-submenu:hover > .dropdown-menu[data-v-3bca38d2] {\n    display: block;\n}\n.dropdown-submenu > a[data-v-3bca38d2]:after {\n    display: block;\n    content: \" \";\n    float: right;\n    width: 0;\n    height: 0;\n    border-color: transparent;\n    border-style: solid;\n    border-width: 5px 0 5px 5px;\n    border-left-color: #ccc;\n    margin-top: 5px;\n    margin-right: -10px;\n}\n.dropdown-submenu:hover > a[data-v-3bca38d2]:after {\n    border-left-color: #fff;\n}\n.dropdown-submenu:hover > .dropdown-menu[data-v-3bca38d2] {\n    display: block;\n}\n.dropdown-submenu > a[data-v-3bca38d2]:after {\n    display: block;\n    content: \" \";\n    float: right;\n    width: 0;\n    height: 0;\n    border-color: transparent;\n    border-style: solid;\n    border-width: 5px 0 5px 5px;\n    border-left-color: #ccc;\n    margin-top: 5px;\n    margin-right: -10px;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.burger-btn[data-v-3bca38d2] {\n    position: relative;\n    left: 2%;\n    display: block;\n    padding: 10px;\n    font-size: 18px;\n    background-color: #9c9891;\n    border: none;\n    outline: none;\n    cursor: pointer;\n}\n.links-container[data-v-3bca38d2] {\n    position: relative;\n    top: 5px;\n    width: 295px;\n    height: auto;\n    background-color: #343A40;\n    z-index: 99;\n    float: left;\n    padding-bottom: 25px;\n}\n.close-btn[data-v-3bca38d2] {\n    margin: 5px 5px 5px 5px;\n}\nli.nav[data-v-3bca38d2] {\n    font-family: 'Oswald', sans-serif;\n    list-style-type: none;\n    margin: 7px;\n    font-size: 17px;\n}\na[data-v-3bca38d2] {\n    padding: 2px;\n    font-family: 'Oswald', sans-serif;\n}\nli.nav a[data-v-3bca38d2] {\n    display: block;\n    width: 245px;\n    text-align: center;\n    color: #bebebe;\n}\nli.nav a[data-v-3bca38d2]:hover {\n    background-color: #333333;\n    color: #bebebe;\n    text-decoration: none;\n}\n.sub-menu[data-v-3bca38d2] {\n    position: relative;\n    top: 5px;\n    list-style-type: none;\n}\n.dropdown-submenu[data-v-3bca38d2] {\n    list-style-type: none;\n    width: 245px;\n    display: block;\n}\n#navbarDropdownMenuLink[data-v-3bca38d2] {\n    font-family: 'Oswald', sans-serif;\n    color: #bebebe;\n    text-align: center;\n    font-size: 17px;\n    display: inline-block;\n    width: 85%;\n}\n#navbarDropdownMenuLink[data-v-3bca38d2]::after {\n    position: relative;\n    top: 3px;\n    left: -45px;\n}\n.dropdown-menu[data-v-3bca38d2] {\n    position: relative;\n    background-color: #333333;\n    height: auto;\n}\n.dropdown-submenu > .dropdown-menu[data-v-3bca38d2] {\n    top: 0px;\n    left: 100%;\n    margin-top: -6px;\n    margin-left: -1px;\n}\n.dropdown-submenu > .dropdown-menu > li.nav a[data-v-3bca38d2]:hover {\n    background-color: #0C9A9A;\n    color: #bebebe;\n    text-decoration: none;\n}\n.dropdown-submenu:hover > .dropdown-menu[data-v-3bca38d2] {\n    display: block;\n}\n.dropdown-submenu > a[data-v-3bca38d2]:after {\n    display: block;\n    content: \" \";\n    float: right;\n    width: 0;\n    height: 0;\n    border-color: transparent;\n    border-style: solid;\n    border-width: 5px 0 5px 5px;\n    border-left-color: #ccc;\n    margin-top: 5px;\n    margin-right: -10px;\n}\n.dropdown-submenu:hover > a[data-v-3bca38d2]:after {\n    border-left-color: #fff;\n}\n.dropdown-submenu:hover > .dropdown-menu[data-v-3bca38d2] {\n    display: block;\n}\n.dropdown-submenu > a[data-v-3bca38d2]:after {\n    display: block;\n    content: \" \";\n    float: right;\n    width: 0;\n    height: 0;\n    border-color: transparent;\n    border-style: solid;\n    border-width: 5px 0 5px 5px;\n    border-left-color: #ccc;\n    margin-top: 5px;\n    margin-right: -10px;\n}\n\n", ""]);
 
 // exports
 
@@ -9674,7 +9669,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-6b9819da] {\n    font-size: 12px;\n}\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-6b9819da] {\n    display: none;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-6b9819da] {\n    padding-top: 3px;\n}\n\n", ""]);
 
 // exports
 
@@ -43563,82 +43558,84 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "flex flash-container", style: _vm.switchStyleFlash },
-      [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "row justify-content-center",
-        style: { display: this.showHide }
-      },
-      [
-        _c(
-          "div",
-          { staticClass: "container col-md-12 mt-5" },
-          [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("table", { staticClass: "table table-striped" }, [
-              _vm._m(1),
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c(
+        "div",
+        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+        _vm._l(_vm.errors, function(error) {
+          return _vm.errors !== undefined
+            ? _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(error))])
+              ])
+            : _vm._e()
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _vm.errors[0] === undefined
+        ? _c(
+            "div",
+            { staticClass: "col mt-5", style: { display: _vm.showHide } },
+            [
+              _vm._m(0),
               _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.events.data, function(event, index) {
-                  return _c("tr", { key: event.id }, [
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(_vm.teachers[index]))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(event.title))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(event.day))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(event.hour_start))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(event.hour_end))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-danger",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.deleteEvent(event)
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.events.data, function(event, index) {
+                    return _c("tr", { key: event.id }, [
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(_vm.teachers[index]))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(event.title))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(event.day))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(event.hour_start))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(event.hour_end))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.deleteEvent(event)
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "fas fa-trash" })]
-                      )
+                          },
+                          [_c("i", { staticClass: "fas fa-trash" })]
+                        )
+                      ])
                     ])
-                  ])
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _c("pagination", {
-              attrs: { data: _vm.events },
-              on: { "pagination-change-page": _vm.getEvents }
-            })
-          ],
-          1
-        )
-      ]
-    )
+                  }),
+                  0
+                )
+              ]),
+              _vm._v(" "),
+              _c("pagination", {
+                attrs: { data: _vm.events },
+                on: { "pagination-change-page": _vm.getSources }
+              })
+            ],
+            1
+          )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = [
@@ -43658,19 +43655,31 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-dark" }, [
+    return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Teacher")]),
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Teacher")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Title")]),
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Title")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Day")]),
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Day")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Hour Start")]),
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Hour Start")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Hour End")]),
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Hour End")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Actions")])
+        _c("th", { staticClass: "text-center text-white pt-2" }, [
+          _vm._v("Actions")
+        ])
       ])
     ])
   }
