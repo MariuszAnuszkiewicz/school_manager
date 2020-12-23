@@ -24,6 +24,7 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
     Vue.component('my-teachers', require('./components/pupil/my_teachers/MyTeachers.vue').default);
     Vue.component('my-teachers-modal', require('./components/pupil/modals/MyTeachersModal.vue').default);
     Vue.component('my-grades', require('./components/pupil/my_grades/MyGrades.vue').default);
+    Vue.component('pupil-navbar', require('./components/nav/PupilNavbar.vue').default);
 
 /*********************************************************************************************************************/
 

@@ -1,4 +1,12 @@
 <div class="container">
+    @if (Request::segment(1) === 'pupil')
+        <a class="navbar-brand" href="{{ url('/teacher/events') }}">
+            @php
+                $subName = explode(',', config('app.name'));
+            @endphp
+            {{ $subName[0] . ' ' . $subName[1] }}
+        </a>
+    @endif
     @if (Request::segment(1) === 'teacher')
         <a class="navbar-brand" href="{{ url('/teacher/pupils') }}">
             @php
@@ -16,6 +24,11 @@
         <ul class="navbar-nav mr-auto">
             @auth
                 <div id="nav-container">
+                    @if (Request::segment(1) === 'pupil')
+                        <div class="mt-2">
+                            <pupil-navbar></pupil-navbar>
+                        </div>
+                    @endif
                     @if (Request::segment(1) === 'teacher')
                         <div class="mt-2">
                             <teacher-navbar></teacher-navbar>
