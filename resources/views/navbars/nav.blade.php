@@ -1,6 +1,6 @@
 <div class="container">
     @if (Request::segment(1) === 'pupil')
-        <a class="navbar-brand" href="{{ url('/teacher/events') }}">
+        <a class="navbar-brand" href="{{ url('/pupil/events') }}">
             @php
                 $subName = explode(',', config('app.name'));
             @endphp
