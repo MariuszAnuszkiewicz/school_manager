@@ -2,11 +2,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="errors !== undefined" v-for="error in errors" class="error-explode">
-                    <p>{{ error }}</p>
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
                 </div>
             </div>
-            <div v-if="errors[0] === undefined" :style="{ display: showHide }" class="col mt-5">
+            <div v-if="alerts[0] === undefined" :style="{ display: showHide }" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Scheduling Tests</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -46,9 +46,12 @@ export default {
         return {
             events: {},
             teachers: {},
-            errors: [],
+            alerts: [],
             switchFlashStyle: '',
             showHide: '',
+            message: {
+                text: 'There are no any events.',
+            },
             flashStyleWarning: {
                 'display': 'none',
                 show: {
@@ -74,16 +77,7 @@ export default {
             axios.get('events?page=' + page).then(response => {
                 this.events = response.data.events;
                 this.teachers = response.data.teachers;
-                this.errors.push(response.data.message);
-                for (let i = 0; i < this.errors.length; i++) {
-                    if (this.errors[i] !== undefined) {
-                        this.showHide = 'none';
-                        this.switchFlashStyle = this.flashStyleWarning.show;
-                    } else {
-                        this.showHide = 'block';
-                        this.switchFlashStyle = this.flashStyleWarning;
-                    }
-                }
+                this.getWarning()
             });
         },
         deleteEvent(event) {
@@ -91,6 +85,12 @@ export default {
             axios.delete('events/' + event.id).then(response => {
                _this.getSources()
             });
+        },
+        getWarning() {
+            if (this.events === undefined) {
+                this.alerts.push(this.message.text);
+                this.switchFlashStyle = this.flashStyleWarning.show;
+            }
         },
     },
     mounted() {
@@ -110,7 +110,7 @@ export default {
         top: 4px;
     }
     .error-explode p {
-        padding-top: 3px;
+        padding-top: 2px;
     }
 
 </style>

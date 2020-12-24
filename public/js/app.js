@@ -2186,9 +2186,12 @@ __webpack_require__.r(__webpack_exports__);
     return {
       events: {},
       teachers: {},
-      errors: [],
+      alerts: [],
       switchFlashStyle: '',
       showHide: '',
+      message: {
+        text: 'There are no any events.'
+      },
       flashStyleWarning: {
         'display': 'none',
         show: {
@@ -2217,17 +2220,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.events = response.data.events;
         _this2.teachers = response.data.teachers;
 
-        _this2.errors.push(response.data.message);
-
-        for (var i = 0; i < _this2.errors.length; i++) {
-          if (_this2.errors[i] !== undefined) {
-            _this2.showHide = 'none';
-            _this2.switchFlashStyle = _this2.flashStyleWarning.show;
-          } else {
-            _this2.showHide = 'block';
-            _this2.switchFlashStyle = _this2.flashStyleWarning;
-          }
-        }
+        _this2.getWarning();
       });
     },
     deleteEvent: function deleteEvent(event) {
@@ -2236,6 +2229,12 @@ __webpack_require__.r(__webpack_exports__);
       axios["delete"]('events/' + event.id).then(function (response) {
         _this.getSources();
       });
+    },
+    getWarning: function getWarning() {
+      if (this.events === undefined) {
+        this.alerts.push(this.message.text);
+        this.switchFlashStyle = this.flashStyleWarning.show;
+      }
     }
   },
   mounted: function mounted() {
@@ -9669,7 +9668,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-6b9819da] {\n    padding-top: 3px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-6b9819da] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -43562,17 +43561,17 @@ var render = function() {
       _c(
         "div",
         { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.errors, function(error) {
-          return _vm.errors !== undefined
+        _vm._l(_vm.alerts, function(alert) {
+          return _vm.alerts !== undefined
             ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(error))])
+                _c("p", [_vm._v(_vm._s(alert))])
               ])
             : _vm._e()
         }),
         0
       ),
       _vm._v(" "),
-      _vm.errors[0] === undefined
+      _vm.alerts[0] === undefined
         ? _c(
             "div",
             { staticClass: "col mt-5", style: { display: _vm.showHide } },

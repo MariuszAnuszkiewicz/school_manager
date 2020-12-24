@@ -29,10 +29,6 @@ class EventController extends Controller
                     'teachers' => $data['teachers']
                 ]);
             }
-        } else {
-            if ($request->ajax()) {
-                return response()->json(['message' => 'There are no any events.']);
-            }
         }
         return view('pupil.events');
     }
