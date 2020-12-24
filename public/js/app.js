@@ -4221,6 +4221,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4230,19 +4238,21 @@ __webpack_require__.r(__webpack_exports__);
       assign_classes: {},
       selected: [],
       alerts: [],
+      messagesInfo: [],
       isSelected: false,
       switchFlashStyle: '',
       isUpdate: false,
       message: {
-        text: 'There are no any pupils.'
+        warningText: 'There are no any pupils.',
+        infoText: 'You are assign pupils to class.'
       },
       flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '0%',
+          'position': 'absolute',
+          'top': '225px',
+          'left': '44.5%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -4254,9 +4264,9 @@ __webpack_require__.r(__webpack_exports__);
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '150px',
-          'left': '0%',
+          'position': 'absolute',
+          'top': '225px',
+          'left': '44.5%',
           'background-color': 'rgba(60, 204, 102, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -4315,15 +4325,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     showWarning: function showWarning() {
       if (this.pupils === undefined) {
-        this.alerts.push(this.message.text);
+        this.alerts.push(this.message.warningText);
         this.switchFlashStyle = this.flashStyleWarning.show;
+        this.alerts.splice(1, this.alerts.length);
       } else {
         this.switchFlashStyle = this.flashStyleWarning;
       }
     },
     showInfo: function showInfo() {
       if (this.isUpdate === true) {
+        this.messagesInfo.push(this.message.infoText);
         this.switchFlashStyle = this.flashStyleInfo.show;
+        this.messagesInfo.splice(1, this.messagesInfo.length);
       } else {
         this.switchFlashStyle = this.flashStyleInfo;
       }
@@ -9967,7 +9980,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-f55a8072] {\n    display: none;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-f55a8072] {\n    padding-top: 2px;\n}\n#selectClass[data-v-f55a8072] {\n    margin-top: 10px;\n    background-color: #F2F2F2;\n    height: 37px;\n}\n\n", ""]);
 
 // exports
 
@@ -46614,14 +46627,24 @@ var render = function() {
       _c(
         "div",
         { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.alerts, function(alert) {
-          return _vm.alerts !== undefined
-            ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(alert))])
-              ])
-            : _vm._e()
-        }),
-        0
+        [
+          _vm._l(_vm.alerts, function(alert) {
+            return _vm.alerts !== undefined
+              ? _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(alert))])
+                ])
+              : _vm._e()
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.messagesInfo, function(messageInfo) {
+            return _vm.messagesInfo !== undefined
+              ? _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageInfo))])
+                ])
+              : _vm._e()
+          })
+        ],
+        2
       ),
       _vm._v(" "),
       _vm.alerts[0] === undefined
@@ -46640,32 +46663,52 @@ var render = function() {
               },
               [
                 _c("div", { staticClass: "col-md-12 text-center" }, [
-                  _c(
-                    "select",
-                    { staticClass: "mt-2", attrs: { id: "selectClass" } },
-                    _vm._l(_vm.classes_in_school, function(class_in_school) {
-                      return _c(
-                        "option",
-                        { domProps: { value: class_in_school.id } },
-                        [
-                          _vm._v(
-                            _vm._s(class_in_school.name) +
-                              "\n                         "
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  ),
+                  _c("h6", { staticClass: "header-text" }, [
+                    _vm._v("Assign Class")
+                  ]),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary ml-2 mt-2 mb-2",
-                      attrs: { type: "submit" }
-                    },
-                    [_vm._v("Submit")]
-                  )
+                  _c("div", { staticClass: "select-class" }, [
+                    _c(
+                      "select",
+                      {
+                        staticClass: "show-menu-arrow",
+                        attrs: { id: "selectClass" }
+                      },
+                      [
+                        _c(
+                          "optgroup",
+                          { attrs: { label: "Select Class" } },
+                          _vm._l(_vm.classes_in_school, function(
+                            class_in_school
+                          ) {
+                            return _c(
+                              "option",
+                              {
+                                staticClass: "overflow-auto",
+                                domProps: { value: class_in_school.id }
+                              },
+                              [
+                                _vm._v(
+                                  _vm._s(class_in_school.name) +
+                                    "\n                                 "
+                                )
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary ml-2 mt-1 mb-2",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Submit")]
+                    )
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-12 mt-5" }, [
@@ -46760,7 +46803,11 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "text-center" }, [
-                              _vm._v(_vm._s(_vm.assign_classes[index].name))
+                              _c("span", { staticClass: "text-danger" }, [
+                                _c("b", [
+                                  _vm._v(_vm._s(_vm.assign_classes[index].name))
+                                ])
+                              ])
                             ]),
                             _vm._v(" "),
                             user.name.length > 35
@@ -46815,11 +46862,13 @@ var staticRenderFns = [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center text-white" }, [
-          _vm._v("Classes")
+        _c("th", { staticClass: "text-center text-warning" }, [
+          _vm._v("Assign Class")
         ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Name")])
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("User Name")
+        ])
       ])
     ])
   },
