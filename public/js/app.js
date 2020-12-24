@@ -2403,30 +2403,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       messages: {},
       teachers: {},
-      switchStyleFlash: '',
+      alerts: [],
+      switchFlashStyle: '',
       showHide: '',
       message: {
         text: 'There are no any messages.'
       },
-      flashStyle: {
-        'position': 'relative',
-        'top': '100px',
-        'left': '38.7%',
-        'background-color': 'rgba(245, 34, 70, 0.3)',
-        'width': '250px',
-        'height': '35px',
-        'text-align': 'center',
-        'border-radius': '7px',
+      flashStyleWarning: {
+        'display': 'none',
         show: {
           'display': 'block',
           'position': 'relative',
           'top': '100px',
-          'left': '38.7%',
+          'left': '0%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -2437,7 +2433,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getMessages: function getMessages(page) {
+    getSources: function getSources(page) {
       var _this2 = this;
 
       if (typeof page === 'undefined') {
@@ -2446,29 +2442,27 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('messages?page=' + page).then(function (response) {
         _this2.messages = response.data.messages;
-        _this2.teachers = response.data.teachers.data;
+        _this2.teachers = response.data.teachers;
 
-        _this2.changeStyle();
+        _this2.getWarning();
       });
     },
     deleteMessage: function deleteMessage(message) {
       var _this = this;
 
       axios["delete"]('messages/' + message.id).then(function (response) {
-        _this.getMessages();
+        _this.getSources();
       });
     },
-    changeStyle: function changeStyle() {
-      if (this.messages.data.length < 1) {
-        this.showHide = 'none';
-        this.switchStyleFlash = this.flashStyle.show;
-      } else {
-        this.switchStyleFlash = this.flashStyle;
+    getWarning: function getWarning() {
+      if (this.messages === undefined) {
+        this.alerts.push(this.message.text);
+        this.switchFlashStyle = this.flashStyleWarning.show;
       }
     }
   },
   mounted: function mounted() {
-    this.getMessages();
+    this.getSources();
   }
 });
 
@@ -9706,7 +9700,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-5c8d08f3] {\r\n    font-size: 12px;\n}\n.header-text[data-v-5c8d08f3] {\r\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\r\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\r\n    position: relative;\r\n    top: 4px;\n}\r\n", ""]);
+exports.push([module.i, "\nbutton[data-v-5c8d08f3] {\n    font-size: 12px;\n}\n.header-text[data-v-5c8d08f3] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
 
 // exports
 
@@ -43826,82 +43820,84 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "flex flash-container", style: _vm.switchStyleFlash },
-      [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "row justify-content-center",
-        style: { display: this.showHide }
-      },
-      [
-        _c(
-          "div",
-          { staticClass: "container col-md-12 mt-5" },
-          [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("table", { staticClass: "table table-striped" }, [
-              _vm._m(1),
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c(
+        "div",
+        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+        _vm._l(_vm.alerts, function(alert) {
+          return _vm.alerts !== undefined
+            ? _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(alert))])
+              ])
+            : _vm._e()
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _vm.alerts[0] === undefined
+        ? _c(
+            "div",
+            { staticClass: "col mt-5", style: { display: _vm.showHide } },
+            [
+              _vm._m(0),
               _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.messages.data, function(message, index) {
-                  return _c("tr", { key: message.id }, [
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(_vm.teachers[index] + " (Teacher)"))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(message.message.slice(0, 65) + " ... "))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(
-                        _vm._s(
-                          new Date(message.created_at).toLocaleString("pl-PL")
-                        )
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("a", { attrs: { href: "messages/" + message.id } }, [
-                        _vm._m(2, true)
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.messages.data, function(message, index) {
+                    return _c("tr", { key: message.id }, [
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(_vm.teachers[index] + " (teacher)"))
                       ]),
                       _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-danger",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.deleteMessage(message)
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(message.message.slice(0, 65) + " ... "))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(
+                          _vm._s(
+                            new Date(message.created_at).toLocaleString("pl-PL")
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _c("a", { attrs: { href: "messages/" + message.id } }, [
+                          _vm._m(2, true)
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.deleteMessage(message)
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "fas fa-trash" })]
-                      )
+                          },
+                          [_c("i", { staticClass: "fas fa-trash" })]
+                        )
+                      ])
                     ])
-                  ])
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _c("pagination", {
-              attrs: { data: _vm.messages },
-              on: { "pagination-change-page": _vm.getMessages }
-            })
-          ],
-          1
-        )
-      ]
-    )
+                  }),
+                  0
+                )
+              ]),
+              _vm._v(" "),
+              _c("pagination", {
+                attrs: { data: _vm.messages },
+                on: { "pagination-change-page": _vm.getSources }
+              })
+            ],
+            1
+          )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = [
