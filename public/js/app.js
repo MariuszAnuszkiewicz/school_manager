@@ -4218,6 +4218,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4226,9 +4228,9 @@ __webpack_require__.r(__webpack_exports__);
       classes_in_school: {},
       assign_classes: {},
       selected: [],
+      alerts: [],
       isSelected: false,
-      switchStyleFlash: '',
-      showHide: '',
+      switchFlashStyle: '',
       isUpdate: false,
       message: {
         text: 'There are no any pupils.'
@@ -4264,7 +4266,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getPupils: function getPupils() {
+    getSources: function getSources() {
       var _this = this;
 
       axios.get('pupils').then(function (response) {
@@ -4272,8 +4274,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.pupils = response.data.pupils;
         _this.classes_in_school = response.data.classes_in_school;
         _this.assign_classes = response.data.assign_classes;
+
+        _this.showWarning();
       });
-      this.showWarning();
     },
     submitForm: function submitForm() {
       var _this2 = this;
@@ -4310,23 +4313,23 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     showWarning: function showWarning() {
-      if (this.pupils.length < 1) {
-        this.showHide = 'none';
-        this.switchStyleFlash = this.flashStyleWarning.show;
+      if (this.pupils === undefined) {
+        this.alerts.push(this.message.text);
+        this.switchFlashStyle = this.flashStyleWarning.show;
       } else {
-        this.switchStyleFlash = this.flashStyleWarning;
+        this.switchFlashStyle = this.flashStyleWarning;
       }
     },
     showInfo: function showInfo() {
       if (this.isUpdate === true) {
-        this.switchStyleFlash = this.flashStyleInfo.show;
+        this.switchFlashStyle = this.flashStyleInfo.show;
       } else {
-        this.switchStyleFlash = this.flashStyleInfo;
+        this.switchFlashStyle = this.flashStyleInfo;
       }
     }
   },
   mounted: function mounted() {
-    this.getPupils();
+    this.getSources();
     this.submitForm();
   }
 });
@@ -9963,7 +9966,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-f55a8072] {\n    display: none;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-f55a8072] {\n    display: none;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
 
 // exports
 
@@ -46606,170 +46609,174 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "flex flash-container", style: _vm.switchStyleFlash },
-      [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "row justify-content-center",
-        style: { display: this.showHide }
-      },
-      [
-        _c("div", { staticClass: "col-md-12 mt-5" }, [
-          _c(
-            "form",
-            {
-              staticClass: "form-horizontal",
-              attrs: { method: "POST", id: "classesForm" },
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.submitForm()
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c(
+        "div",
+        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+        _vm._l(_vm.alerts, function(alert) {
+          return _vm.alerts !== undefined
+            ? _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(alert))])
+              ])
+            : _vm._e()
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _vm.alerts[0] === undefined
+        ? _c("div", { staticClass: "col mt-5" }, [
+            _c(
+              "form",
+              {
+                staticClass: "form-horizontal",
+                attrs: { method: "POST", id: "classesForm" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.submitForm()
+                  }
                 }
-              }
-            },
-            [
-              _c("div", { staticClass: "col-md-12 text-center" }, [
-                _c(
-                  "select",
-                  { staticClass: "mt-2", attrs: { id: "selectClass" } },
-                  _vm._l(_vm.classes_in_school, function(class_in_school) {
-                    return _c(
-                      "option",
-                      { domProps: { value: class_in_school.id } },
-                      [
-                        _vm._v(
-                          _vm._s(class_in_school.name) +
-                            "\n                         "
-                        )
-                      ]
-                    )
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary ml-2 mt-2 mb-2",
-                    attrs: { type: "submit" }
-                  },
-                  [_vm._v("Submit")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-12 mt-5" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c("table", { staticClass: "table table-bordered" }, [
-                  _vm._m(1),
+              },
+              [
+                _c("div", { staticClass: "col-md-12 text-center" }, [
+                  _c(
+                    "select",
+                    { staticClass: "mt-2", attrs: { id: "selectClass" } },
+                    _vm._l(_vm.classes_in_school, function(class_in_school) {
+                      return _c(
+                        "option",
+                        { domProps: { value: class_in_school.id } },
+                        [
+                          _vm._v(
+                            _vm._s(class_in_school.name) +
+                              "\n                         "
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  ),
                   _vm._v(" "),
                   _c(
-                    "tbody",
-                    [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "custom-control custom-switch text-center pt-2 bg-warning"
-                        },
-                        [
-                          _vm._m(2),
-                          _vm._v(" "),
-                          _c("input", {
-                            staticClass: "select-all d-inline-block ml-2",
-                            attrs: { type: "checkbox", id: "select-all" },
-                            on: {
-                              click: function($event) {
-                                return _vm.selectAll()
-                              }
-                            }
-                          })
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _vm._l(_vm.users, function(user, index) {
-                        return _c("tr", { key: _vm.pupils[index].id }, [
-                          _c("td", { staticClass: "text-center" }, [
+                    "button",
+                    {
+                      staticClass: "btn btn-primary ml-2 mt-2 mb-2",
+                      attrs: { type: "submit" }
+                    },
+                    [_vm._v("Submit")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-12 mt-5" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("table", { staticClass: "table table-striped" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "custom-control custom-switch text-center pt-2 bg-warning"
+                          },
+                          [
+                            _vm._m(2),
+                            _vm._v(" "),
                             _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.selected,
-                                  expression: "selected"
-                                }
-                              ],
-                              staticClass: "pupil-select",
-                              attrs: { type: "checkbox" },
-                              domProps: {
-                                value: _vm.pupils[index].id,
-                                checked: Array.isArray(_vm.selected)
-                                  ? _vm._i(_vm.selected, _vm.pupils[index].id) >
-                                    -1
-                                  : _vm.selected
-                              },
+                              staticClass: "select-all d-inline-block ml-2",
+                              attrs: { type: "checkbox", id: "select-all" },
                               on: {
-                                change: [
-                                  function($event) {
-                                    var $$a = _vm.selected,
-                                      $$el = $event.target,
-                                      $$c = $$el.checked ? true : false
-                                    if (Array.isArray($$a)) {
-                                      var $$v = _vm.pupils[index].id,
-                                        $$i = _vm._i($$a, $$v)
-                                      if ($$el.checked) {
-                                        $$i < 0 &&
-                                          (_vm.selected = $$a.concat([$$v]))
-                                      } else {
-                                        $$i > -1 &&
-                                          (_vm.selected = $$a
-                                            .slice(0, $$i)
-                                            .concat($$a.slice($$i + 1)))
-                                      }
-                                    } else {
-                                      _vm.selected = $$c
-                                    }
-                                  },
-                                  function($event) {
-                                    return _vm.unSelectAll()
-                                  }
-                                ]
+                                click: function($event) {
+                                  return _vm.selectAll()
+                                }
                               }
                             })
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center" }, [
-                            _vm._v(_vm._s(_vm.pupils[index].id))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center" }, [
-                            _vm._v(_vm._s(user.id))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center" }, [
-                            _vm._v(_vm._s(_vm.assign_classes[index].name))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center" }, [
-                            _vm._v(_vm._s(user.name.slice(0, 65) + " ... "))
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.users, function(user, index) {
+                          return _c("tr", { key: user.id }, [
+                            _c("td", { staticClass: "text-center" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.selected,
+                                    expression: "selected"
+                                  }
+                                ],
+                                staticClass: "pupil-select",
+                                attrs: { type: "checkbox" },
+                                domProps: {
+                                  value: _vm.pupils[index].id,
+                                  checked: Array.isArray(_vm.selected)
+                                    ? _vm._i(
+                                        _vm.selected,
+                                        _vm.pupils[index].id
+                                      ) > -1
+                                    : _vm.selected
+                                },
+                                on: {
+                                  change: [
+                                    function($event) {
+                                      var $$a = _vm.selected,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = _vm.pupils[index].id,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            (_vm.selected = $$a.concat([$$v]))
+                                        } else {
+                                          $$i > -1 &&
+                                            (_vm.selected = $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1)))
+                                        }
+                                      } else {
+                                        _vm.selected = $$c
+                                      }
+                                    },
+                                    function($event) {
+                                      return _vm.unSelectAll()
+                                    }
+                                  ]
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-center" }, [
+                              _vm._v(_vm._s(_vm.pupils[index].id))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-center" }, [
+                              _vm._v(_vm._s(user.id))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-center" }, [
+                              _vm._v(_vm._s(_vm.assign_classes[index].name))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-center" }, [
+                              _vm._v(_vm._s(user.name.slice(0, 65) + " ... "))
+                            ])
                           ])
-                        ])
-                      })
-                    ],
-                    2
-                  )
+                        })
+                      ],
+                      2
+                    )
+                  ])
                 ])
-              ])
-            ]
-          )
-        ])
-      ]
-    )
+              ]
+            )
+          ])
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = [
@@ -46789,23 +46796,23 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Select Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Pupil Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Classes")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Name")])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Name")])
       ])
     ])
   },

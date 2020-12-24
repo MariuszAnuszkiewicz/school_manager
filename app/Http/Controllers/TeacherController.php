@@ -21,7 +21,6 @@ class TeacherController extends Controller
     public function index(Request $request)
     {
         $pupils = Pupil::with('teachers')->orderBy('user_id', 'ASC')->get();
-        $data = [];
         foreach ($pupils as $pupil) {
             $data['users'][] = isset($pupil->user) ? $pupil->user: null;
             $data['pupils'][] = isset($pupil) ? $pupil: null;
@@ -29,7 +28,6 @@ class TeacherController extends Controller
         }
         foreach (ClassInSchool::all() as $classInSchool) {
             $data['classes_in_school'][] = isset($classInSchool) ? $classInSchool: null;
-
         }
         if (!empty($data)) {
             if ($request->ajax()) {
