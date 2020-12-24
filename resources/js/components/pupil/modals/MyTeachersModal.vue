@@ -1,27 +1,27 @@
 <template>
     <transition name="modal">
-        <div class="myTeachersModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="POST" class="form-horizontal">
-                        <div class="modal-header">
-                            <slot name="header"></slot>
+        <div class="overlay">
+            <div class="myTeachersModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="POST" class="form-horizontal">
+                            <div class="modal-header">
+                                <slot name="header"></slot>
+                            </div>
+                            <div class="modal-body">
+                                <textarea class="form-control" name="message_content" v-model="message_content" rows="5"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <slot name="footer"></slot>
+                                <button type="button" class="btn btn-primary" @click.stop="sendEmail()">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                        <div :style="switchFlashStyle" class="flex flash-container">
+                            <p class="pb-1">{{ message.text }}</p>
                         </div>
-
-                        <div class="modal-body">
-                            <textarea class="form-control" name="message_content" v-model="message_content" rows="5"></textarea>
-                        </div>
-
-                        <div class="modal-footer">
-                            <slot name="footer"></slot>
-                            <button type="button" class="btn btn-primary" @click.stop="sendEmail()">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div :style="switchFlashStyle" class="flex flash-container">
-                    <p class="pb-1">{{ message.text }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,24 +35,23 @@ export default {
         return {
             message_content: '',
             success: '',
-            arrayErrors: [],
             switchFlashStyle: '',
             message: {
                 text: 'Send message was successfully.',
             },
-            flashStyle: {
+            flashStyleInfo: {
                 'display': 'none',
                 show: {
                     'display': 'block',
                     'position': 'relative',
-                    'top': '20px',
+                    'top': '10px',
                     'left': '65px',
                     'background-color': 'rgba(120, 208, 170, 0.3)',
                     'width': '250px',
                     'height': '35px',
                     'text-align': 'center',
                     'border-radius': '7px',
-                    'margin-bottom': '15px',
+                    'margin-bottom': '25px',
                 }
             },
         }
@@ -65,10 +64,8 @@ export default {
                     message: this.message_content,
                 }).then(response => {
                 }).catch((error) => {
-                    this.arrayErrors.push(error.response.data.errors);
                     this.success = false;
                 });
-                console.log(this.teachers[0].email)
                 this.success = true;
                 this.showFlashMessage();
                 this.message_content = '';
@@ -77,10 +74,10 @@ export default {
         showFlashMessage() {
             if (this.success === true) {
                 setTimeout(() => {
-                    this.switchFlashStyle = this.flashStyle.show
+                    this.switchFlashStyle = this.flashStyleInfo.show
                 }, 500);
             } else {
-                this.switchFlashStyle = this.flashStyle
+                this.switchFlashStyle = this.flashStyleInfo
             }
         },
     },
@@ -91,14 +88,23 @@ export default {
 </script>
 
 <style scoped>
+
+    .overlay {
+        position: absolute;
+        top: 200px;
+        width: 52%;
+        height: 75%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 5;
+    }
    .myTeachersModal {
        display: table;
        position: absolute;
-       top: 245px;
-       left: 40.7%;
+       top: 150px;
+       left: 33%;
        width: 400px;
        height: 300px;
-       background-color: #f7f7f7;
+       background-color: #4c6fb1;
        z-index: 9999;
        padding: 10px 10px 10px 10px;
        transition: opacity .3s ease;

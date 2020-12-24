@@ -1,10 +1,12 @@
 <template>
     <div class="container">
-        <div :style="switchFlashStyle" class="flex flash-container">
-            <p>{{ message.text }}</p>
-        </div>
-        <div :style="{ display: this.showHide }" class="row justify-content-center">
-            <div class="col-md-12 mt-5">
+        <div class="row justify-content-center">
+            <div :style="switchFlashStyle" class="flex flash-container">
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
+                </div>
+            </div>
+            <div v-if="alerts[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">My Teachers</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="thead-dark">
@@ -38,7 +40,7 @@
 
             </div>
             <div slot="footer">
-                <button type="button" class="btn btn-outline-info" @click="closeModal()"> Close </button>
+                <button type="button" class="btn btn-outline-info" @click="closeModal()">Close</button>
             </div>
         </my-teachers-modal>
     </div>
@@ -54,19 +56,20 @@ export default {
         return {
             teachers: {},
             subjects: {},
+            alerts: [],
             showModal: false,
             switchFlashStyle: '',
             showHide: '',
             message: {
                 text: 'There are no any My Teachers.',
             },
-            flashStyle: {
+            flashStyleWarning: {
                 'display': 'none',
                 show: {
                     'display': 'block',
                     'position': 'relative',
                     'top': '100px',
-                    'left': '38.7%',
+                    'left': '0%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '250px',
                     'height': '35px',
@@ -77,19 +80,17 @@ export default {
         }
     },
     methods: {
-        getTeachers() {
+        getSources() {
             axios.get('my-teachers').then(response => {
                 this.teachers = response.data.teachers
                 this.subjects = response.data.subjects
-                this.showFlashMessage()
+                this.getWarning()
             });
         },
-        showFlashMessage() {
-            if (this.teachers.length < 1) {
-                this.showHide = 'none'
-                this.switchFlashStyle = this.flashStyle.show
-            } else {
-                this.switchFlashStyle = this.flashStyle
+        getWarning() {
+            if (this.teachers === undefined) {
+                this.alerts.push(this.message.text);
+                this.switchFlashStyle = this.flashStyleWarning.show;
             }
         },
         openModal() {
@@ -104,15 +105,13 @@ export default {
         },
     },
     mounted() {
-        this.getTeachers()
+        this.getSources()
     }
 }
 </script>
 
 <style scoped>
-    .container {
-        display: block;
-    }
+
     .header-text {
         color: #8f8f8f;
     }
@@ -123,4 +122,5 @@ export default {
         position: relative;
         top: 4px;
     }
+
 </style>

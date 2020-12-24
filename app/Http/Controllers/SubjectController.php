@@ -8,20 +8,20 @@ class SubjectController extends Controller
 {
     public function myTeachers(Request $request)
     {
-        $pupil = auth()->user()->pupil;
-        $arrayTeachers = [];
-        $arraySubjects = [];
-        foreach ($pupil->teachers as $teacher) {
-            $arrayTeachers[] = $teacher->user;
+        $data = [];
+        foreach (auth()->user()->pupil->teachers as $teacher) {
+            $data['teachers'][] = $teacher->user;
             foreach ($teacher->subjects as $subject) {
-                $arraySubjects[] = $subject->name;
+                $data['subjects'][] = $subject->name;
             }
         }
-        if ($request->ajax()) {
-            return response()->json([
-                'teachers' => $arrayTeachers,
-                'subjects' => $arraySubjects
-            ]);
+        if(!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'teachers' => $data['teachers'],
+                    'subjects' => $data['subjects']
+                ]);
+            }
         }
         return view('pupil.my_teachers');
     }

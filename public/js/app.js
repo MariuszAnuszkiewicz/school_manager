@@ -2591,24 +2591,23 @@ __webpack_require__.r(__webpack_exports__);
     return {
       message_content: '',
       success: '',
-      arrayErrors: [],
       switchFlashStyle: '',
       message: {
         text: 'Send message was successfully.'
       },
-      flashStyle: {
+      flashStyleInfo: {
         'display': 'none',
         show: {
           'display': 'block',
           'position': 'relative',
-          'top': '20px',
+          'top': '10px',
           'left': '65px',
           'background-color': 'rgba(120, 208, 170, 0.3)',
           'width': '250px',
           'height': '35px',
           'text-align': 'center',
           'border-radius': '7px',
-          'margin-bottom': '15px'
+          'margin-bottom': '25px'
         }
       }
     };
@@ -2622,11 +2621,8 @@ __webpack_require__.r(__webpack_exports__);
           email: this.teachers[0].email,
           message: this.message_content
         }).then(function (response) {})["catch"](function (error) {
-          _this.arrayErrors.push(error.response.data.errors);
-
           _this.success = false;
         });
-        console.log(this.teachers[0].email);
         this.success = true;
         this.showFlashMessage();
         this.message_content = '';
@@ -2637,10 +2633,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.success === true) {
         setTimeout(function () {
-          _this2.switchFlashStyle = _this2.flashStyle.show;
+          _this2.switchFlashStyle = _this2.flashStyleInfo.show;
         }, 500);
       } else {
-        this.switchFlashStyle = this.flashStyle;
+        this.switchFlashStyle = this.flashStyleInfo;
       }
     }
   },
@@ -2860,6 +2856,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2869,19 +2867,20 @@ __webpack_require__.r(__webpack_exports__);
     return {
       teachers: {},
       subjects: {},
+      alerts: [],
       showModal: false,
       switchFlashStyle: '',
       showHide: '',
       message: {
         text: 'There are no any My Teachers.'
       },
-      flashStyle: {
+      flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
           'position': 'relative',
           'top': '100px',
-          'left': '38.7%',
+          'left': '0%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -2892,22 +2891,20 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getTeachers: function getTeachers() {
+    getSources: function getSources() {
       var _this = this;
 
       axios.get('my-teachers').then(function (response) {
         _this.teachers = response.data.teachers;
         _this.subjects = response.data.subjects;
 
-        _this.showFlashMessage();
+        _this.getWarning();
       });
     },
-    showFlashMessage: function showFlashMessage() {
-      if (this.teachers.length < 1) {
-        this.showHide = 'none';
-        this.switchFlashStyle = this.flashStyle.show;
-      } else {
-        this.switchFlashStyle = this.flashStyle;
+    getWarning: function getWarning() {
+      if (this.teachers === undefined) {
+        this.alerts.push(this.message.text);
+        this.switchFlashStyle = this.flashStyleWarning.show;
       }
     },
     openModal: function openModal() {
@@ -2924,7 +2921,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getTeachers();
+    this.getSources();
   }
 });
 
@@ -9700,7 +9697,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-5c8d08f3] {\n    font-size: 12px;\n}\n.header-text[data-v-5c8d08f3] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\nbutton[data-v-5c8d08f3] {\r\n    font-size: 12px;\n}\n.header-text[data-v-5c8d08f3] {\r\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\r\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\r\n    position: relative;\r\n    top: 4px;\n}\r\n", ""]);
 
 // exports
 
@@ -9738,7 +9735,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.myTeachersModal[data-v-192f14d3] {\n    display: table;\n    position: absolute;\n    top: 245px;\n    left: 40.7%;\n    width: 400px;\n    height: 300px;\n    background-color: #f7f7f7;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-192f14d3] {\n    display: none;\n}\n.flash-container p[data-v-192f14d3] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-192f14d3] {\n     position: absolute;\n     top: 200px;\n     width: 52%;\n     height: 75%;\n     background-color: rgba(0, 0, 0, 0.8);\n     z-index: 5;\n}\n.myTeachersModal[data-v-192f14d3] {\n    display: table;\n    position: absolute;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-192f14d3] {\n    display: none;\n}\n.flash-container p[data-v-192f14d3] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
 
 // exports
 
@@ -9776,7 +9773,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.container[data-v-4ede8eb4] {\n    display: block;\n}\n.header-text[data-v-4ede8eb4] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-4ede8eb4] {\n    display: none;\n}\n.flash-container p[data-v-4ede8eb4] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-4ede8eb4] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-4ede8eb4] {\n    display: none;\n}\n.flash-container p[data-v-4ede8eb4] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
 
 // exports
 
@@ -44073,74 +44070,92 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("transition", { attrs: { name: "modal" } }, [
-    _c("div", { staticClass: "myTeachersModal" }, [
-      _c("div", { staticClass: "modal-dialog", attrs: { role: "document" } }, [
-        _c("div", { staticClass: "modal-content" }, [
-          _c(
-            "form",
-            { staticClass: "form-horizontal", attrs: { method: "POST" } },
-            [
-              _c("div", { staticClass: "modal-header" }, [_vm._t("header")], 2),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("textarea", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.message_content,
-                      expression: "message_content"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { name: "message_content", rows: "5" },
-                  domProps: { value: _vm.message_content },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+    _c("div", { staticClass: "overlay" }, [
+      _c("div", { staticClass: "myTeachersModal" }, [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c(
+                "form",
+                { staticClass: "form-horizontal", attrs: { method: "POST" } },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "modal-header" },
+                    [_vm._t("header")],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.message_content,
+                          expression: "message_content"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { name: "message_content", rows: "5" },
+                      domProps: { value: _vm.message_content },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.message_content = $event.target.value
+                        }
                       }
-                      _vm.message_content = $event.target.value
-                    }
-                  }
-                })
-              ]),
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "modal-footer" },
+                    [
+                      _vm._t("footer"),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              $event.stopPropagation()
+                              return _vm.sendEmail()
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                                Submit\n                            "
+                          )
+                        ]
+                      )
+                    ],
+                    2
+                  )
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "div",
-                { staticClass: "modal-footer" },
+                {
+                  staticClass: "flex flash-container",
+                  style: _vm.switchFlashStyle
+                },
                 [
-                  _vm._t("footer"),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
-                      on: {
-                        click: function($event) {
-                          $event.stopPropagation()
-                          return _vm.sendEmail()
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                            Submit\n                        "
-                      )
-                    ]
-                  )
-                ],
-                2
+                  _c("p", { staticClass: "pb-1" }, [
+                    _vm._v(_vm._s(_vm.message.text))
+                  ])
+                ]
               )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          [_c("p", { staticClass: "pb-1" }, [_vm._v(_vm._s(_vm.message.text))])]
+            ])
+          ]
         )
       ])
     ])
@@ -44485,64 +44500,66 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "row justify-content-center",
-          style: { display: this.showHide }
-        },
-        [
-          _c("div", { staticClass: "col-md-12 mt-5" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("table", { staticClass: "table table-striped" }, [
-              _vm._m(1),
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c(
+          "div",
+          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+          _vm._l(_vm.alerts, function(alert) {
+            return _vm.alerts !== undefined
+              ? _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(alert))])
+                ])
+              : _vm._e()
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _vm.alerts[0] === undefined
+          ? _c("div", { staticClass: "col mt-5" }, [
+              _vm._m(0),
               _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.teachers, function(teacher, index) {
-                  return _c("tr", { key: teacher.id }, [
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(teacher.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(_vm.subjects[index]))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(teacher.phone))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-success",
-                          attrs: { id: "send-email-modal" },
-                          on: {
-                            click: function($event) {
-                              return _vm.openModal()
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.teachers, function(teacher, index) {
+                    return _c("tr", { key: teacher.id }, [
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(teacher.name))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(_vm.subjects[index]))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(teacher.phone))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            attrs: { id: "send-email-modal" },
+                            on: {
+                              click: function($event) {
+                                return _vm.openModal()
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "fas fa-mail-bulk" })]
-                      )
+                          },
+                          [_c("i", { staticClass: "fas fa-mail-bulk" })]
+                        )
+                      ])
                     ])
-                  ])
-                }),
-                0
-              )
+                  }),
+                  0
+                )
+              ])
             ])
-          ])
-        ]
-      ),
+          : _vm._e()
+      ]),
       _vm._v(" "),
       _vm.showModal === true
         ? _c("my-teachers-modal", { attrs: { teachers: _vm.teachers } }, [
@@ -44570,7 +44587,7 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v(" Close ")]
+                [_vm._v("Close")]
               )
             ])
           ])
