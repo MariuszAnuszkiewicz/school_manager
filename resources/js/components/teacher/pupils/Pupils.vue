@@ -5,16 +5,24 @@
                 <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
                     <p>{{ alert }}</p>
                 </div>
+                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
+                    <p>{{ messageInfo }}</p>
+                </div>
             </div>
             <div v-if="alerts[0] === undefined" class="col mt-5">
                 <form @submit.prevent="submitForm()" method="POST" id="classesForm" class="form-horizontal">
                     <div class="col-md-12 text-center">
-                        <select id="selectClass" class="mt-2">
-                            <option v-for="class_in_school in classes_in_school"
-                                    :value="class_in_school.id">{{ class_in_school.name }}
-                            </option>
-                        </select>
-                        <button class="btn btn-primary ml-2 mt-2 mb-2" type="submit">Submit</button>
+                        <h6 class="header-text">Assign Class</h6>
+                        <div class="select-container">
+                            <select id="selectClass" class="show-menu-arrow">
+                                <optgroup label="Select Class">
+                                    <option class="overflow-auto" v-for="class_in_school in classes_in_school"
+                                            :value="class_in_school.id">{{ class_in_school.name }}
+                                    </option>
+                                </optgroup>
+                            </select>
+                            <button class="btn btn-primary ml-2 mt-1 mb-2" type="submit">Submit</button>
+                        </div>
                     </div>
                     <div class="col-md-12 mt-5">
                         <div class="card-body"><h5><strong class="header-text">List of Pupils</strong></h5></div>
@@ -24,8 +32,8 @@
                                     <th class="text-center text-white">Select Id</th>
                                     <th class="text-center text-white">Pupil Id</th>
                                     <th class="text-center text-white">User Id</th>
-                                    <th class="text-center text-white">Classes</th>
-                                    <th class="text-center text-white">Name</th>
+                                    <th class="text-center text-warning">Assign Class</th>
+                                    <th class="text-center text-white">User Name</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,7 +50,7 @@
                                     </td>
                                     <td class="text-center">{{ pupils[index].id }}</td>
                                     <td class="text-center">{{ user.id }}</td>
-                                    <td class="text-center">{{ assign_classes[index].name }}</td>
+                                    <td class="text-center"><span class="text-danger"><b>{{ assign_classes[index].name }}</b></span></td>
                                     <td v-if="user.name.length > 35" class="text-center">{{ user.name.slice(0, 35) + ' ... '  }}</td>
                                     <td v-else class="text-center">{{ user.name }}</td>
                                 </tr>
@@ -65,19 +73,21 @@ export default {
             assign_classes: {},
             selected: [],
             alerts: [],
+            messagesInfo: [],
             isSelected: false,
             switchFlashStyle: '',
             isUpdate: false,
             message: {
-               text: 'There are no any pupils.',
+               warningText: 'There are no any pupils.',
+               infoText: 'You are assign pupils to class.',
             },
             flashStyleWarning: {
                 'display': 'none',
                 show: {
                     'display': 'block',
-                    'position': 'relative',
-                    'top': '100px',
-                    'left': '0%',
+                    'position': 'absolute',
+                    'top': '225px',
+                    'left': '44.5%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '250px',
                     'height': '35px',
@@ -89,9 +99,9 @@ export default {
                'display': 'none',
                 show: {
                     'display': 'block',
-                    'position': 'relative',
-                    'top': '150px',
-                    'left': '0%',
+                    'position': 'absolute',
+                    'top': '225px',
+                    'left': '44.5%',
                     'background-color': 'rgba(60, 204, 102, 0.3)',
                     'width': '250px',
                     'height': '35px',
@@ -144,17 +154,20 @@ export default {
         },
         showWarning() {
             if (this.pupils === undefined) {
-                this.alerts.push(this.message.text);
-                this.switchFlashStyle = this.flashStyleWarning.show
+                this.alerts.push(this.message.warningText);
+                this.switchFlashStyle = this.flashStyleWarning.show;
+                this.alerts.splice(1, this.alerts.length);
             } else {
-                this.switchFlashStyle = this.flashStyleWarning
+                this.switchFlashStyle = this.flashStyleWarning;
             }
         },
         showInfo() {
            if (this.isUpdate === true) {
-               this.switchFlashStyle = this.flashStyleInfo.show
+               this.messagesInfo.push(this.message.infoText);
+               this.switchFlashStyle = this.flashStyleInfo.show;
+               this.messagesInfo.splice(1, this.messagesInfo.length);
            } else {
-               this.switchFlashStyle = this.flashStyleInfo
+               this.switchFlashStyle = this.flashStyleInfo;
            }
         }
     },
@@ -186,12 +199,17 @@ export default {
         height: 18px;
         background-color: #fffed5;
     }
-    .flash-container {
-        display: none;
-    }
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .error-explode p {
+        padding-top: 2px;
+    }
+    #selectClass {
+        margin-top: 10px;
+        background-color: #F2F2F2;
+        height: 37px;
     }
 
 </style>
