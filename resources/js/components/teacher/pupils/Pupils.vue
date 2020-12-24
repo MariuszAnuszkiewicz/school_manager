@@ -43,7 +43,8 @@
                                     <td class="text-center">{{ pupils[index].id }}</td>
                                     <td class="text-center">{{ user.id }}</td>
                                     <td class="text-center">{{ assign_classes[index].name }}</td>
-                                    <td class="text-center">{{ user.name.slice(0, 65) + ' ... '  }}</td>
+                                    <td v-if="user.name.length > 35" class="text-center">{{ user.name.slice(0, 35) + ' ... '  }}</td>
+                                    <td v-else class="text-center">{{ user.name }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -76,7 +77,7 @@ export default {
                     'display': 'block',
                     'position': 'relative',
                     'top': '100px',
-                    'left': '38.7%',
+                    'left': '0%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '250px',
                     'height': '35px',
@@ -90,7 +91,7 @@ export default {
                     'display': 'block',
                     'position': 'relative',
                     'top': '150px',
-                    'left': '38.7%',
+                    'left': '0%',
                     'background-color': 'rgba(60, 204, 102, 0.3)',
                     'width': '250px',
                     'height': '35px',

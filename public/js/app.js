@@ -4220,6 +4220,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4241,7 +4242,7 @@ __webpack_require__.r(__webpack_exports__);
           'display': 'block',
           'position': 'relative',
           'top': '100px',
-          'left': '38.7%',
+          'left': '0%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -4255,7 +4256,7 @@ __webpack_require__.r(__webpack_exports__);
           'display': 'block',
           'position': 'relative',
           'top': '150px',
-          'left': '38.7%',
+          'left': '0%',
           'background-color': 'rgba(60, 204, 102, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -46762,9 +46763,15 @@ var render = function() {
                               _vm._v(_vm._s(_vm.assign_classes[index].name))
                             ]),
                             _vm._v(" "),
-                            _c("td", { staticClass: "text-center" }, [
-                              _vm._v(_vm._s(user.name.slice(0, 65) + " ... "))
-                            ])
+                            user.name.length > 35
+                              ? _c("td", { staticClass: "text-center" }, [
+                                  _vm._v(
+                                    _vm._s(user.name.slice(0, 35) + " ... ")
+                                  )
+                                ])
+                              : _c("td", { staticClass: "text-center" }, [
+                                  _vm._v(_vm._s(user.name))
+                                ])
                           ])
                         })
                       ],
