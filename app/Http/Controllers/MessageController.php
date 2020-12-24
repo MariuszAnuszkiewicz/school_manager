@@ -13,18 +13,17 @@ class MessageController extends Controller
 {
     public function index(Request $request)
     {
-        $pupil = auth()->user()->pupil;
-        $messages = [];
-        $teachers = [];
-        foreach ($pupil->messages as $message) {
-            $messages[] = $message;
-            $teachers[] = Teacher::find($message->teacher_id)->user->name;
+        foreach (auth()->user()->pupil->messages as $message) {
+            $data['messages'][] = $message;
+            $data['teachers'][] = Teacher::find($message->teacher_id)->user->name;
         }
-        if ($request->ajax()) {
-            return response()->json([
-                'messages' => $this->paginate($messages),
-                'teachers' => $this->paginate($teachers)
-            ]);
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'messages' => $this->paginate($data['messages']),
+                    'teachers' => $data['teachers']
+                ]);
+            }
         }
         return view('pupil.messages');
     }
