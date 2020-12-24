@@ -1,10 +1,12 @@
 <template>
     <div class="container">
-        <div :style="switchStyleFlash" class="flex flash-container">
-           <p>{{ message.text }}</p>
-        </div>
-        <div :style="{ display: this.showHide }" class="row justify-content-center">
-            <div class="col-md-12 mt-5">
+        <div class="row justify-content-center">
+            <div :style="switchFlashStyle" class="flex flash-container">
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
+                </div>
+            </div>
+            <div v-if="alerts[0] === undefined" class="col mt-5">
                 <form @submit.prevent="submitForm()" method="POST" id="classesForm" class="form-horizontal">
                     <div class="col-md-12 text-center">
                         <select id="selectClass" class="mt-2">
@@ -16,14 +18,14 @@
                     </div>
                     <div class="col-md-12 mt-5">
                         <div class="card-body"><h5><strong class="header-text">List of Pupils</strong></h5></div>
-                        <table class="table table-bordered">
+                        <table class="table table-striped">
                             <thead class="bg-dark">
                                 <tr>
-                                    <td class="text-center text-white">Select Id</td>
-                                    <td class="text-center text-white">Pupil Id</td>
-                                    <td class="text-center text-white">User Id</td>
-                                    <td class="text-center text-white">Classes</td>
-                                    <td class="text-center text-white">Name</td>
+                                    <th class="text-center text-white">Select Id</th>
+                                    <th class="text-center text-white">Pupil Id</th>
+                                    <th class="text-center text-white">User Id</th>
+                                    <th class="text-center text-white">Classes</th>
+                                    <th class="text-center text-white">Name</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,7 +33,7 @@
                                    <label class="check-all-label"><strong>Select All</strong></label>
                                    <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
                                 </div>
-                                <tr v-for="(user, index) in users" :key="pupils[index].id">
+                                <tr v-for="(user, index) in users" :key="user.id">
                                     <td class="text-center">
                                         <input type="checkbox" class="pupil-select"
                                                v-model="selected"
@@ -61,16 +63,16 @@ export default {
             classes_in_school: {},
             assign_classes: {},
             selected: [],
+            alerts: [],
             isSelected: false,
-            switchStyleFlash: '',
-            showHide: '',
+            switchFlashStyle: '',
             isUpdate: false,
             message: {
-              text: 'There are no any pupils.',
+               text: 'There are no any pupils.',
             },
             flashStyleWarning: {
-               'display': 'none',
-                  show: {
+                'display': 'none',
+                show: {
                     'display': 'block',
                     'position': 'relative',
                     'top': '100px',
@@ -80,11 +82,11 @@ export default {
                     'height': '35px',
                     'text-align': 'center',
                     'border-radius': '7px',
-                  }
+                }
             },
             flashStyleInfo: {
                'display': 'none',
-                  show: {
+                show: {
                     'display': 'block',
                     'position': 'relative',
                     'top': '150px',
@@ -94,19 +96,19 @@ export default {
                     'height': '35px',
                     'text-align': 'center',
                     'border-radius': '7px',
-                  }
+                }
             },
         }
     },
     methods: {
-        getPupils() {
+        getSources() {
             axios.get('pupils').then(response => {
-                this.users = response.data.users
-                this.pupils = response.data.pupils
-                this.classes_in_school = response.data.classes_in_school
-                this.assign_classes = response.data.assign_classes
+                this.users = response.data.users;
+                this.pupils = response.data.pupils;
+                this.classes_in_school = response.data.classes_in_school;
+                this.assign_classes = response.data.assign_classes;
+                this.showWarning();
             });
-            this.showWarning()
         },
         submitForm() {
             if (this.selected.length > 0) {
@@ -116,10 +118,10 @@ export default {
                 axios.post('pupils', formData).then(response => {
                     this.message.text = response.data.message;
                 }).catch(function (error) {
-                    console.log(error.response.data)
+                    console.log(error.response.data);
                 });
                 this.isUpdate = true;
-                this.showInfo()
+                this.showInfo();
             }
         },
         selectAll() {
@@ -140,29 +142,30 @@ export default {
             }
         },
         showWarning() {
-            if (this.pupils.length < 1) {
-                this.showHide = 'none'
-                this.switchStyleFlash = this.flashStyleWarning.show
+            if (this.pupils === undefined) {
+                this.alerts.push(this.message.text);
+                this.switchFlashStyle = this.flashStyleWarning.show
             } else {
-                this.switchStyleFlash = this.flashStyleWarning
+                this.switchFlashStyle = this.flashStyleWarning
             }
         },
         showInfo() {
            if (this.isUpdate === true) {
-               this.switchStyleFlash = this.flashStyleInfo.show
+               this.switchFlashStyle = this.flashStyleInfo.show
            } else {
-               this.switchStyleFlash = this.flashStyleInfo
+               this.switchFlashStyle = this.flashStyleInfo
            }
         }
     },
     mounted() {
-        this.getPupils()
+        this.getSources()
         this.submitForm()
     },
 }
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }
@@ -189,4 +192,5 @@ export default {
         position: relative;
         top: 4px;
     }
+
 </style>
