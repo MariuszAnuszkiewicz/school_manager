@@ -4513,9 +4513,13 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.getSources();
 
-        _this2.messagesInfo.push(_this2.message.infoText);
+        if (_this2.selected.length > 0) {
+          _this2.messagesInfo.push(_this2.message.infoText);
 
-        _this2.switchFlashStyle = _this2.flashStyleInfo.show;
+          _this2.switchFlashStyle = _this2.flashStyleInfo.show;
+        }
+
+        _this2.messagesInfo.splice(1, _this2.messagesInfo.length);
       });
     },
     showWarning: function showWarning() {
