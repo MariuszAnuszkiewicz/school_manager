@@ -67,9 +67,7 @@ class TeacherController extends Controller
 
     public function selectedPupils(Request $request)
     {
-        $teacher = auth()->user()->teacher;
-        $data = [];
-        foreach ($teacher->pupils as $pupil) {
+        foreach (auth()->user()->teacher->pupils as $pupil) {
             $data['users'][] = isset($pupil->user) ? $pupil->user: null;
             $data['pupils'][] = isset($pupil) ? $pupil: null;
             $data['assign_classes'][] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
