@@ -5,7 +5,7 @@
               <div class="modal-dialog" role="document">
                   <div class="modal-content">
                       <div class="modal-header">
-                        <slot name="header"></slot>
+                          <slot name="header"></slot>
                       </div>
                       <div class="modal-body">
                           <div class="form-group">
@@ -17,12 +17,12 @@
                       <div class="modal-footer">
                           <slot name="footer"></slot>
                           <button type="button" id="update-message" class="btn btn-primary" @click.once="updateMessage()">
-                             Update
+                              Update
                           </button>
                       </div>
                       <div class="flash-wrapper">
                           <div v-if="this.confirm === true" :style="flashStyleInfo.show" class="flex flash-container">
-                             <p>{{ flashText }}</p>
+                             <p>{{ flashTextInfo }}</p>
                           </div>
                       </div>
                   </div>
@@ -39,7 +39,7 @@ export default {
       return {
           message: this.message_text,
           confirm: false,
-          flashText: '',
+          flashTextInfo: '',
           flashStyleInfo: {
               'display': 'none',
               show: {
@@ -52,10 +52,9 @@ export default {
                   'height': '35px',
                   'text-align': 'center',
                   'border-radius': '7px',
-                  'padding-bottom': '10px',
-             }
-         },
-     }
+              }
+          },
+      }
   },
   methods: {
       updateMessage() {
@@ -67,11 +66,11 @@ export default {
           }).then(function (response) {
               let updateMessageBtn = document.getElementById("update-message");
               updateMessageBtn.addEventListener('click', function () {
-                  _this.flashText = response.data.message;
+                  _this.flashTextInfo = response.data.message;
                   _this.confirm = true;
               }.bind(this), false);
           }).catch(function (error) {
-
+              console.log(error.response.data)
           });
       },
   },
@@ -82,34 +81,36 @@ export default {
 </script>
 
 <style scoped>
+
     .overlay {
-      position: absolute;
-      top: 200px;
-      width: 52%;
-      height: 75%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 5;
+        position: absolute;
+        top: 200px;
+        width: 52%;
+        height: 75%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 5;
     }
     .editMessage {
-      display: table;
-      position: relative;
-      top: 150px;
-      left: 33%;
-      width: 400px;
-      height: 300px;
-      background-color: #4c6fb1;
-      z-index: 9999;
-      padding: 10px 10px 10px 10px;
-      transition: opacity .3s ease;
+        display: table;
+        position: relative;
+        top: 150px;
+        left: 33%;
+        width: 400px;
+        height: 300px;
+        background-color: #4c6fb1;
+        z-index: 9999;
+        padding: 10px 10px 10px 10px;
+        transition: opacity .3s ease;
     }
     .flash-wrapper {
-      margin-bottom: 15px;
+        margin-bottom: 15px;
     }
     .flash-container {
-      display: none;
+        display: none;
     }
     .flash-container p {
-      position: relative;
-      top: 4px;
+        position: relative;
+        top: 5px;
     }
+
 </style>

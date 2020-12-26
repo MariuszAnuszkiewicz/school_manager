@@ -3127,19 +3127,23 @@ __webpack_require__.r(__webpack_exports__);
       teacher: {},
       my_messages: {},
       pupils: {},
-      errors: [],
+      alerts: [],
+      messagesInfo: [],
       selected: [],
       isSelected: false,
       showModal: false,
       switchFlashStyle: '',
-      showHide: '',
+      message: {
+        warningText: 'There are no any messages.',
+        infoText: 'Message has been deleted'
+      },
       flashStyleInfo: {
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '25px',
-          'left': '33%',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
           'background-color': 'rgba(60, 204, 102, 0.3)',
           'width': '333px',
           'height': '35px',
@@ -3152,9 +3156,9 @@ __webpack_require__.r(__webpack_exports__);
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '25px',
-          'left': '0%',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '333px',
           'height': '35px',
@@ -3162,14 +3166,11 @@ __webpack_require__.r(__webpack_exports__);
           'border-radius': '7px',
           'padding-bottom': '10px'
         }
-      },
-      message: {
-        text: ''
       }
     };
   },
   methods: {
-    getMyMessages: function getMyMessages(page) {
+    getSources: function getSources(page) {
       var _this = this;
 
       if (typeof page === 'undefined') {
@@ -3177,22 +3178,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       axios.get('my-messages?page=' + page).then(function (response) {
-        if (response.data.my_messages !== undefined) {
-          _this.my_messages = response.data.my_messages;
-        } else {
-          _this.errors.push(response.data.message);
-
-          for (var i = 0; i < _this.errors.length; i++) {
-            if (_this.errors[i] !== undefined) {
-              _this.switchFlashStyle = _this.flashStyleWarning.show;
-            } else {
-              _this.switchFlashStyle = _this.flashStyleInfo;
-            }
-          }
-        }
-
+        _this.my_messages = response.data.my_messages;
         _this.teacher = response.data.teacher;
         _this.pupils = response.data.pupils;
+
+        _this.showWarning();
       });
     },
     openModal: function openModal(message, message_id) {
@@ -3203,10 +3193,9 @@ __webpack_require__.r(__webpack_exports__);
     closeModal: function closeModal() {
       var _this2 = this;
 
-      this.showModal = false;
       setTimeout(function () {
-        _this2.showHide = 'block';
-      }, 500);
+        _this2.showModal = false;
+      }, 150);
     },
     selectAll: function selectAll() {
       this.isSelected = !this.isSelected;
@@ -3233,9 +3222,22 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('delete-messages', {
           selected: this.selected
         }).then(function (response) {
-          _this3.switchFlashStyle = _this3.flashStyleInfo.show;
-          _this3.message_text = response.data.message;
+          _this3.getSources();
+
+          _this3.showInfo();
         });
+      }
+    },
+    showWarning: function showWarning() {
+      if (this.my_messages === undefined) {
+        this.alerts.push(this.message.warningText);
+        this.switchFlashStyle = this.flashStyleWarning.show;
+      }
+    },
+    showInfo: function showInfo() {
+      if (this.my_messages.data.length > 0) {
+        this.messagesInfo.push(this.message.infoText);
+        this.switchFlashStyle = this.flashStyleInfo.show;
       }
     }
   },
@@ -3255,7 +3257,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getMyMessages();
+    this.getSources();
   }
 });
 
@@ -3586,7 +3588,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       message: this.message_text,
       confirm: false,
-      flashText: '',
+      flashTextInfo: '',
       flashStyleInfo: {
         'display': 'none',
         show: {
@@ -3598,8 +3600,7 @@ __webpack_require__.r(__webpack_exports__);
           'width': '333px',
           'height': '35px',
           'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
+          'border-radius': '7px'
         }
       }
     };
@@ -3615,10 +3616,12 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         var updateMessageBtn = document.getElementById("update-message");
         updateMessageBtn.addEventListener('click', function () {
-          _this.flashText = response.data.message;
+          _this.flashTextInfo = response.data.message;
           _this.confirm = true;
         }.bind(this), false);
-      })["catch"](function (error) {});
+      })["catch"](function (error) {
+        console.log(error.response.data);
+      });
     }
   },
   mounted: function mounted() {
@@ -9824,7 +9827,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-4cc8df9a] {\n    color: #8f8f8f;\n}\n.select-all[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.messages-select[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-4cc8df9a] {\n    display: none;\n}\n.flash-container p[data-v-4cc8df9a] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-4cc8df9a] {\n    color: #8f8f8f;\n}\n.select-all[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.messages-select[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-4cc8df9a] {\n    display: none;\n}\n.flash-container p[data-v-4cc8df9a] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-4cc8df9a] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -9881,7 +9884,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-4c218aac] {\n  position: absolute;\n  top: 200px;\n  width: 52%;\n  height: 75%;\n  background-color: rgba(0, 0, 0, 0.8);\n  z-index: 5;\n}\n.editMessage[data-v-4c218aac] {\n  display: table;\n  position: relative;\n  top: 150px;\n  left: 33%;\n  width: 400px;\n  height: 300px;\n  background-color: #4c6fb1;\n  z-index: 9999;\n  padding: 10px 10px 10px 10px;\n  transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-4c218aac] {\n  margin-bottom: 15px;\n}\n.flash-container[data-v-4c218aac] {\n  display: none;\n}\n.flash-container p[data-v-4c218aac] {\n  position: relative;\n  top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-4c218aac] {\n    position: absolute;\n    top: 200px;\n    width: 52%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.editMessage[data-v-4c218aac] {\n    display: table;\n    position: relative;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-4c218aac] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-4c218aac] {\n    display: none;\n}\n.flash-container p[data-v-4c218aac] {\n    position: relative;\n    top: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -44886,20 +44889,30 @@ var render = function() {
         _c(
           "div",
           { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          _vm._l(_vm.errors, function(error) {
-            return _vm.errors.length > 0
-              ? _c("div", { staticClass: "error-explode" }, [
-                  _c("p", [_vm._v(_vm._s(error))])
-                ])
-              : _c("div", [_c("p", [_vm._v(_vm._s(_vm.message_text))])])
-          }),
-          0
+          [
+            _vm._l(_vm.alerts, function(alert) {
+              return _vm.alerts !== undefined
+                ? _c("div", { staticClass: "error-explode" }, [
+                    _c("p", [_vm._v(_vm._s(alert))])
+                  ])
+                : _vm._e()
+            }),
+            _vm._v(" "),
+            _vm._l(_vm.messagesInfo, function(messageInfo) {
+              return _vm.messagesInfo !== undefined
+                ? _c("div", { staticClass: "error-explode" }, [
+                    _c("p", [_vm._v(_vm._s(messageInfo))])
+                  ])
+                : _vm._e()
+            })
+          ],
+          2
         ),
         _vm._v(" "),
-        _vm.errors.length === 0
+        _vm.alerts[0] === undefined
           ? _c(
               "div",
-              { staticClass: "col mt-5", style: { display: "block" } },
+              { staticClass: "col mt-5" },
               [
                 _vm._m(0),
                 _vm._v(" "),
@@ -45070,7 +45083,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("pagination", {
                   attrs: { data: _vm.my_messages },
-                  on: { "pagination-change-page": _vm.getMyMessages }
+                  on: { "pagination-change-page": _vm.getSources }
                 })
               ],
               1
@@ -45133,19 +45146,29 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-dark" }, [
+    return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Select Id")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Select Id")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Teacher Name")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Teacher Name")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Pupil Ids")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Pupil Ids")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("My Messages")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("My Messages")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Date")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Date Send")
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Actions")])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Actions")])
       ])
     ])
   },
@@ -45655,7 +45678,7 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                           Update\n                        "
+                        "\n                            Update\n                        "
                       )
                     ]
                   )
@@ -45671,7 +45694,7 @@ var render = function() {
                         staticClass: "flex flash-container",
                         style: _vm.flashStyleInfo.show
                       },
-                      [_c("p", [_vm._v(_vm._s(_vm.flashText))])]
+                      [_c("p", [_vm._v(_vm._s(_vm.flashTextInfo))])]
                     )
                   : _vm._e()
               ])

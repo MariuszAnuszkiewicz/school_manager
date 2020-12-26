@@ -2,24 +2,24 @@
     <div class="container">
         <div class="row justify-content-center">
             <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="errors.length > 0" v-for="error in errors" class="error-explode">
-                   <p>{{ error }}</p>
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
                 </div>
-                <div v-else>
-                   <p>{{ message_text }}</p>
+                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
+                    <p>{{ messageInfo }}</p>
                 </div>
             </div>
-            <div v-if="errors.length === 0" :style="{ display: 'block' }" class="col mt-5">
+            <div v-if="alerts[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">My Messages</strong></h5></div>
                 <table class="table table-striped">
-                    <thead class="thead-dark">
+                    <thead class="bg-dark">
                         <tr>
-                            <th class="text-center pt-2">Select Id</th>
-                            <th class="text-center pt-2">Teacher Name</th>
-                            <th class="text-center pt-2">Pupil Ids</th>
-                            <th class="text-center pt-2">My Messages</th>
-                            <th class="text-center pt-2">Date</th>
-                            <th class="text-center pt-2">Actions</th>
+                            <th class="text-center text-white">Select Id</th>
+                            <th class="text-center text-white">Teacher Name</th>
+                            <th class="text-center text-white">Pupil Ids</th>
+                            <th class="text-center text-white">My Messages</th>
+                            <th class="text-center text-white">Date Send</th>
+                            <th class="text-center text-white">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,7 +53,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <pagination :data="my_messages" @pagination-change-page="getMyMessages"></pagination>
+                <pagination :data="my_messages" @pagination-change-page="getSources"></pagination>
             </div>
         </div>
         <edit-message :message_text="message_text" :message_id="message_id" v-if="showModal === true">
@@ -79,67 +79,58 @@ export default {
             teacher: {},
             my_messages: {},
             pupils: {},
-            errors: [],
+            alerts: [],
+            messagesInfo: [],
             selected: [],
             isSelected: false,
             showModal: false,
             switchFlashStyle: '',
-            showHide: '',
+            message: {
+                warningText: 'There are no any messages.',
+                infoText: 'Message has been deleted',
+            },
             flashStyleInfo: {
-             'display': 'none',
+            'display': 'none',
                 show: {
-                  'display': 'block',
-                  'position': 'relative',
-                  'top': '25px',
-                  'left': '33%',
-                  'background-color': 'rgba(60, 204, 102, 0.3)',
-                  'width': '333px',
-                  'height': '35px',
-                  'text-align': 'center',
-                  'border-radius': '7px',
-                  'padding-bottom': '10px',
+                   'display': 'block',
+                   'position': 'absolute',
+                   'top': '110px',
+                   'left': '44.5%',
+                   'background-color': 'rgba(60, 204, 102, 0.3)',
+                   'width': '333px',
+                   'height': '35px',
+                   'text-align': 'center',
+                   'border-radius': '7px',
+                   'padding-bottom': '10px',
                 }
             },
             flashStyleWarning: {
-             'display': 'none',
+            'display': 'none',
                 show: {
-                  'display': 'block',
-                  'position': 'relative',
-                  'top': '25px',
-                  'left': '0%',
-                  'background-color': 'rgba(245, 34, 70, 0.3)',
-                  'width': '333px',
-                  'height': '35px',
-                  'text-align': 'center',
-                  'border-radius': '7px',
-                  'padding-bottom': '10px',
+                   'display': 'block',
+                   'position': 'absolute',
+                   'top': '110px',
+                   'left': '44.5%',
+                   'background-color': 'rgba(245, 34, 70, 0.3)',
+                   'width': '333px',
+                   'height': '35px',
+                   'text-align': 'center',
+                   'border-radius': '7px',
+                   'padding-bottom': '10px',
                 }
-            },
-            message: {
-               text: '',
             },
         }
     },
     methods: {
-        getMyMessages(page) {
+        getSources(page) {
             if (typeof page === 'undefined') {
                 page = 1;
             }
             axios.get('my-messages?page=' + page).then(response => {
-                if (response.data.my_messages !== undefined) {
-                    this.my_messages = response.data.my_messages
-                } else {
-                    this.errors.push(response.data.message)
-                    for (let i = 0; i < this.errors.length; i++) {
-                        if (this.errors[i] !== undefined) {
-                            this.switchFlashStyle = this.flashStyleWarning.show;
-                        } else {
-                            this.switchFlashStyle = this.flashStyleInfo;
-                        }
-                    }
-                }
+                this.my_messages = response.data.my_messages;
                 this.teacher = response.data.teacher;
-                this.pupils = response.data.pupils
+                this.pupils = response.data.pupils;
+                this.showWarning();
             });
         },
         openModal(message, message_id) {
@@ -148,10 +139,9 @@ export default {
             this.showModal = true;
         },
         closeModal() {
-            this.showModal = false;
             setTimeout(() => {
-              this.showHide = 'block';
-            }, 500);
+                this.showModal = false;
+            }, 150);
         },
         selectAll() {
             this.isSelected = !this.isSelected;
@@ -173,9 +163,21 @@ export default {
         deleteSelected() {
             if (this.selected.length > 0) {
                 axios.post('delete-messages', {selected: this.selected}).then(response => {
-                   this.switchFlashStyle = this.flashStyleInfo.show;
-                   this.message_text = response.data.message;
+                    this.getSources();
+                    this.showInfo();
                 });
+            }
+        },
+        showWarning() {
+            if (this.my_messages === undefined) {
+                this.alerts.push(this.message.warningText);
+                this.switchFlashStyle = this.flashStyleWarning.show;
+            }
+        },
+        showInfo() {
+            if (this.my_messages.data.length > 0) {
+                this.messagesInfo.push(this.message.infoText);
+                this.switchFlashStyle = this.flashStyleInfo.show;
             }
         },
     },
@@ -193,12 +195,13 @@ export default {
         }
     },
     mounted() {
-        this.getMyMessages()
+        this.getSources()
     }
 }
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }
@@ -224,6 +227,9 @@ export default {
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .error-explode p {
+        padding-top: 2px;
     }
 
 </style>
