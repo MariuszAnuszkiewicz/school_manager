@@ -4149,8 +4149,7 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (error) {});
       }
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -4421,6 +4420,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4431,19 +4435,20 @@ __webpack_require__.r(__webpack_exports__);
       isSelected: false,
       showModal: false,
       switchFlashStyle: '',
-      showHide: '',
       pupil_id: [],
-      errors: [],
+      alerts: [],
+      messagesInfo: [],
       message: {
-        text: 'There are no any pupils.'
+        warningText: 'There are no any pupils.',
+        infoText: 'Pupil has been deleted'
       },
       flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '38.7%',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -4455,9 +4460,9 @@ __webpack_require__.r(__webpack_exports__);
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '38.7%',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
           'background-color': 'rgba(60, 204, 102, 0.3)',
           'width': '250px',
           'height': '35px',
@@ -4468,7 +4473,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getPupils: function getPupils() {
+    getSources: function getSources() {
       var _this = this;
 
       axios.get('selected-pupils').then(function (response) {
@@ -4476,9 +4481,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.pupils = response.data.pupils;
         _this.assign_classes = response.data.assign_classes;
 
-        _this.errors.push(response.data.message);
-
-        _this.showWarning(_this.errors);
+        _this.showWarning();
       });
     },
     selectAll: function selectAll() {
@@ -4491,8 +4494,6 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.selected.splice(0, this.selected.length);
       }
-
-      console.log(this.selected);
     },
     unSelectAll: function unSelectAll() {
       if (this.selected.length > 0) {
@@ -4507,18 +4508,17 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('delete-pupils', {
         selected: this.selected
       }).then(function (response) {
-        _this2.getPupils();
+        _this2.getSources();
+
+        _this2.messagesInfo.push(_this2.message.infoText);
+
+        _this2.switchFlashStyle = _this2.flashStyleInfo.show;
       });
     },
-    showWarning: function showWarning(errors) {
-      for (var i = 0; i < errors.length; i++) {
-        if (errors[i] !== undefined) {
-          this.showHide = 'none';
-          this.switchFlashStyle = this.flashStyleWarning.show;
-        } else {
-          this.showHide = 'block';
-          this.switchFlashStyle = this.flashStyleWarning;
-        }
+    showWarning: function showWarning() {
+      if (this.users === undefined) {
+        this.alerts.push(this.message.warningText);
+        this.switchFlashStyle = this.flashStyleWarning.show;
       }
     },
     openModal: function openModal() {
@@ -4527,16 +4527,12 @@ __webpack_require__.r(__webpack_exports__);
       this.pupil_id.push(pupil);
     },
     closeModal: function closeModal() {
-      var _this3 = this;
-
       this.showModal = false;
-      setTimeout(function () {
-        _this3.showHide = 'block';
-      }, 500);
+      setTimeout(function () {}, 500);
     }
   },
   mounted: function mounted() {
-    this.getPupils();
+    this.getSources();
   }
 });
 
@@ -9961,7 +9957,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-4573ee6e] {\n    position: absolute;\n    top: 200px;\n    width: 52%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.sendMessage[data-v-4573ee6e] {\n    display: table;\n    position: relative;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-4573ee6e] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-4573ee6e] {\n    display: none;\n}\n.flash-container p[data-v-4573ee6e] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-4573ee6e] {\n    position: absolute;\n    top: 200px;\n    width: 52%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.sendMessage[data-v-4573ee6e] {\n    display: table;\n    position: relative;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-4573ee6e] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-4573ee6e] {\n    display: none;\n}\n.flash-container p[data-v-4573ee6e] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
 
 // exports
 
@@ -9999,7 +9995,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-8250827c] {\n    color: #8f8f8f;\n}\n.select-all[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-8250827c] {\n    display: none;\n}\n.flash-container p[data-v-8250827c] {\n    position: relative;\n    top: 4px;\n}\n#send-message[data-v-8250827c] {\n   padding-top: 2px;\n   margin-top: 2px;\n   padding-bottom: 2px;\n   margin-bottom: 2px;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-8250827c] {\n    color: #8f8f8f;\n}\n.select-all[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-8250827c] {\n    display: none;\n}\n.flash-container p[data-v-8250827c] {\n    position: relative;\n    top: 4px;\n}\n#send-message[data-v-8250827c] {\n   padding-top: 2px;\n   margin-top: 2px;\n   padding-bottom: 2px;\n   margin-bottom: 2px;\n}\n.error-explode p[data-v-8250827c] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -46667,7 +46663,7 @@ var render = function() {
                     _vm._v("Assign Class")
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "select-class" }, [
+                  _c("div", { staticClass: "select-container" }, [
                     _c(
                       "select",
                       {
@@ -46906,178 +46902,187 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-      ),
-      _vm._v(" "),
-      _vm.errors
-        ? _c(
-            "div",
-            {
-              staticClass: "row justify-content-center",
-              style: { display: _vm.showHide }
-            },
-            [
-              _c("div", { staticClass: "col mt-5" }, [
-                _vm._m(0),
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c(
+          "div",
+          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+          [
+            _vm._l(_vm.alerts, function(alert) {
+              return _vm.alerts !== undefined
+                ? _c("div", { staticClass: "error-explode" }, [
+                    _c("p", [_vm._v(_vm._s(alert))])
+                  ])
+                : _vm._e()
+            }),
+            _vm._v(" "),
+            _vm._l(_vm.messagesInfo, function(messageInfo) {
+              return _vm.messagesInfo !== undefined
+                ? _c("div", { staticClass: "error-explode" }, [
+                    _c("p", [_vm._v(_vm._s(messageInfo))])
+                  ])
+                : _vm._e()
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _vm.alerts[0] === undefined
+          ? _c("div", { staticClass: "col mt-5" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
                 _vm._v(" "),
-                _c("table", { staticClass: "table table-bordered" }, [
-                  _vm._m(1),
-                  _vm._v(" "),
-                  _c(
-                    "tbody",
-                    [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "custom-control text-center pt-2 bg-warning"
-                        },
-                        [
-                          _vm._m(2),
-                          _vm._v(" "),
-                          _c("input", {
-                            staticClass: "select-all d-inline-block ml-2",
-                            attrs: { type: "checkbox", id: "select-all" },
+                _c(
+                  "tbody",
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "custom-control text-center pt-2 bg-warning"
+                      },
+                      [
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "select-all ml-2",
+                          attrs: { type: "checkbox", id: "select-all" },
+                          on: {
+                            click: function($event) {
+                              return _vm.selectAll()
+                            }
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "col-md-12  text-center pt-2 pb-2 bg-light"
+                      },
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-outline-danger",
                             on: {
                               click: function($event) {
-                                return _vm.selectAll()
+                                return _vm.deleteSelected()
                               }
                             }
-                          })
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "col-md-12  text-center d-inline-block pt-2 pb-2 bg-light"
-                        },
-                        [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-outline-danger",
-                              on: {
-                                click: function($event) {
-                                  return _vm.deleteSelected()
-                                }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            attrs: { id: "send-multiple-message" },
+                            on: {
+                              click: function($event) {
+                                return _vm.openModal()
                               }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-envelope" })]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.users, function(user, index) {
+                      return _c("tr", { key: user.id }, [
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selected,
+                                expression: "selected"
+                              }
+                            ],
+                            staticClass: "pupil-select",
+                            attrs: { type: "checkbox" },
+                            domProps: {
+                              value: _vm.pupils[index].id,
+                              checked: Array.isArray(_vm.selected)
+                                ? _vm._i(_vm.selected, _vm.pupils[index].id) >
+                                  -1
+                                : _vm.selected
                             },
-                            [_c("i", { staticClass: "fas fa-trash" })]
-                          ),
-                          _vm._v(" "),
+                            on: {
+                              change: [
+                                function($event) {
+                                  var $$a = _vm.selected,
+                                    $$el = $event.target,
+                                    $$c = $$el.checked ? true : false
+                                  if (Array.isArray($$a)) {
+                                    var $$v = _vm.pupils[index].id,
+                                      $$i = _vm._i($$a, $$v)
+                                    if ($$el.checked) {
+                                      $$i < 0 &&
+                                        (_vm.selected = $$a.concat([$$v]))
+                                    } else {
+                                      $$i > -1 &&
+                                        (_vm.selected = $$a
+                                          .slice(0, $$i)
+                                          .concat($$a.slice($$i + 1)))
+                                    }
+                                  } else {
+                                    _vm.selected = $$c
+                                  }
+                                },
+                                function($event) {
+                                  return _vm.unSelectAll()
+                                }
+                              ]
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _vm._v(_vm._s(_vm.pupils[index].id))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _vm._v(_vm._s(user.id))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _vm._v(_vm._s(_vm.assign_classes[index].name))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _vm._v(_vm._s(user.name))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center" }, [
                           _c(
                             "button",
                             {
                               staticClass: "btn btn-success",
-                              attrs: { id: "send-multiple-message" },
+                              attrs: { id: "send-message" },
                               on: {
                                 click: function($event) {
-                                  return _vm.openModal()
+                                  return _vm.openModal(_vm.pupils[index].id)
                                 }
                               }
                             },
-                            [_c("i", { staticClass: "fas fa-comments" })]
+                            [_c("i", { staticClass: "fas fa-envelope" })]
                           )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _vm._l(_vm.users, function(user, index) {
-                        return _c("tr", { key: _vm.pupils[index].id }, [
-                          _c("td", { staticClass: "text-center pt-3" }, [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.selected,
-                                  expression: "selected"
-                                }
-                              ],
-                              staticClass: "pupil-select",
-                              attrs: { type: "checkbox" },
-                              domProps: {
-                                value: _vm.pupils[index].id,
-                                checked: Array.isArray(_vm.selected)
-                                  ? _vm._i(_vm.selected, _vm.pupils[index].id) >
-                                    -1
-                                  : _vm.selected
-                              },
-                              on: {
-                                change: [
-                                  function($event) {
-                                    var $$a = _vm.selected,
-                                      $$el = $event.target,
-                                      $$c = $$el.checked ? true : false
-                                    if (Array.isArray($$a)) {
-                                      var $$v = _vm.pupils[index].id,
-                                        $$i = _vm._i($$a, $$v)
-                                      if ($$el.checked) {
-                                        $$i < 0 &&
-                                          (_vm.selected = $$a.concat([$$v]))
-                                      } else {
-                                        $$i > -1 &&
-                                          (_vm.selected = $$a
-                                            .slice(0, $$i)
-                                            .concat($$a.slice($$i + 1)))
-                                      }
-                                    } else {
-                                      _vm.selected = $$c
-                                    }
-                                  },
-                                  function($event) {
-                                    return _vm.unSelectAll()
-                                  }
-                                ]
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(_vm.pupils[index].id))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(user.id))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(_vm.assign_classes[index].name))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center pt-3" }, [
-                            _vm._v(_vm._s(user.name))
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "text-center" }, [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                attrs: { id: "send-message" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.openModal(_vm.pupils[index].id)
-                                  }
-                                }
-                              },
-                              [_c("i", { staticClass: "fas fa-comments" })]
-                            )
-                          ])
                         ])
-                      })
-                    ],
-                    2
-                  )
-                ])
+                      ])
+                    })
+                  ],
+                  2
+                )
               ])
-            ]
-          )
-        : _vm._e(),
+            ])
+          : _vm._e()
+      ]),
       _vm._v(" "),
       _vm.showModal === true
         ? _c(
@@ -47131,25 +47136,27 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Select Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Pupil Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
-          _vm._v("Classes")
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Assign Class")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Name")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("User Name")
+        ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Actions")])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Actions")])
       ])
     ])
   },

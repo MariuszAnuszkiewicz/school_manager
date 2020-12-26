@@ -62,7 +62,7 @@ export default {
             let lastId = this.pupil_id.length - 1;
             if (this.message != '') {
                 axios.post('send-message',
-                    {
+                   {
                       selected: this.selected,
                       pupil_id: this.pupil_id[lastId],
                       message: this.message,
@@ -76,13 +76,11 @@ export default {
             }
         },
     },
-    mounted() {
-
-    },
 }
 </script>
 
 <style scoped>
+
     .overlay {
         position: absolute;
         top: 200px;
@@ -102,7 +100,6 @@ export default {
         z-index: 9999;
         padding: 10px 10px 10px 10px;
         transition: opacity .3s ease;
-
     }
     .flash-wrapper {
         margin-bottom: 15px;
@@ -114,4 +111,5 @@ export default {
         position: relative;
         top: 4px;
     }
+
 </style>

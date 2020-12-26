@@ -1,34 +1,39 @@
 <template>
     <div class="container">
-        <div :style="switchFlashStyle" class="flex flash-container">
-          <p>{{ message.text }}</p>
-        </div>
-        <div v-if="errors" :style="{ display: showHide }" class="row justify-content-center">
-            <div class="col mt-5">
+        <div class="row justify-content-center">
+            <div :style="switchFlashStyle" class="flex flash-container">
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
+                </div>
+                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
+                    <p>{{ messageInfo }}</p>
+                </div>
+            </div>
+            <div v-if="alerts[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Selected Pupils</strong></h5></div>
-                <table class="table table-bordered">
+                <table class="table table-striped">
                     <thead class="bg-dark">
                         <tr>
-                            <td class="text-center text-white">Select Id</td>
-                            <td class="text-center text-white">Pupil Id</td>
-                            <td class="text-center text-white">User Id</td>
-                            <td class="text-center text-white">Classes</td>
-                            <td class="text-center text-white">Name</td>
-                            <td class="text-center text-white">Actions</td>
+                            <th class="text-center text-white">Select Id</th>
+                            <th class="text-center text-white">Pupil Id</th>
+                            <th class="text-center text-white">User Id</th>
+                            <th class="text-center text-white">Assign Class</th>
+                            <th class="text-center text-white">User Name</th>
+                            <th class="text-center text-white">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <div class="custom-control text-center pt-2 bg-warning">
                             <label class="check-all-label"><strong>Select All</strong></label>
-                            <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
+                            <input @click="selectAll()" type="checkbox" id="select-all" class="select-all ml-2">
                         </div>
-                        <div class="col-md-12  text-center d-inline-block pt-2 pb-2 bg-light">
+                        <div class="col-md-12  text-center pt-2 pb-2 bg-light">
                             <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
                             <button id="send-multiple-message" class="btn btn-success" @click="openModal()">
-                              <i class="fas fa-comments"></i>
+                               <i class="fas fa-envelope"></i>
                             </button>
                         </div>
-                        <tr v-for="(user, index) in users" :key="pupils[index].id">
+                        <tr v-for="(user, index) in users" :key="user.id">
                             <td class="text-center pt-3">
                                 <input type="checkbox" class="pupil-select"
                                        v-model="selected"
@@ -40,9 +45,9 @@
                             <td class="text-center pt-3">{{ assign_classes[index].name }}</td>
                             <td class="text-center pt-3">{{ user.name }}</td>
                             <td class="text-center">
-                               <button id="send-message" class="btn btn-success" @click="openModal(pupils[index].id)">
-                                  <i class="fas fa-comments"></i>
-                               </button>
+                                <button id="send-message" class="btn btn-success" @click="openModal(pupils[index].id)">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -71,19 +76,20 @@ export default {
             isSelected: false,
             showModal: false,
             switchFlashStyle: '',
-            showHide: '',
             pupil_id: [],
-            errors: [],
+            alerts: [],
+            messagesInfo: [],
             message: {
-               text: 'There are no any pupils.',
+                warningText: 'There are no any pupils.',
+                infoText: 'Pupil has been deleted',
             },
             flashStyleWarning: {
               'display': 'none',
                 show: {
                   'display': 'block',
-                  'position': 'relative',
-                  'top': '100px',
-                  'left': '38.7%',
+                  'position': 'absolute',
+                  'top': '110px',
+                  'left': '44.5%',
                   'background-color': 'rgba(245, 34, 70, 0.3)',
                   'width': '250px',
                   'height': '35px',
@@ -95,9 +101,9 @@ export default {
               'display': 'none',
                 show: {
                   'display': 'block',
-                  'position': 'relative',
-                  'top': '100px',
-                  'left': '38.7%',
+                  'position': 'absolute',
+                  'top': '110px',
+                  'left': '44.5%',
                   'background-color': 'rgba(60, 204, 102, 0.3)',
                   'width': '250px',
                   'height': '35px',
@@ -108,13 +114,12 @@ export default {
         }
     },
     methods: {
-        getPupils() {
+        getSources() {
             axios.get('selected-pupils').then(response => {
-                this.users = response.data.users
-                this.pupils = response.data.pupils
-                this.assign_classes = response.data.assign_classes
-                this.errors.push(response.data.message);
-                this.showWarning(this.errors)
+                this.users = response.data.users;
+                this.pupils = response.data.pupils;
+                this.assign_classes = response.data.assign_classes;
+                this.showWarning();
             });
         },
         selectAll() {
@@ -126,7 +131,6 @@ export default {
             } else {
                this.selected.splice(0, this.selected.length);
             }
-            console.log(this.selected);
         },
         unSelectAll() {
             if (this.selected.length > 0) {
@@ -137,18 +141,15 @@ export default {
         },
         deleteSelected() {
             axios.post('delete-pupils', {selected: this.selected}).then(response => {
-               this.getPupils()
+                this.getSources()
+                this.messagesInfo.push(this.message.infoText);
+                this.switchFlashStyle = this.flashStyleInfo.show;
             });
         },
-        showWarning(errors) {
-            for (let i = 0; i < errors.length; i++) {
-                if (errors[i] !== undefined) {
-                   this.showHide = 'none';
-                   this.switchFlashStyle = this.flashStyleWarning.show;
-                } else {
-                   this.showHide = 'block';
-                   this.switchFlashStyle = this.flashStyleWarning
-                }
+        showWarning() {
+            if (this.users === undefined) {
+                this.alerts.push(this.message.warningText);
+                this.switchFlashStyle = this.flashStyleWarning.show;
             }
         },
         openModal(pupil = null) {
@@ -158,17 +159,17 @@ export default {
         closeModal() {
             this.showModal = false;
             setTimeout(() => {
-              this.showHide = 'block';
             }, 500);
         },
     },
     mounted() {
-        this.getPupils()
+        this.getSources()
     },
 }
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }
@@ -201,6 +202,8 @@ export default {
        padding-bottom: 2px;
        margin-bottom: 2px;
     }
-
+    .error-explode p {
+        padding-top: 2px;
+    }
 
 </style>
