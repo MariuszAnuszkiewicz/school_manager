@@ -69,7 +69,7 @@ export default {
                     this.flashText = response.data.message;
                     this.confirm = true;
                 }).catch(function (error) {
-
+                    console.log(error.response.data);
                 });
             }
         },
@@ -78,6 +78,7 @@ export default {
 </script>
 
 <style scoped>
+
     .overlay {
         position: absolute;
         top: 200px;

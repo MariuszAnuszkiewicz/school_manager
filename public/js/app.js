@@ -2987,13 +2987,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       pupils: {},
       selectedEmails: [],
       isSelected: false,
-      showModal: false
+      showModal: false,
+      alerts: [],
+      switchFlashStyle: '',
+      message: {
+        warningText: 'There are no any pupils.'
+      },
+      flashStyleWarning: {
+        'display': 'none',
+        show: {
+          'display': 'block',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
+          'background-color': 'rgba(245, 34, 70, 0.3)',
+          'width': '250px',
+          'height': '35px',
+          'text-align': 'center',
+          'border-radius': '7px'
+        }
+      }
     };
   },
   methods: {
@@ -3006,6 +3030,8 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('list-emails?page=' + page).then(function (response) {
         _this.pupils = response.data.pupils;
+
+        _this.showWarning();
       });
     },
     selectAll: function selectAll() {
@@ -3025,10 +3051,15 @@ __webpack_require__.r(__webpack_exports__);
     closeModal: function closeModal() {
       var _this2 = this;
 
-      this.showModal = false;
       setTimeout(function () {
-        _this2.showHide = 'block';
-      }, 500);
+        _this2.showModal = false;
+      }, 150);
+    },
+    showWarning: function showWarning() {
+      if (this.pupils === undefined) {
+        this.alerts.push(this.message.warningText);
+        this.switchFlashStyle = this.flashStyleWarning.show;
+      }
     }
   },
   mounted: function mounted() {
@@ -4060,7 +4091,9 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (response) {
           _this.flashText = response.data.message;
           _this.confirm = true;
-        })["catch"](function (error) {});
+        })["catch"](function (error) {
+          console.log(error.response.data);
+        });
       }
     }
   }
@@ -44670,118 +44703,135 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col mt-5" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("table", { staticClass: "table table-striped" }, [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "tbody",
-              [
-                _c(
-                  "div",
-                  { staticClass: "custom-control text-center pt-2 bg-warning" },
-                  [
-                    _vm._m(2),
-                    _vm._v(" "),
-                    _c("input", {
-                      staticClass: "select-all d-inline-block ml-2",
-                      attrs: { type: "checkbox", id: "select-all" },
-                      on: {
-                        click: function($event) {
-                          return _vm.selectAll()
-                        }
-                      }
-                    })
-                  ]
-                ),
+        _c(
+          "div",
+          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+          _vm._l(_vm.alerts, function(alert) {
+            return _vm.alerts !== undefined
+              ? _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(alert))])
+                ])
+              : _vm._e()
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _vm.alerts[0] === undefined
+          ? _c("div", { staticClass: "col mt-5" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  {
-                    staticClass:
-                      "col-md-12 text-center d-inline-block pt-2 pb-2 bg-light"
-                  },
+                  "tbody",
                   [
                     _c(
-                      "button",
+                      "div",
                       {
-                        staticClass: "btn btn-outline-success",
-                        on: {
-                          click: function($event) {
-                            return _vm.openModal()
-                          }
-                        }
+                        staticClass:
+                          "custom-control text-center pt-2 bg-warning"
                       },
-                      [_c("i", { staticClass: "fas fa-mail-bulk" })]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _vm._l(_vm.pupils.data, function(pupil) {
-                  return _c("tr", { key: pupil.id }, [
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.selectedEmails,
-                            expression: "selectedEmails"
-                          }
-                        ],
-                        staticClass: "pupils-select",
-                        attrs: { type: "checkbox" },
-                        domProps: {
-                          value: pupil.email,
-                          checked: Array.isArray(_vm.selectedEmails)
-                            ? _vm._i(_vm.selectedEmails, pupil.email) > -1
-                            : _vm.selectedEmails
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$a = _vm.selectedEmails,
-                              $$el = $event.target,
-                              $$c = $$el.checked ? true : false
-                            if (Array.isArray($$a)) {
-                              var $$v = pupil.email,
-                                $$i = _vm._i($$a, $$v)
-                              if ($$el.checked) {
-                                $$i < 0 &&
-                                  (_vm.selectedEmails = $$a.concat([$$v]))
-                              } else {
-                                $$i > -1 &&
-                                  (_vm.selectedEmails = $$a
-                                    .slice(0, $$i)
-                                    .concat($$a.slice($$i + 1)))
-                              }
-                            } else {
-                              _vm.selectedEmails = $$c
+                      [
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "select-all ml-2",
+                          attrs: { type: "checkbox", id: "select-all" },
+                          on: {
+                            click: function($event) {
+                              return _vm.selectAll()
                             }
                           }
-                        }
-                      })
-                    ]),
+                        })
+                      ]
+                    ),
                     _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(pupil.id))
-                    ]),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "col-md-12 text-center pt-2 pb-2 bg-light"
+                      },
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-outline-success",
+                            on: {
+                              click: function($event) {
+                                return _vm.openModal()
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-mail-bulk" })]
+                        )
+                      ]
+                    ),
                     _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(pupil.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center pt-3" }, [
-                      _vm._v(_vm._s(pupil.email))
-                    ])
-                  ])
-                })
-              ],
-              2
-            )
-          ])
-        ])
+                    _vm._l(_vm.pupils.data, function(pupil) {
+                      return _c("tr", { key: pupil.id }, [
+                        _c("td", { staticClass: "text-center pt-3" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selectedEmails,
+                                expression: "selectedEmails"
+                              }
+                            ],
+                            staticClass: "pupils-select",
+                            attrs: { type: "checkbox" },
+                            domProps: {
+                              value: pupil.email,
+                              checked: Array.isArray(_vm.selectedEmails)
+                                ? _vm._i(_vm.selectedEmails, pupil.email) > -1
+                                : _vm.selectedEmails
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.selectedEmails,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = pupil.email,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      (_vm.selectedEmails = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.selectedEmails = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.selectedEmails = $$c
+                                }
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center" }, [
+                          _vm._v(_vm._s(pupil.id))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center" }, [
+                          _vm._v(_vm._s(pupil.name))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center" }, [
+                          _vm._v(_vm._s(pupil.email))
+                        ])
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ])
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("pagination", {
@@ -44837,21 +44887,19 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white pt-2" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Select Email")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white pt-2" }, [
-          _vm._v("Id")
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white pt-2" }, [
-          _vm._v("Name")
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("User Name")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white pt-2" }, [
-          _vm._v("Email")
-        ])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Email")])
       ])
     ])
   },
