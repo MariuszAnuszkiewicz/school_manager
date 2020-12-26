@@ -142,8 +142,11 @@ export default {
         deleteSelected() {
             axios.post('delete-pupils', {selected: this.selected}).then(response => {
                 this.getSources()
-                this.messagesInfo.push(this.message.infoText);
-                this.switchFlashStyle = this.flashStyleInfo.show;
+                if (this.selected.length > 0) {
+                    this.messagesInfo.push(this.message.infoText);
+                    this.switchFlashStyle = this.flashStyleInfo.show;
+                }
+                this.messagesInfo.splice(1, this.messagesInfo.length);
             });
         },
         showWarning() {
