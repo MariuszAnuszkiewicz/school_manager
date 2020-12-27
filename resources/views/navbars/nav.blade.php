@@ -74,9 +74,16 @@
                         </div>
                         @if (Request::segment(1) === 'user_profile')
                             <div class="home-link">
-                                <div>
-                                    <a class="navbar-link" href="{{ url('/teacher/pupils') }}">Home</a>
-                                </div>
+                                @if (Auth::user()->roles[0]->name == 'pupil')
+                                    <div>
+                                        <a class="navbar-link" href="{{ url('/pupil/events') }}">Home</a>
+                                    </div>
+                                @endif
+                                @if (Auth::user()->roles[0]->name == 'teacher')
+                                    <div>
+                                        <a class="navbar-link" href="{{ url('/teacher/pupils') }}">Home</a>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                         <a class="dropdown-item" href="{{ route('logout') }}"
