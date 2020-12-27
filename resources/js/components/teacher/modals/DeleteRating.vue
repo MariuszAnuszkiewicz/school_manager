@@ -34,17 +34,17 @@
                                     <tbody>
                                         <tr class="bg-light" v-for="(rating, index) in ratings">
                                             <td class="text-danger">
-                                                <input type="checkbox" class="rating-select ml-2 mt-2"
+                                                <input type="checkbox" class="rating-select ml-2 mt-3"
                                                        v-model="selected"
                                                        :value="rating + '|' + createAt[index]">
                                             </td>
                                             <td>
                                                 <strong class="text-danger">
-                                                    <p class="p-rating text-left pt-2 pl-3" :data-rating="rating">{{ rating }}</p>
+                                                    <p class="p-rating text-left pt-3 pl-3" :data-rating="rating">{{ rating }}</p>
                                                 </strong>
                                             </td>
                                             <td>
-                                                <p class="text-center pt-2 pl-3">
+                                                <p class="text-center pt-3 pl-3">
                                                     {{ createAt[index] | formatDate(createAt[index]) }}
                                                 </p>
                                             </td>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="modal-footer">
                         <slot name="footer"></slot>
-                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="deleteMultipleTables()">
+                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="deletePupilRating()">
                             Delete Rating
                         </button>
                     </div>
@@ -136,26 +136,6 @@ export default {
                 });
             }
         },
-        deleteRatingSubject() {
-            if (this.selected.length > 0) {
-                axios.post('delete-rating-subject',
-                    {
-                        userId: this.userId,
-                        rating: this.selected,
-                        subject: this.subjects[0].id,
-                    }
-                ).then(response => {
-                    this.flashText = response.data.message;
-                    this.confirm = true;
-                }).catch(function (error) {
-                    console.log(error.response.data)
-                });
-            }
-        },
-        deleteMultipleTables(){
-            this.deletePupilRating();
-            this.deleteRatingSubject();
-        }
     },
     filters: {
         formatDate(value) {

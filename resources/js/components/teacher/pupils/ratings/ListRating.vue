@@ -6,20 +6,20 @@
                 <table class="table table-striped">
                     <thead class="bg-dark">
                         <tr>
-                            <td class="text-center text-white">User Id</td>
-                            <td class="text-center text-white">User Name</td>
-                            <td class="text-center text-white">Subject</td>
-                            <td class="text-center text-white">Ratings</td>
-                            <td class="text-center text-white">Action</td>
+                            <th class="text-center text-white">User Id</th>
+                            <th class="text-center text-white">User Name</th>
+                            <th class="text-center text-white">Subject</th>
+                            <th class="text-center text-white">Ratings</th>
+                            <th class="text-center text-white">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="user in users.data" :key="user.id">
                             <td class="text-center pt-3">{{ user.id }}</td>
                             <td class="text-center pt-3">{{ user.name }}</td>
-                            <td class="text-center pt-3">{{ subject[0].name }}</td>
+                            <td class="text-center pt-3">{{ subject.name }}</td>
                             <td v-if="user.id" class="text-center pt-3 text-danger"><b>{{ ratings[user.id] }}</b></td>
-                            <td class="text-center pt-3">
+                            <td class="text-center">
                                 <a v-bind:href="'detail-rating/' + user.id">
                                     <button class="btn btn-info"><i class="fas fa-eye"></i></button>
                                 </a>
@@ -61,9 +61,9 @@ export default {
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }
-
 
 </style>

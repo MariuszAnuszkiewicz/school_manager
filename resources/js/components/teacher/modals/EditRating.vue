@@ -36,7 +36,7 @@
                                                 <td class="text-danger" @click.once.prevent="onRatingOptions($event, index)">
                                                     <div v-if="onOptions === false">
                                                         <strong>
-                                                            <p class="p-rating text-left pt-2 pl-3"
+                                                            <p class="p-rating text-left pt-3 pl-3"
                                                                :data-rating="rating"
                                                                :data-create="createAt">{{ rating }}
                                                             </p>
@@ -57,12 +57,12 @@
                                                 </td>
                                                 <td>
                                                     <div v-if="onOptions === true && dataIndex === index">
-                                                        <p class="text-center pt-2 pl-3">
+                                                        <p class="text-center pt-3 pl-3">
                                                             {{ createAt[index] | formatDate(createAt[index]) }}
                                                         </p>
                                                     </div>
                                                     <div v-if="onOptions === false">
-                                                        <p class="text-center pt-2 pl-3">
+                                                        <p class="text-center pt-3 pl-3">
                                                             {{ createAt[index] | formatDate(createAt[index]) }}
                                                         </p>
                                                     </div>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="modal-footer">
                                 <slot name="footer"></slot>
-                                <button type="button" id="update-rating" class="btn btn-primary" @click.once.prevent="updateMultipleTables()">
+                                <button type="button" id="update-rating" class="btn btn-primary" @click.once.prevent="pupilRatingUpdate()">
                                     Update Rating
                                 </button>
                             </div>
@@ -154,24 +154,6 @@ export default {
             }).catch(function (error) {
                 console.log(error.response.data)
             });
-        },
-        ratingSubjectUpdate() {
-            var form = this.$refs.ratingForm;
-            let formData = new FormData(form);
-            formData.append('dataRating', this.dataRating);
-            formData.append('dataCreate', this.dataCreate);
-            formData.append('rating', this.editRating);
-            formData.append('subject', this.subjects[0].id);
-            axios.post('update-rating-subject', formData).then(response => {
-                this.flashText = response.data.message;
-                this.confirm = true;
-            }).catch(function (error) {
-                console.log(error.response.data)
-            });
-        },
-        updateMultipleTables() {
-            this.pupilRatingUpdate();
-            this.ratingSubjectUpdate();
         },
         onRatingOptions(event, index) {
             this.onOptions = true;

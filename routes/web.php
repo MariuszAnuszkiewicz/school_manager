@@ -86,12 +86,9 @@ Route::get('/', function () {
         Route::post('send-emails', [TeacherController::class, 'sendEmails']);
         Route::get('assign-rating', [TeacherController::class, 'assignRating']);
         Route::post('save-pupil-rating', [TeacherController::class, 'savePupilRating']);
-        Route::post('save-rating-subject', [TeacherController::class, 'saveRatingSubject']);
         Route::get('pupil-rating/{id}', [TeacherController::class, 'getRatingsByPupilId'])->where('id', '[0-9]+');
         Route::post('update-pupil-rating', [TeacherController::class, 'updatePupilRating']);
-        Route::post('update-rating-subject', [TeacherController::class, 'updateRatingSubject']);
         Route::post('delete-pupil-rating', [TeacherController::class, 'deletePupilRating']);
-        Route::post('delete-rating-subject', [TeacherController::class, 'deleteRatingSubject']);
         Route::get('list-ratings', [TeacherController::class, 'listRatings']);
         Route::get('detail-rating/{id}', [TeacherController::class, 'detailRating'])->where('id', '[0-9]+');
 

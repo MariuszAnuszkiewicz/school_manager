@@ -2,20 +2,20 @@
     <div class="container">
         <div class="row justify-content-center">
             <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="errors.length > 0" v-for="error in errors" class="error-explode">
-                    <p>{{ error }}</p>
+                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                    <p>{{ alert }}</p>
                 </div>
             </div>
-            <div v-if="errors.length > 0" :style="{ display: showHide }" class="col mt-5">
+            <div v-if="alerts[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Detail Ratings</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
                         <tr>
-                            <td class="text-center text-white">User Id</td>
-                            <td class="text-center text-white">User Name</td>
-                            <td class="text-center text-white">Subject</td>
-                            <td class="text-center text-white">Ratings</td>
-                            <td class="text-center text-white">Created At</td>
+                            <th class="text-center text-white">User Id</th>
+                            <th class="text-center text-white">User Name</th>
+                            <th class="text-center text-white">Subject</th>
+                            <th class="text-center text-white">Ratings</th>
+                            <th class="text-center text-white">Date Created</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,16 +41,18 @@ export default {
             ratings: {},
             subject: {},
             createdAt: {},
-            errors: [],
+            alerts: [],
             switchFlashStyle: '',
-            showHide: '',
+            message: {
+                warningText: 'There are no any ratings for pupil.',
+            },
             flashStyleWarning: {
                 'display': 'none',
                 show: {
                     'display': 'block',
-                    'position': 'relative',
-                    'top': '100px',
-                    'left': '0%',
+                    'position': 'absolute',
+                    'top': '110px',
+                    'left': '44.5%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '260px',
                     'height': '35px',
@@ -68,30 +70,39 @@ export default {
                 this.ratings = response.data.ratings;
                 this.subject = response.data.subject;
                 this.createdAt = response.data.createdAt;
-                this.errors.push(response.data.message);
-                for (let i = 0; i < this.errors.length; i++) {
-                    if (this.errors[i] !== undefined) {
-                        this.showHide = 'none',
-                        this.switchFlashStyle = this.flashStyleWarning.show;
-                    } else {
-                        this.showHide = 'block',
-                        this.switchFlashStyle = this.flashStyleInfo;
-                    }
-                }
+                this.showWarning();
             });
+        },
+        showWarning() {
+            if (this.ratings === undefined) {
+                this.alerts.push(this.message.warningText);
+                this.switchFlashStyle = this.flashStyleWarning.show;
+            }
         },
     },
     filters: {
         formatDate(value) {
             var date = new Date(value);
+            let timestamps = '';
             let minutesFormat = '';
+
             if (date.getMinutes() < 10) {
                 minutesFormat += "0" + date.getMinutes();
             } else {
                 minutesFormat += date.getMinutes();
+                if (value === null) {
+                    return timestamps = "";
+                } else {
+                    return timestamps +=
+                        " " + date.getFullYear() +
+                        "-" + (date.getMonth() + 1) +
+                        "-" + date.getDate() +
+                        " " + date.getHours() +
+                        ":" + minutesFormat;
+                }
+
+
             }
-            let timestamps = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getHours();
-            return timestamps += " " + date.getHours() + ":" + minutesFormat
         }
     },
     mounted() {
@@ -101,10 +112,12 @@ export default {
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }
     .error-explode p {
-        padding-top: 3px;
+        padding-top: 4px;
     }
+
 </style>
