@@ -40,7 +40,7 @@
                     </div>
                     <div class="modal-footer">
                         <slot name="footer"></slot>
-                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="saveMultipleTables()">
+                        <button type="button" id="save-rating" class="btn btn-primary" @click.once.prevent="savePupilRating()">
                             Save Rating
                         </button>
                     </div>
@@ -97,26 +97,6 @@ export default {
                     console.log(error.response.data)
                 });
             }
-        },
-        saveSubjectRating() {
-            if (this.rating.length > 0) {
-                axios.post('save-rating-subject',
-                    {
-                        userId: this.userId,
-                        rating: this.rating,
-                        subject: this.subjects[0].id,
-                    }
-                ).then(response => {
-                    this.flashText = response.data.message;
-                    this.confirm = true;
-                }).catch(function (error) {
-                    console.log(error.response.data)
-                });
-            }
-        },
-        saveMultipleTables(){
-            this.savePupilRating();
-            this.saveSubjectRating();
         },
     },
 }

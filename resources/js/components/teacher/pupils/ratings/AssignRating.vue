@@ -6,9 +6,9 @@
                 <table class="table table-striped">
                     <thead class="bg-dark">
                         <tr>
-                            <td class="text-center text-white">User Id</td>
-                            <td class="text-center text-white">Name</td>
-                            <td class="text-center text-white">Action</td>
+                            <th class="text-center text-white">User Id</th>
+                            <th class="text-center text-white">User Name</th>
+                            <th class="text-center text-white">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,7 +29,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <pagination :data="users" @pagination-change-page="getUsers"></pagination>
+                <pagination :data="users" @pagination-change-page="getSources"></pagination>
             </div>
         </div>
         <save-rating v-if="showModal.save === true"
@@ -94,7 +94,7 @@ export default {
         }
     },
     methods: {
-        getUsers(page = null) {
+        getSources(page = null) {
             if (typeof page === 'undefined') {
                 page = 1;
             }
@@ -135,12 +135,13 @@ export default {
         },
     },
     mounted() {
-        this.getUsers()
+        this.getSources()
     }
 }
 </script>
 
 <style scoped>
+
     .header-text {
         color: #8f8f8f;
     }

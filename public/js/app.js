@@ -3522,26 +3522,6 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response.data);
         });
       }
-    },
-    deleteRatingSubject: function deleteRatingSubject() {
-      var _this2 = this;
-
-      if (this.selected.length > 0) {
-        axios.post('delete-rating-subject', {
-          userId: this.userId,
-          rating: this.selected,
-          subject: this.subjects[0].id
-        }).then(function (response) {
-          _this2.flashText = response.data.message;
-          _this2.confirm = true;
-        })["catch"](function (error) {
-          console.log(error.response.data);
-        });
-      }
-    },
-    deleteMultipleTables: function deleteMultipleTables() {
-      this.deletePupilRating();
-      this.deleteRatingSubject();
     }
   },
   filters: {
@@ -3829,26 +3809,6 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response.data);
       });
     },
-    ratingSubjectUpdate: function ratingSubjectUpdate() {
-      var _this2 = this;
-
-      var form = this.$refs.ratingForm;
-      var formData = new FormData(form);
-      formData.append('dataRating', this.dataRating);
-      formData.append('dataCreate', this.dataCreate);
-      formData.append('rating', this.editRating);
-      formData.append('subject', this.subjects[0].id);
-      axios.post('update-rating-subject', formData).then(function (response) {
-        _this2.flashText = response.data.message;
-        _this2.confirm = true;
-      })["catch"](function (error) {
-        console.log(error.response.data);
-      });
-    },
-    updateMultipleTables: function updateMultipleTables() {
-      this.pupilRatingUpdate();
-      this.ratingSubjectUpdate();
-    },
     onRatingOptions: function onRatingOptions(event, index) {
       this.onOptions = true;
       this.dataRating = event.target.getAttribute('data-rating');
@@ -3987,26 +3947,6 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response.data);
         });
       }
-    },
-    saveSubjectRating: function saveSubjectRating() {
-      var _this2 = this;
-
-      if (this.rating.length > 0) {
-        axios.post('save-rating-subject', {
-          userId: this.userId,
-          rating: this.rating,
-          subject: this.subjects[0].id
-        }).then(function (response) {
-          _this2.flashText = response.data.message;
-          _this2.confirm = true;
-        })["catch"](function (error) {
-          console.log(error.response.data);
-        });
-      }
-    },
-    saveMultipleTables: function saveMultipleTables() {
-      this.savePupilRating();
-      this.saveSubjectRating();
     }
   }
 });
@@ -4682,7 +4622,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getUsers: function getUsers() {
+    getSources: function getSources() {
       var _this = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -4732,7 +4672,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getUsers();
+    this.getSources();
   }
 });
 
@@ -4789,16 +4729,18 @@ __webpack_require__.r(__webpack_exports__);
       ratings: {},
       subject: {},
       createdAt: {},
-      errors: [],
+      alerts: [],
       switchFlashStyle: '',
-      showHide: '',
+      message: {
+        warningText: 'There are no any ratings for pupil.'
+      },
       flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '0%',
+          'position': 'absolute',
+          'top': '110px',
+          'left': '44.5%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '260px',
           'height': '35px',
@@ -4819,21 +4761,20 @@ __webpack_require__.r(__webpack_exports__);
         _this.subject = response.data.subject;
         _this.createdAt = response.data.createdAt;
 
-        _this.errors.push(response.data.message);
-
-        for (var i = 0; i < _this.errors.length; i++) {
-          if (_this.errors[i] !== undefined) {
-            _this.showHide = 'none', _this.switchFlashStyle = _this.flashStyleWarning.show;
-          } else {
-            _this.showHide = 'block', _this.switchFlashStyle = _this.flashStyleInfo;
-          }
-        }
+        _this.showWarning();
       });
+    },
+    showWarning: function showWarning() {
+      if (this.ratings === undefined) {
+        this.alerts.push(this.message.warningText);
+        this.switchFlashStyle = this.flashStyleWarning.show;
+      }
     }
   },
   filters: {
     formatDate: function formatDate(value) {
       var date = new Date(value);
+      var timestamps = '';
       var minutesFormat = '';
 
       if (date.getMinutes() < 10) {
@@ -4842,8 +4783,11 @@ __webpack_require__.r(__webpack_exports__);
         minutesFormat += date.getMinutes();
       }
 
-      var timestamps = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getHours();
-      return timestamps += " " + date.getHours() + ":" + minutesFormat;
+      if (value === null) {
+        return timestamps = "";
+      } else {
+        return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
+      }
     }
   },
   mounted: function mounted() {
@@ -10073,7 +10017,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-60843cc9] {\n    color: #8f8f8f;\n}\n.error-explode p[data-v-60843cc9] {\n    padding-top: 3px;\n}\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-60843cc9] {\n    color: #8f8f8f;\n}\n.error-explode p[data-v-60843cc9] {\n    padding-top: 4px;\n}\n\n", ""]);
 
 // exports
 
@@ -10092,7 +10036,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-594f94d4] {\n    color: #8f8f8f;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-594f94d4] {\n    color: #8f8f8f;\n}\n\n", ""]);
 
 // exports
 
@@ -45460,7 +45404,7 @@ var render = function() {
                                       expression: "selected"
                                     }
                                   ],
-                                  staticClass: "rating-select ml-2 mt-2",
+                                  staticClass: "rating-select ml-2 mt-3",
                                   attrs: { type: "checkbox" },
                                   domProps: {
                                     value: rating + "|" + _vm.createAt[index],
@@ -45503,7 +45447,7 @@ var render = function() {
                                     "p",
                                     {
                                       staticClass:
-                                        "p-rating text-left pt-2 pl-3",
+                                        "p-rating text-left pt-3 pl-3",
                                       attrs: { "data-rating": rating }
                                     },
                                     [_vm._v(_vm._s(rating))]
@@ -45514,7 +45458,7 @@ var render = function() {
                               _c("td", [
                                 _c(
                                   "p",
-                                  { staticClass: "text-center pt-2 pl-3" },
+                                  { staticClass: "text-center pt-3 pl-3" },
                                   [
                                     _vm._v(
                                       "\n                                                " +
@@ -45573,7 +45517,7 @@ var render = function() {
                   on: {
                     "~click": function($event) {
                       $event.preventDefault()
-                      return _vm.deleteMultipleTables()
+                      return _vm.deletePupilRating()
                     }
                   }
                 },
@@ -45897,7 +45841,7 @@ var render = function() {
                                                 "p",
                                                 {
                                                   staticClass:
-                                                    "p-rating text-left pt-2 pl-3",
+                                                    "p-rating text-left pt-3 pl-3",
                                                   attrs: {
                                                     "data-rating": rating,
                                                     "data-create": _vm.createAt
@@ -46013,7 +45957,7 @@ var render = function() {
                                             "p",
                                             {
                                               staticClass:
-                                                "text-center pt-2 pl-3"
+                                                "text-center pt-3 pl-3"
                                             },
                                             [
                                               _vm._v(
@@ -46037,7 +45981,7 @@ var render = function() {
                                             "p",
                                             {
                                               staticClass:
-                                                "text-center pt-2 pl-3"
+                                                "text-center pt-3 pl-3"
                                             },
                                             [
                                               _vm._v(
@@ -46099,7 +46043,7 @@ var render = function() {
                         on: {
                           "~click": function($event) {
                             $event.preventDefault()
-                            return _vm.updateMultipleTables()
+                            return _vm.pupilRatingUpdate()
                           }
                         }
                       },
@@ -46375,7 +46319,7 @@ var render = function() {
                   on: {
                     "~click": function($event) {
                       $event.preventDefault()
-                      return _vm.saveMultipleTables()
+                      return _vm.savePupilRating()
                     }
                   }
                 },
@@ -47345,7 +47289,7 @@ var render = function() {
             _vm._v(" "),
             _c("pagination", {
               attrs: { data: _vm.users },
-              on: { "pagination-change-page": _vm.getUsers }
+              on: { "pagination-change-page": _vm.getSources }
             })
           ],
           1
@@ -47478,13 +47422,15 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Name")]),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("User Name")
+        ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Action")])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Actions")])
       ])
     ])
   }
@@ -47515,63 +47461,59 @@ var render = function() {
       _c(
         "div",
         { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.errors, function(error) {
-          return _vm.errors.length > 0
+        _vm._l(_vm.alerts, function(alert) {
+          return _vm.alerts !== undefined
             ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(error))])
+                _c("p", [_vm._v(_vm._s(alert))])
               ])
             : _vm._e()
         }),
         0
       ),
       _vm._v(" "),
-      _vm.errors.length > 0
-        ? _c(
-            "div",
-            { staticClass: "col mt-5", style: { display: _vm.showHide } },
-            [
-              _vm._m(0),
+      _vm.alerts[0] === undefined
+        ? _c("div", { staticClass: "col mt-5" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(1),
               _vm._v(" "),
-              _c("table", { staticClass: "table table-striped" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.ratings, function(rating, index) {
-                    return _c("tr", [
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(_vm.users[0].id))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(_vm.users[0].name))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(_vm.subject[0].name))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(rating.rating))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(
-                          _vm._s(
-                            _vm._f("formatDate")(
-                              _vm.createdAt[index],
-                              _vm.createdAt[index]
-                            )
+              _c(
+                "tbody",
+                _vm._l(_vm.ratings, function(rating, index) {
+                  return _c("tr", [
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(_vm.users[0].id))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(_vm.users[0].name))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(_vm.subject[0].name))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(_vm._s(rating.rating))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center pt-3" }, [
+                      _vm._v(
+                        _vm._s(
+                          _vm._f("formatDate")(
+                            _vm.createdAt[index],
+                            _vm.createdAt[index]
                           )
                         )
-                      ])
+                      )
                     ])
-                  }),
-                  0
-                )
-              ])
-            ]
-          )
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
         : _vm._e()
     ])
   ])
@@ -47593,24 +47535,24 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Name")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Subject")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Ratings")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
-          _vm._v("Created At")
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Date Created")
         ])
       ])
     ])
@@ -47661,7 +47603,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(_vm.subject[0].name))
+                    _vm._v(_vm._s(_vm.subject.name))
                   ]),
                   _vm._v(" "),
                   user.id
@@ -47672,7 +47614,7 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
+                  _c("td", { staticClass: "text-center" }, [
                     _c("a", { attrs: { href: "detail-rating/" + user.id } }, [
                       _vm._m(2, true)
                     ])
@@ -47710,23 +47652,23 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "bg-dark" }, [
       _c("tr", [
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Id")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Name")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Subject")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [
+        _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("Ratings")
         ]),
         _vm._v(" "),
-        _c("td", { staticClass: "text-center text-white" }, [_vm._v("Action")])
+        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Action")])
       ])
     ])
   },

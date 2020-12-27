@@ -238,9 +238,7 @@ class TeacherController extends Controller
 
     public function getRatingsByPupilId(Request $request, $id)
     {
-        $pupils = Pupil::find($id);
-        $data = [];
-        foreach ($pupils->ratings as $rating) {
+        foreach (Pupil::find($id)->ratings as $rating) {
             $data['ratings'][] = $rating->rating;
             $data['createAt'][] = $rating->pivot->created_at;
         }
@@ -267,31 +265,12 @@ class TeacherController extends Controller
         return response()->json(['message' => 'rating has been assign']);
     }
 
-    public function saveRatingSubject(Request $request)
-    {
-        if ($request->ajax()) {
-            Subject::find($request->subject)->ratings()->attach(['rating_id' => $request->rating]);
-        }
-    }
-
     public function updatePupilRating(Request $request)
     {
         if ($request->ajax()) {
             DB::table('pupil_rating')->where([
                 ['pupil_id', '=', User::find($request->userId)->pupil->id],
                 ['rating_id', '=', $request->dataRating],
-                ['created_at', '=', $request->dataCreate],
-            ])->update(['rating_id' => $request->rating]);
-        }
-        return response()->json(['message' => 'rating has been updated']);
-    }
-
-    public function updateRatingSubject(Request $request)
-    {
-        if ($request->ajax()) {
-            DB::table('rating_subject')->where([
-                ['rating_id', '=', $request->dataRating],
-                ['subject_id', '=', (int) $request->subject],
                 ['created_at', '=', $request->dataCreate],
             ])->update(['rating_id' => $request->rating]);
         }
@@ -309,29 +288,19 @@ class TeacherController extends Controller
         return response()->json(['message' => 'rating has been deleted']);
     }
 
-    public function deleteRatingSubject(Request $request)
-    {
-        list($rating) = $request->rating;
-        list($ratingArg, $createAtArg) = explode("|", $rating);
-        if ($request->ajax()) {
-            Subject::find($request->subject)->ratings()
-                ->wherePivot('created_at', '=', $createAtArg)->detach($ratingArg);
-        }
-        return response()->json(['message' => 'rating has been deleted']);
-    }
-
     public function listRatings(Request $request)
     {
-        $authUser = auth()->user();
-        $data = [];
         $userIds = [];
-        foreach ($authUser->teacher->pupils as $pupil) {
+        foreach (auth()->user()->teacher->pupils as $pupil) {
             $data['users'][] = $pupil->user;
-            $data['subject'] = $pupil->subjects;
+            foreach ($pupil->subjects as $subject) {
+                $data['subject'] = $subject;
+            }
             foreach ($pupil->ratings as $key => $rating) {
                 $userIds[$pupil->user->id][] = $rating->rating;
             }
         }
+
         $gradeList = [];
         foreach ($userIds as $key => $ids) {
             $gradeList[$key] = implode(", ", $ids);
