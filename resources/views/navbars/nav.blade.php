@@ -60,10 +60,25 @@
             @else
                 <li class="nav-item dropdown">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <span class="caret"><img src="{{ asset('/images/user/avatars/'. Auth::user()->avatar) }}" class="avatar-little"></span>
                         {{ Auth::user()->name }}
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <div class="user-profile">
+                            <div class="mt-1">
+                                <a class="dropdown-item" href="{{ url('/user_profile/user/' . Auth::user()->id) }}">
+                                    User Profile
+                                </a>
+                            </div>
+                        </div>
+                        @if (Request::segment(1) === 'user_profile')
+                            <div class="home-link">
+                                <div>
+                                    <a class="navbar-link" href="{{ url('/teacher/pupils') }}">Home</a>
+                                </div>
+                            </div>
+                        @endif
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
                            document.getElementById('logout-form').submit();">
