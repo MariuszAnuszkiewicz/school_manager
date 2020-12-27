@@ -5,3 +5,32 @@
     top: 85px;
     left: 25px;
 }
+
+.navbar-link {
+    padding-left: 23px;
+    color: #5a6268;
+    display: block;
+}
+
+.navbar-link {
+    display: block;
+    color: #383838;
+    padding-top: 3px;
+    padding-bottom: 4px;
+}
+
+.navbar-link:hover {
+    color: #5a6268;
+    text-decoration: none;
+    background-color: #F7F7FA;
+}
+
+.avatar-little {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    z-index: 99;
+}
