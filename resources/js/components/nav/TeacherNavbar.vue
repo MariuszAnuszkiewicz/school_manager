@@ -27,6 +27,9 @@
                 <li class="nav">
                     <a :href="urls.listRatings">List Ratings</a>
                 </li>
+                <li class="nav">
+                    <a :href="urls.fillPresence">Fill Presence</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -44,6 +47,7 @@ export default {
                 listEmails: '/teacher/list-emails',
                 assignRating: '/teacher/assign-rating',
                 listRatings: '/teacher/list-ratings',
+                fillPresence: '/teacher/fill-presence',
             }
         }
     },

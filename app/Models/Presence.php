@@ -10,7 +10,7 @@ class Presence extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $fillable = ['pupil_id', 'presence', 'date'];
+    protected $fillable = ['pupil_id', 'teacher_id', 'presence', 'date'];
 
     public function pupil()
     {

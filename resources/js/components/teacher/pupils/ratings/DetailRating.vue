@@ -20,9 +20,9 @@
                     </thead>
                     <tbody>
                         <tr v-for="(rating, index) in ratings">
-                            <td class="text-center pt-3">{{ users[0].id }}</td>
-                            <td class="text-center pt-3">{{ users[0].name }}</td>
-                            <td class="text-center pt-3">{{ subject[0].name }}</td>
+                            <td class="text-center pt-3">{{ users.id }}</td>
+                            <td class="text-center pt-3">{{ users.name }}</td>
+                            <td class="text-center pt-3">{{ subject.name }}</td>
                             <td class="text-center pt-3">{{ rating.rating }}</td>
                             <td class="text-center pt-3">{{ createdAt[index] | formatDate(createdAt[index]) }}</td>
                         </tr>
