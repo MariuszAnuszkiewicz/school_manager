@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div v-if="alerts[0] === undefined" class="col mt-5">
-                <div class="card-body"><h5><strong class="header-text">List Pupils</strong></h5></div>
+                <div class="card-body"><h5><strong class="header-text">List Emails To Send</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
                         <tr>

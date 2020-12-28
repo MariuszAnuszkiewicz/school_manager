@@ -29,7 +29,8 @@ class PupilController extends Controller
     public function myGrades(Request $request, $id)
     {
         $authUser = auth()->user();
-        if ((int) $id === $authUser->pupil->subjects[0]->id) {
+        $hasSubject = isset($authUser->pupil->subjects) ? $authUser->pupil->subjects->first()->id : null;
+        if ((int) $id === $hasSubject) {
             foreach ($authUser->pupil->ratings as $key => $rating) {
                 $data['class_name'] = ClassInSchool::find($rating->pivot->pivotParent->class_in_school_id)->name;
                 $data['date'][] = $rating->pivot->created_at->format('Y-m-d H:i');

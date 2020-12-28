@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Mail\SendToPupil;
 use App\Models\ClassInSchool;
 use App\Models\Pupil;
 use App\Models\Message;
-use App\Models\Rating;
-use App\Models\Subject;
+use App\Models\Presence;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -219,6 +219,7 @@ class TeacherController extends Controller
             $data['users'][] = $pupil->user;
             $data['pupils'][] = $pupil;
         }
+
         $data['subjects'] = $teacher->subjects;
         if (!empty($data)) {
             if ($request->ajax()) {
@@ -300,7 +301,6 @@ class TeacherController extends Controller
                 $userIds[$pupil->user->id][] = $rating->rating;
             }
         }
-
         $gradeList = [];
         foreach ($userIds as $key => $ids) {
             $gradeList[$key] = implode(", ", $ids);
@@ -326,9 +326,9 @@ class TeacherController extends Controller
     {
         $data = [];
         $pupil = Pupil::find(User::find($id)->pupil->id);
-        $data['users'][] = User::find($id);
+        $data['users'] = User::find($id);
         $data['ratings'] = $pupil->ratings;
-        $data['subject'] = $pupil->subjects;
+        $data['subject'] = auth()->user()->teacher->subjects->last();
         foreach ($data['ratings'] as $rating) {
             $data['created_at'][] = isset($rating->pivot->created_at) ? $rating->pivot->created_at : null;
         }
@@ -347,6 +347,51 @@ class TeacherController extends Controller
             }
         }
         return view('teacher.detail_ratings');
+    }
+
+    public function fillPresence(Request $request)
+    {
+        $pupils = Pupil::with('teachers')->orderBy('user_id', 'ASC')->get();
+        foreach ($pupils as $pupil) {
+            $data['pupils'][] = isset($pupil) ? $pupil: null;
+            $data['users'][] = isset($pupil->user) ? $pupil->user: null;
+        }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'users' => $this->paginate($data['users']),
+                    'pupils' => $data['pupils']
+                ]);
+            }
+        }
+        return view('teacher.presence.fill_presence');
+    }
+
+    public function savePresence(Request $request)
+    {
+        $userId = User::find($request->userId);
+        for ($i = 0; $i < count($userId); $i++) {
+            $pupilIds[] = $userId[$i]->pupil->id;
+        }
+        if ($request->ajax()) {
+            for ($i = 0; $i < count($pupilIds); $i++) {
+                Presence::create([
+                    'pupil_id' => $pupilIds[$i],
+                    'teacher_id' => auth()->user()->teacher->id,
+                    'presence' => 'yes',
+                    'date' => Carbon::now()->format('Y-m-d'),
+                ]);
+            }
+        }
+        return response()->json(['message' => 'presences has been saved']);
+    }
+
+    public function detailPresence(Request $request, $id)
+    {
+        dd($id);
+        if ($request->ajax()) {
+
+        }
     }
 
     public function paginate($items, $perPage = 5, $page = null, $options = [])

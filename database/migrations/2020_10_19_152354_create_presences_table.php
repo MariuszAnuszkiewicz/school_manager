@@ -17,6 +17,8 @@ class CreatePresencesTable extends Migration
             $table->id();
             $table->bigInteger('pupil_id')->unsigned();
             $table->foreign('pupil_id')->references('id')->on('pupils')->onDelete('cascade');
+            $table->bigInteger('teacher_id')->unsigned();
+            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
             $table->string('presence', 3)->nullable();
             $table->date('date');
         });
