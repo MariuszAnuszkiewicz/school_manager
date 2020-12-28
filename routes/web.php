@@ -58,7 +58,7 @@ Route::get('/', function () {
     /* pupil zone */
     Route::group([
         'prefix' => 'pupil',
-        'middleware' => 'auth',
+        'middleware' => 'guard_access',
     ], function () {
         Route::resource('events', EventController::class)->only(['index', 'destroy']);
         Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
@@ -72,7 +72,7 @@ Route::get('/', function () {
     /* teacher zone */
     Route::group([
         'prefix' => 'teacher',
-        'middleware' => 'auth',
+        'middleware' => 'guard_access',
     ], function () {
         Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
