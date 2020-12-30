@@ -50,7 +50,6 @@ class TeacherController extends Controller
                 for ($i = 0; $i < count($ids); $i++) {
                     $data[] = (int) $ids[$i];
                 }
-                $quantityPupilsTable = [];
                 $teacher = auth()->user()->teacher;
                 foreach ($teacher->pupils as $teacherPivot) {
                     $quantityPupilsTable[] = $teacherPivot->id;
@@ -328,7 +327,7 @@ class TeacherController extends Controller
     {
         $pupilId = User::find($request->userId)->pupil->id;
         if ($request->ajax()) {
-            Pupil::find($pupilId)->ratings()->attach(['rating_id' => $request->rating]);
+            Pupil::find($pupilId)->ratings()->attach(['rating_id' => $request->rating],['semester' => $request->semester]);
         }
         return response()->json(['message' => 'rating has been assign']);
     }

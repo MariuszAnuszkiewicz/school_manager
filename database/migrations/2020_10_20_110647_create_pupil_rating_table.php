@@ -19,6 +19,7 @@ class CreatePupilRatingTable extends Migration
             $table->foreign('pupil_id')->references('id')->on('pupils')->onDelete('cascade');
             $table->bigInteger('rating_id')->unsigned();
             $table->foreign('rating_id')->references('id')->on('ratings')->onDelete('cascade');
+            $table->tinyInteger('semester')->nullable();
             $table->timestamps();
         });
     }
