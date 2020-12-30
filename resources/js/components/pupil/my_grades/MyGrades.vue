@@ -9,7 +9,7 @@
            <div v-if="alerts[0] === undefined" :style="{ display: 'block' }" class="col-md-12 mt-2 mb-4">
                <h5 class="text-center">
                    <strong>Class Name:
-                       <p class="d-inline text-danger">{{ class_name }}</p>
+                       <p class="d-inline text-danger">{{ className }}</p>
                    </strong>
                </h5>
            </div>
@@ -33,9 +33,9 @@
                                </tr>
                            </thead>
                            <tbody>
-                               <tr v-for="(my_grade, index) in my_gradesSem1">
+                               <tr v-for="(myGrade, index) in myGradesSem1">
                                   <td class="text-center text-danger yellow-td" width="40%">{{ subjects[0].name }}</td>
-                                  <td class="text-center green-td" width="20%">{{ my_grade.rating }}</td>
+                                  <td class="text-center green-td" width="20%">{{ myGrade.rating }}</td>
                                   <td class="text-center blue-td" width="20%">{{ avgSem1 }}</td>
                                   <td class="text-center" width="20%">{{ date[index] }}</td>
                                </tr>
@@ -62,9 +62,9 @@
                                </tr>
                            </thead>
                            <tbody>
-                               <tr v-for="(my_grade, index) in my_gradesSem2">
+                               <tr v-for="(myGrade, index) in myGradesSem2">
                                    <td class="text-center text-danger yellow-td" width="40%">{{ subjects[0].name }}</td>
-                                   <td class="text-center green-td" width="20%">{{ my_grade.rating }}</td>
+                                   <td class="text-center green-td" width="20%">{{ myGrade.rating }}</td>
                                    <td class="text-center blue-td" width="20%">{{ avgSem2 }}</td>
                                    <td class="text-center" width="20%">{{ date[index] }}</td>
                                </tr>
@@ -83,10 +83,10 @@ export default {
         return {
             avgSem1: {},
             avgSem2: {},
-            class_name: {},
+            className: {},
             date: {},
-            my_gradesSem1: {},
-            my_gradesSem2: {},
+            myGradesSem1: {},
+            myGradesSem2: {},
             semester1: {},
             semester2: {},
             subjects: {},
@@ -116,9 +116,9 @@ export default {
         getSourcesSemester1(id) {
             axios.get('/pupil/my-grades/' + id).then(response => {
                 this.avgSem1 = response.data.avgSem1;
-                this.class_name = response.data.class_name;
+                this.className = response.data.className;
                 this.date = response.data.date;
-                this.my_gradesSem1 = response.data.my_gradesSem1;
+                this.myGradesSem1 = response.data.myGradesSem1;
                 this.semester1 = response.data.semester1;
                 this.subjects = response.data.subjects;
                 this.teacher = response.data.teacher;
@@ -128,9 +128,9 @@ export default {
         getSourcesSemester2(id) {
             axios.get('/pupil/my-grades/' + id).then(response => {
                 this.avgSem2 = response.data.avgSem2;
-                this.class_name = response.data.class_name;
+                this.className = response.data.className;
                 this.date = response.data.date;
-                this.my_gradesSem2 = response.data.my_gradesSem2;
+                this.myGradesSem2 = response.data.myGradesSem2;
                 this.semester2 = response.data.semester2;
                 this.subjects = response.data.subjects;
                 this.teacher = response.data.teacher;
@@ -138,7 +138,7 @@ export default {
             })
         },
         showWarning(message) {
-            if (this.my_gradesSem2 === undefined) {
+            if (this.myGradesSem1 === undefined || this.myGradesSem2 === undefined) {
                 this.alerts.push(this.message.warningText = message);
                 this.switchFlashStyle = this.flashStyleWarning.show;
             }
