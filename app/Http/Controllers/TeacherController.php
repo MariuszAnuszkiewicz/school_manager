@@ -42,23 +42,90 @@ class TeacherController extends Controller
         return view('teacher.pupils');
     }
 
-    public function store(Request $request)
+    public function savePupilTeacher(Request $request)
     {
         if ($request->ajax()) {
-            $teacher = auth()->user()->teacher;
-            if (!empty($request->class_assign) && !empty($request->pupils)) {
+            if (!empty($request->pupils)) {
                 $ids = explode(",", $request->pupils);
-                Pupil::whereIn('id', $ids)->update(['class_in_school_id' => (int) $request->class_assign]);
                 for ($i = 0; $i < count($ids); $i++) {
                     $data[] = (int) $ids[$i];
                 }
-                $tableIds = [];
-                foreach ($teacher->pupils as $pupil) {
-                    $tableIds[] = $pupil->id;
+                $quantityPupilsTable = [];
+                $teacher = auth()->user()->teacher;
+                foreach ($teacher->pupils as $teacherPivot) {
+                    $quantityPupilsTable[] = $teacherPivot->id;
                 }
-                if ($tableIds != $data) {
-                    $uniqueIds = array_diff($data, $tableIds);
-                    $teacher->pupils()->attach($uniqueIds);
+                $diffCompare = array_diff($data, $quantityPupilsTable);
+                $teacher->pupils()->attach($diffCompare);
+                return response()->json(['message' => 'pupils has been assign to classes']);
+            }
+        }
+    }
+
+    public function updatePupils(Request $request)
+    {
+        if ($request->ajax()) {
+            if (!empty($request->pupils) && !empty($request->class_assign)) {
+                Pupil::whereIn('id', explode(",", $request->pupils))->update(['class_in_school_id' => (int) $request->class_assign]);
+            }
+            return response()->json(['message' => 'pupils has been assign to classes']);
+        }
+    }
+
+    public function savePupilSemester(Request $request)
+    {
+        if ($request->ajax()) {
+            if (!empty($request->pupils) && !empty($request->semester)) {
+                $ids = explode(",", $request->pupils);
+                $pupilIdPupilSemesterTable = [];
+                for ($i = 0; $i < count($ids); $i++) {
+                    foreach(Pupil::find($ids[$i])->semesters as $pupilPivot) {
+                        $pupilIdPupilSemesterTable[] = $pupilPivot->pivot->pupil_id;
+                        $semesterIdPupilSemesterTable[] = $pupilPivot->pivot->semester_id;
+                    }
+                }
+                $singleValue = [];
+                $countValues = array_count_values($pupilIdPupilSemesterTable);
+                foreach ($countValues as $key => $countValue) {
+                    if ($countValue == 1) {
+                        $singleValue[$key] = $countValue;
+                    }
+                }
+                $fillEmptyValue = array_keys($singleValue);
+                if (count($pupilIdPupilSemesterTable) < 1) {
+                    if ($request->semester === '1' || $request->semester === '2') {
+                        for ($i = 0; $i < count($ids); $i++) {
+                            Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
+                        }
+                    }
+                }
+                if (count($pupilIdPupilSemesterTable) > 0) {
+                    if ($request->semester === '1') {
+                        $semester1Id = in_array('1', $semesterIdPupilSemesterTable);
+                        if ($semester1Id === false) {
+                            for ($i = 0; $i < count($pupilIdPupilSemesterTable); $i++) {
+                                Pupil::find($pupilIdPupilSemesterTable[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
+                            }
+                        } else {
+                            for ($i = 0; $i < count($fillEmptyValue); $i++) {
+                                Pupil::find($fillEmptyValue[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
+                            }
+                            return response()->json(['message' => 'Assign pupils to semester 1 now is exist']);
+                        }
+                    }
+                    elseif ($request->semester === '2') {
+                        $semester2Id = in_array('2', $semesterIdPupilSemesterTable);
+                        if ($semester2Id === false) {
+                            for ($i = 0; $i < count($pupilIdPupilSemesterTable); $i++) {
+                                Pupil::find($pupilIdPupilSemesterTable[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
+                            }
+                        } else {
+                            for ($i = 0; $i < count($fillEmptyValue); $i++) {
+                                Pupil::find($fillEmptyValue[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
+                            }
+                            return response()->json(['message' => 'Assign pupils to semester 2 now is exist']);
+                        }
+                    }
                 }
                 return response()->json(['message' => 'pupils has been assign to classes']);
             }

@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div v-if="alerts[0] === undefined" class="col mt-5">
-                <form @submit.prevent="submitForm()" method="POST" id="classesForm" class="form-horizontal">
+                <form @submit.prevent="submitForm()" method="POST" ref="classesForm" class="form-horizontal">
                     <div class="col-md-12 text-center">
                         <h6 class="header-text">Assign Class</h6>
                         <div class="select-container">
@@ -38,8 +38,16 @@
                             </thead>
                             <tbody>
                                 <div class="custom-control custom-switch text-center pt-2 bg-warning">
-                                   <label class="check-all-label"><strong>Select All</strong></label>
-                                   <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
+                                    <label class="check-all-label"><strong>Select All</strong></label>
+                                    <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
+                                    <label class="check-sem1-label ml-4 mr-2"><strong>Semester 1</strong></label>
+                                    <input type="radio" class="semester1-select"
+                                           v-model="semesters"
+                                           :value="1">
+                                    <label class="check-sem2-label ml-4 mr-2"><strong>Semester 2</strong></label>
+                                    <input type="radio" class="semester2-select"
+                                           v-model="semesters"
+                                           :value="2">
                                 </div>
                                 <tr v-for="(user, index) in users" :key="user.id">
                                     <td class="text-center">
@@ -72,21 +80,21 @@ export default {
             classes_in_school: {},
             assign_classes: {},
             selected: [],
+            semesters: [],
             alerts: [],
             messagesInfo: [],
             isSelected: false,
             switchFlashStyle: '',
-            isUpdate: false,
             message: {
-               warningText: 'There are no any pupils.',
-               infoText: 'You are assign pupils to class.',
+               warningText: '',
+               infoText: '',
             },
             flashStyleWarning: {
                 'display': 'none',
                 show: {
                     'display': 'block',
                     'position': 'absolute',
-                    'top': '225px',
+                    'top': '255px',
                     'left': '44.5%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '250px',
@@ -100,10 +108,10 @@ export default {
                 show: {
                     'display': 'block',
                     'position': 'absolute',
-                    'top': '225px',
-                    'left': '44.5%',
+                    'top': '255px',
+                    'left': '41.5%',
                     'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '250px',
+                    'width': '350px',
                     'height': '35px',
                     'text-align': 'center',
                     'border-radius': '7px',
@@ -121,18 +129,41 @@ export default {
                 this.showWarning();
             });
         },
-        submitForm() {
+        updatePupils(formData) {
+            axios.post('update-pupils', formData).then(function (response) {
+                this.showInfo();
+            }).catch(function (error) {
+                console.log(error.response.data)
+            });
+        },
+        savePupilTeacher(formData) {
             if (this.selected.length > 0) {
-                let formData = new FormData(document.getElementById('classesForm'));
-                formData.append('class_assign', document.querySelector('#selectClass').value);
-                formData.append('pupils', this.selected);
-                axios.post('pupils', formData).then(response => {
-                    this.message.text = response.data.message;
+                axios.post('save-pupil-teacher', formData).then(response => {
+
                 }).catch(function (error) {
                     console.log(error.response.data);
                 });
-                this.isUpdate = true;
-                this.showInfo();
+            }
+        },
+        savePupilSemester(formData) {
+            if (this.selected.length > 0) {
+                axios.post('save-pupil-semester', formData).then(response => {
+                    this.showInfo(response.data.message);
+                }).catch(function (error) {
+                    console.log(error.response.data);
+                });
+            }
+        },
+        submitForm() {
+            if (this.selected.length > 0) {
+                var form = this.$refs.classesForm;
+                let formData = new FormData(form);
+                formData.append('class_assign', document.querySelector('#selectClass').value);
+                formData.append('pupils', this.selected);
+                formData.append('semester', this.semesters);
+                this.updatePupils(formData);
+                this.savePupilTeacher(formData);
+                this.savePupilSemester(formData);
             }
         },
         selectAll() {
@@ -154,21 +185,29 @@ export default {
         },
         showWarning() {
             if (this.pupils === undefined) {
-                this.alerts.push(this.message.warningText);
+                this.alerts.push(this.message.warningText = 'There are no any pupils.');
                 this.switchFlashStyle = this.flashStyleWarning.show;
                 this.alerts.splice(1, this.alerts.length);
             } else {
                 this.switchFlashStyle = this.flashStyleWarning;
             }
         },
-        showInfo() {
-           if (this.isUpdate === true) {
-               this.messagesInfo.push(this.message.infoText);
-               this.switchFlashStyle = this.flashStyleInfo.show;
-               this.messagesInfo.splice(1, this.messagesInfo.length);
-           } else {
-               this.switchFlashStyle = this.flashStyleInfo;
-           }
+        showInfo(alerts) {
+            if (alerts) {
+                var is = 'is';
+            }
+            switch (is) {
+                case 'is':
+                    this.messagesInfo.push(alerts);
+                    this.switchFlashStyle = this.flashStyleInfo.show;
+                    this.messagesInfo.splice(1, this.messagesInfo.length);
+                    break;
+                default:
+                    this.messagesInfo.push(this.message.infoText = 'You are assign pupils to class.');
+                    this.switchFlashStyle = this.flashStyleInfo.show;
+                    this.messagesInfo.splice(1, this.messagesInfo.length);
+                    break;
+            }
         }
     },
     mounted() {
@@ -183,15 +222,7 @@ export default {
     .header-text {
         color: #8f8f8f;
     }
-    .select-all {
-        position: relative;
-        top: 3px;
-        left: 0px;
-        width: 18px;
-        height: 18px;
-        background-color: #fffed5;
-    }
-    .pupil-select {
+    .select-all, .pupil-select, .semester1-select, .semester2-select {
         position: relative;
         top: 3px;
         left: 0px;
