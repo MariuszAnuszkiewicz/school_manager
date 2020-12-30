@@ -1,76 +1,76 @@
 <template>
    <div class="container">
-       <div v-if="errors[0] === undefined" class="card-body"><h5><strong class="header-text">My Grades</strong></h5></div>
        <div class="row justify-content-center mt-4">
            <div :style="switchFlashStyle" class="flex flash-container">
-               <div v-for="error in errors" class="error-explode">
-                   <p class="text-center">{{ error }}</p>
+               <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
+                   <p>{{ alert }}</p>
                </div>
            </div>
-           <div v-if="errors[0] === undefined" :style="{ display: 'block' }" class="col-md-12 mt-2 mb-4">
+           <div v-if="alerts[0] === undefined" :style="{ display: 'block' }" class="col-md-12 mt-2 mb-4">
                <h5 class="text-center">
                    <strong>Class Name:
                        <p class="d-inline text-danger">{{ class_name }}</p>
                    </strong>
                </h5>
            </div>
-           <div v-for="semester in semesters" class="sem-1 bg-light">
-               <h6 v-if="semester.name === '1'" :style="{ display: 'block' }" class="text-center pt-5">Semester 1</h6>
-               <div v-if="semester.name == '1'" :style="{ display: 'block' }" class="teacher_name">
-                   <div class="col-md-12">
-                      <p class="text-primary text-center"><b>{{ teacher + ' - Teacher' }}</b></p>
+           <div class="card-body"><h5><strong class="header-text">My Grades</strong></h5></div>
+           <div class="grades-container">
+               <div v-for="semester in semester1" class="sem-1 bg-light mb-5">
+                   <h6 v-if="semester == '1'" class="text-center pt-5">Semester 1</h6>
+                   <div v-if="semester == '1'" class="teacher_name">
+                       <div class="col">
+                          <p class="text-primary text-center"><b>{{ teacher + ' - Teacher' }}</b></p>
+                       </div>
+                   </div>
+                   <div class="table-container1">
+                       <table v-if="semester == '1'" class="table table-bordered">
+                           <thead>
+                               <tr>
+                                  <th class="text-center yellow-tr">Subject</th>
+                                  <th class="text-center green-tr">Rating</th>
+                                  <th class="text-center blue-tr">Average</th>
+                                  <th class="text-center">Date</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               <tr v-for="(my_grade, index) in my_gradesSem1">
+                                  <td class="text-center text-danger yellow-td" width="40%">{{ subjects[0].name }}</td>
+                                  <td class="text-center green-td" width="20%">{{ my_grade.rating }}</td>
+                                  <td class="text-center blue-td" width="20%">{{ avgSem1 }}</td>
+                                  <td class="text-center" width="20%">{{ date[index] }}</td>
+                               </tr>
+                           </tbody>
+                       </table>
                    </div>
                </div>
-               <table v-if="semester.name === '1'" :style="{ display: 'block' }" class="table table-bordered">
-                   <thead>
-                       <tr>
-                          <th class="text-center yellow-tr">Subject</th>
-                          <th class="text-center green-tr">Rating</th>
-                          <th class="text-center blue-tr">Average</th>
-                          <th class="text-center">Date</th>
-                       </tr>
-                   </thead>
-                   <tbody>
-                       <tr v-for="(my_grade, index) in my_grades.data" :key="my_grade.id">
-                          <td class="text-center text-danger yellow-td" width="45%">{{ subjects[0].name }}</td>
-                          <td class="text-center green-td" width="14%">{{ my_grade.rating }}</td>
-                          <td class="text-center blue-td" width="14%">{{ avg }}</td>
-                          <td class="text-center" width="27%">{{ date[index] }}</td>
-                       </tr>
-                   </tbody>
-               </table>
-               <div v-if="semester.name == '1'" :style="{ display: 'block' }" class="pag-container pl-2">
-                 <pagination :data="my_grades" @pagination-change-page="getMyGrades"></pagination>
-               </div>
-           </div>
 
-           <div v-for="semester in semesters" class="sem-2 bg-light">
-               <h6 v-if="semester.name == '2'" :style="{ display: 'block' }" class="text-center pt-5">Semester 2</h6>
-               <div v-if="semester.name == '2'" :style="{ display: 'block' }" class="teacher_name">
-                   <div class="col-md-12">
-                       <p class="text-primary text-center"><b>{{ teacher + ' - Teacher' }}</b></p>
+               <div v-for="semester in semester2" class="sem-2 bg-light mb-5">
+                   <h6 v-if="semester == '2'" class="text-center pt-5">Semester 2</h6>
+                   <div v-if="semester == '2'" class="teacher_name">
+                       <div class="col">
+                           <p class="text-primary text-center"><b>{{ teacher + ' - Teacher' }}</b></p>
+                       </div>
                    </div>
-               </div>
-               <table v-if="semester.name == '2'" :style="{ display: 'block' }" class="table table-bordered">
-                   <thead>
-                   <tr>
-                       <th class="text-center yellow-tr">Subject</th>
-                       <th class="text-center green-tr">Rating</th>
-                       <th class="text-center blue-tr">Average</th>
-                       <th class="text-center">Date</th>
-                   </tr>
-                   </thead>
-                   <tbody>
-                   <tr v-for="(my_grade, index) in my_grades.data" :key="my_grade.id">
-                       <td class="text-center text-danger yellow-td" width="45%">{{ subjects.name }}</td>
-                       <td class="text-center green-td" width="14%">{{ my_grade.rating }}</td>
-                       <td class="text-center blue-td" width="14%">{{ avg }}</td>
-                       <td class="text-center" width="27%">{{ date[index] }}</td>
-                   </tr>
-                   </tbody>
-               </table>
-               <div v-if="semester.name == '2'" :style="{ display: 'block' }" class="pag-container pl-2">
-                   <pagination :data="my_grades" @pagination-change-page="getMyGrades"></pagination>
+                   <div class="table-container2">
+                       <table v-if="semester == '2'" class="table table-bordered">
+                           <thead>
+                               <tr>
+                                   <th class="text-center yellow-tr">Subject</th>
+                                   <th class="text-center green-tr">Rating</th>
+                                   <th class="text-center blue-tr">Average</th>
+                                   <th class="text-center">Date</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               <tr v-for="(my_grade, index) in my_gradesSem2">
+                                   <td class="text-center text-danger yellow-td" width="40%">{{ subjects[0].name }}</td>
+                                   <td class="text-center green-td" width="20%">{{ my_grade.rating }}</td>
+                                   <td class="text-center blue-td" width="20%">{{ avgSem2 }}</td>
+                                   <td class="text-center" width="20%">{{ date[index] }}</td>
+                               </tr>
+                           </tbody>
+                       </table>
+                   </div>
                </div>
            </div>
        </div>
@@ -81,22 +81,28 @@
 export default {
     data() {
         return {
-            semesters: {},
+            avgSem1: {},
+            avgSem2: {},
             class_name: {},
-            avg: {},
+            date: {},
+            my_gradesSem1: {},
+            my_gradesSem2: {},
+            semester1: {},
+            semester2: {},
             subjects: {},
             teacher: {},
-            my_grades: {},
-            date: {},
             switchFlashStyle: '',
-            errors: [],
-            flashStyle: {
+            alerts: [],
+            message: {
+                warningText: '',
+            },
+            flashStyleWarning: {
                'display': 'none',
                 show: {
                     'display': 'block',
-                    'position': 'relative',
-                    'top': '100px',
-                    'left': '0%',
+                    'position': 'absolute',
+                    'top': '250px',
+                    'left': '41.7%',
                     'background-color': 'rgba(245, 34, 70, 0.3)',
                     'width': '350px',
                     'height': '35px',
@@ -107,91 +113,108 @@ export default {
         }
     },
     methods: {
-        getMyGrades(page) {
-            if (typeof page === 'undefined') {
-                 page = 1;
-            }
-            let id = window.location.href.split('/').pop();
-            axios.get('/pupil/my-grades/' + id + '?page=' + page).then(response => {
-                this.semesters = response.data.semesters
-                this.class_name = response.data.class_name
-                this.teacher = response.data.teacher
-                this.avg = response.data.avg
-                this.subjects = response.data.subjects
-                this.my_grades = response.data.my_grades
-                this.date = response.data.date
-                this.errors.push(response.data.message);
-                for (let i = 0; i < this.errors.length; i++) {
-                    if (this.errors[i] !== undefined) {
-                      this.switchFlashStyle = this.flashStyle.show;
-                    } else {
-                      this.switchFlashStyle = this.flashStyle
-                    }
-                }
+        getSourcesSemester1(id) {
+            axios.get('/pupil/my-grades/' + id).then(response => {
+                this.avgSem1 = response.data.avgSem1;
+                this.class_name = response.data.class_name;
+                this.date = response.data.date;
+                this.my_gradesSem1 = response.data.my_gradesSem1;
+                this.semester1 = response.data.semester1;
+                this.subjects = response.data.subjects;
+                this.teacher = response.data.teacher;
+                this.showWarning(response.data.message);
             })
+        },
+        getSourcesSemester2(id) {
+            axios.get('/pupil/my-grades/' + id).then(response => {
+                this.avgSem2 = response.data.avgSem2;
+                this.class_name = response.data.class_name;
+                this.date = response.data.date;
+                this.my_gradesSem2 = response.data.my_gradesSem2;
+                this.semester2 = response.data.semester2;
+                this.subjects = response.data.subjects;
+                this.teacher = response.data.teacher;
+                this.showWarning(response.data.message);
+            })
+        },
+        showWarning(message) {
+            if (this.my_gradesSem2 === undefined) {
+                this.alerts.push(this.message.warningText = message);
+                this.switchFlashStyle = this.flashStyleWarning.show;
+            }
         },
     },
     mounted() {
-        this.getMyGrades()
+        let id = window.location.href.split('/').pop();
+        this.getSourcesSemester1(id);
+        this.getSourcesSemester2(id);
     }
 }
 </script>
 
 <style scoped>
 
-   .table {
-      display: block;
+   .grades-container {
+       width: 100%;
+       display: block;
+   }
+   .table-container1 {
+       display: block;
+       padding-top: 2px;
+   }
+   .table-container2 {
+       position: relative;
+       top: -9px;
+       display: block;
+       padding-top: 2px;
    }
    .table > tr {
-      width: 100%;
+       width: 100%;
    }
    .yellow-tr {
-      background-color:rgba(248, 230, 117, 0.7);
+       background-color:rgba(248, 230, 117, 0.7);
    }
    .yellow-td {
-      background-color:rgba(248, 230, 117, 0.5);
+       background-color:rgba(248, 230, 117, 0.5);
    }
    .green-tr {
-      background-color:rgba(60, 179, 78, 0.7);
+       background-color:rgba(60, 179, 78, 0.7);
    }
    .green-td {
-      background-color:rgba(60, 179, 78, 0.5);
+       background-color:rgba(60, 179, 78, 0.5);
    }
    .blue-tr {
-      background-color:rgba(175, 225, 240, 0.7);
+       background-color:rgba(175, 225, 240, 0.7);
    }
    .blue-td {
-      background-color:rgba(175, 225, 240, 0.5);
+       background-color:rgba(175, 225, 240, 0.5);
    }
    .sem-1 {
-      display: block;
-      width: 50%;
-      height: auto;
-      float: left;
-      border: 1px solid #efeff2;
+       padding-left: 2px;
+       padding-right: 2px;
+       width: 100%;
+       display: block;
+       border: 1px solid #efeff2;
    }
    .sem-2 {
-      display: block;
-      width: 50%;
-      height: auto;
-      float: right;
-      border: 1px solid #efeff2;
+       padding-left: 2px;
+       padding-right: 2px;
+       width: 100%;
+       display: block;
+       border: 1px solid #efeff2;
    }
    .header-text {
-      color: #8f8f8f;
-   }
-   .pag-container {
-      display: block;
+       color: #8f8f8f;
    }
    .flash-container {
-      display: none;
+       display: none;
    }
    .flash-container p {
-      position: relative;
-      top: 4px;
+       position: relative;
+       top: 4px;
    }
    .teacher_name {
-      display: none;
+       display: block;
    }
    .error-explode p {
        padding-top: 2px;

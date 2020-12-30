@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendToTeacher;
 use App\Models\ClassInSchool;
-use App\Models\Pupil;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -31,28 +30,48 @@ class PupilController extends Controller
         $authUser = auth()->user();
         $hasSubject = isset($authUser->pupil->subjects) ? $authUser->pupil->subjects->first()->id : null;
         if ((int) $id === $hasSubject) {
-            foreach ($authUser->pupil->ratings as $key => $rating) {
+            foreach ($authUser->pupil->ratings as $rating) {
                 $data['class_name'] = ClassInSchool::find($rating->pivot->pivotParent->class_in_school_id)->name;
                 $data['date'][] = $rating->pivot->created_at->format('Y-m-d H:i');
-                $data['ratings'][] = $rating;
-                $data['semester'] = $rating->pivot->pivotParent->semesters;
+                if ($rating->pivot->semester === 1) {
+                    $data['ratingsSem1'][] = $rating;
+                    $data['semester1'] = $rating->pivot->semester;
+                } else {
+                    $data['ratingsSem2'][] = $rating;
+                    $data['semester2'] = $rating->pivot->semester;
+                }
                 $data['subjects'] = $rating->pivot->pivotParent->subjects;
-                $data['teacher'] = $rating->pivot->pivotParent->teachers[0]->user->name;
-                $avgArr[] = (int) $data['ratings'][$key]->rating;
+                $data['teacher'] = $rating->pivot->pivotParent->teachers->first()->user->name;
+            }
+            if (!empty($data['ratingsSem1'])) {
+                for ($i = 0; $i < count($data['ratingsSem1']); $i++) {
+                    $avgArr['sem1'][] = (int) $data['ratingsSem1'][$i]->rating;
+                }
+            }
+            if (!empty($data['ratingsSem2'])) {
+                for ($i = 0; $i < count($data['ratingsSem2']); $i++) {
+                    $avgArr['sem2'][] = (int) $data['ratingsSem2'][$i]->rating;
+                }
             }
         } else {
             $data = [];
         }
+        $avgFunc = function(array $avgArr, array $data) {
+            return number_format(array_sum($avgArr) / count($data), 2);
+        };
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'avg' => number_format(array_sum($avgArr) / count($data['ratings']), 2),
-                    'class_name' => $data['class_name'],
-                    'date' => $data['date'],
-                    'my_grades' => $this->paginate($data['ratings']),
-                    'semesters' => $data['semester'],
-                    'subjects' => $data['subjects'],
-                    'teacher' => $data['teacher'],
+                    'avgSem1' => isset($avgArr['sem1']) ? $avgFunc($avgArr['sem1'], $data['ratingsSem1']) : null,
+                    'avgSem2' => isset($avgArr['sem2']) ? $avgFunc($avgArr['sem2'], $data['ratingsSem2']) : null,
+                    'class_name' => isset($data['class_name']) ? $data['class_name'] : null,
+                    'date' => isset($data['date']) ? $data['date'] : null,
+                    'my_gradesSem1' => isset($data['ratingsSem1']) ? $data['ratingsSem1'] : null,
+                    'my_gradesSem2' => isset($data['ratingsSem2']) ? $data['ratingsSem2'] : null,
+                    'semester1' => isset($data['semester1']) ? $data['semester1'] : null,
+                    'semester2' => isset($data['semester2']) ? $data['semester2'] : null,
+                    'subjects' => isset($data['subjects']) ? $data['subjects'] : null,
+                    'teacher' => isset($data['teacher']) ? $data['teacher'] : null,
                 ]);
             }
         } else {

@@ -14,7 +14,7 @@ class Rating extends Model
 
     public function pupils()
     {
-        return $this->belongsToMany(Pupil::class)->withPivot('semester');
+        return $this->belongsToMany(Pupil::class);
     }
 
     public function subjects()
