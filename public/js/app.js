@@ -2742,22 +2742,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      semesters: {},
+      avgSem1: {},
+      avgSem2: {},
       class_name: {},
-      avg: {},
+      date: {},
+      my_gradesSem1: {},
+      my_gradesSem2: {},
+      semester1: {},
+      semester2: {},
       subjects: {},
       teacher: {},
-      my_grades: {},
-      date: {},
       switchFlashStyle: '',
-      errors: [],
-      flashStyle: {
+      alerts: [],
+      message: {
+        warningText: ''
+      },
+      flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '0%',
+          'position': 'absolute',
+          'top': '250px',
+          'left': '41.7%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '350px',
           'height': '35px',
@@ -2768,37 +2774,47 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getMyGrades: function getMyGrades(page) {
+    getSourcesSemester1: function getSourcesSemester1(id) {
       var _this = this;
 
-      if (typeof page === 'undefined') {
-        page = 1;
-      }
-
-      var id = window.location.href.split('/').pop();
-      axios.get('/pupil/my-grades/' + id + '?page=' + page).then(function (response) {
-        _this.semesters = response.data.semesters;
+      axios.get('/pupil/my-grades/' + id).then(function (response) {
+        _this.avgSem1 = response.data.avgSem1;
         _this.class_name = response.data.class_name;
-        _this.teacher = response.data.teacher;
-        _this.avg = response.data.avg;
-        _this.subjects = response.data.subjects;
-        _this.my_grades = response.data.my_grades;
         _this.date = response.data.date;
+        _this.my_gradesSem1 = response.data.my_gradesSem1;
+        _this.semester1 = response.data.semester1;
+        _this.subjects = response.data.subjects;
+        _this.teacher = response.data.teacher;
 
-        _this.errors.push(response.data.message);
-
-        for (var i = 0; i < _this.errors.length; i++) {
-          if (_this.errors[i] !== undefined) {
-            _this.switchFlashStyle = _this.flashStyle.show;
-          } else {
-            _this.switchFlashStyle = _this.flashStyle;
-          }
-        }
+        _this.showWarning(response.data.message);
       });
+    },
+    getSourcesSemester2: function getSourcesSemester2(id) {
+      var _this2 = this;
+
+      axios.get('/pupil/my-grades/' + id).then(function (response) {
+        _this2.avgSem2 = response.data.avgSem2;
+        _this2.class_name = response.data.class_name;
+        _this2.date = response.data.date;
+        _this2.my_gradesSem2 = response.data.my_gradesSem2;
+        _this2.semester2 = response.data.semester2;
+        _this2.subjects = response.data.subjects;
+        _this2.teacher = response.data.teacher;
+
+        _this2.showWarning(response.data.message);
+      });
+    },
+    showWarning: function showWarning(message) {
+      if (this.my_gradesSem2 === undefined) {
+        this.alerts.push(this.message.warningText = message);
+        this.switchFlashStyle = this.flashStyleWarning.show;
+      }
     }
   },
   mounted: function mounted() {
-    this.getMyGrades();
+    var id = window.location.href.split('/').pop();
+    this.getSourcesSemester1(id);
+    this.getSourcesSemester2(id);
   }
 });
 
@@ -9900,7 +9916,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.table[data-v-735a0bd8] {\n   display: block;\n}\n.table > tr[data-v-735a0bd8] {\n   width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n   background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n   background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n   background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: left;\n   border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n   display: block;\n   width: 50%;\n   height: auto;\n   float: right;\n   border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n   color: #8f8f8f;\n}\n.pag-container[data-v-735a0bd8] {\n   display: block;\n}\n.flash-container[data-v-735a0bd8] {\n   display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n   position: relative;\n   top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n   display: none;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.grades-container[data-v-735a0bd8] {\n    width: 100%;\n    display: block;\n}\n.table-container1[data-v-735a0bd8] {\n    display: block;\n    padding-top: 2px;\n}\n.table-container2[data-v-735a0bd8] {\n    position: relative;\n    top: -9px;\n    display: block;\n    padding-top: 2px;\n}\n.table > tr[data-v-735a0bd8] {\n    width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-735a0bd8] {\n    display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n    position: relative;\n    top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n    display: block;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -44385,253 +44401,192 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _vm.errors[0] === undefined
-      ? _c("div", { staticClass: "card-body" }, [_vm._m(0)])
-      : _vm._e(),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row justify-content-center mt-4" },
-      [
-        _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          _vm._l(_vm.errors, function(error) {
-            return _c("div", { staticClass: "error-explode" }, [
-              _c("p", { staticClass: "text-center" }, [_vm._v(_vm._s(error))])
-            ])
-          }),
-          0
-        ),
-        _vm._v(" "),
-        _vm.errors[0] === undefined
-          ? _c(
-              "div",
-              {
-                staticClass: "col-md-12 mt-2 mb-4",
-                style: { display: "block" }
-              },
-              [
-                _c("h5", { staticClass: "text-center" }, [
-                  _c("strong", [
-                    _vm._v("Class Name:\n                    "),
-                    _c("p", { staticClass: "d-inline text-danger" }, [
-                      _vm._v(_vm._s(_vm.class_name))
-                    ])
+    _c("div", { staticClass: "row justify-content-center mt-4" }, [
+      _c(
+        "div",
+        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
+        _vm._l(_vm.alerts, function(alert) {
+          return _vm.alerts !== undefined
+            ? _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(alert))])
+              ])
+            : _vm._e()
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _vm.alerts[0] === undefined
+        ? _c(
+            "div",
+            { staticClass: "col-md-12 mt-2 mb-4", style: { display: "block" } },
+            [
+              _c("h5", { staticClass: "text-center" }, [
+                _c("strong", [
+                  _vm._v("Class Name:\n                    "),
+                  _c("p", { staticClass: "d-inline text-danger" }, [
+                    _vm._v(_vm._s(_vm.class_name))
                   ])
                 ])
-              ]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm._l(_vm.semesters, function(semester) {
-          return _c("div", { staticClass: "sem-1 bg-light" }, [
-            semester.name === "1"
-              ? _c(
-                  "h6",
-                  {
-                    staticClass: "text-center pt-5",
-                    style: { display: "block" }
-                  },
-                  [_vm._v("Semester 1")]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name == "1"
-              ? _c(
-                  "div",
-                  { staticClass: "teacher_name", style: { display: "block" } },
-                  [
-                    _c("div", { staticClass: "col-md-12" }, [
+              ])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "grades-container" },
+        [
+          _vm._l(_vm.semester1, function(semester) {
+            return _c("div", { staticClass: "sem-1 bg-light mb-5" }, [
+              semester == "1"
+                ? _c("h6", { staticClass: "text-center pt-5" }, [
+                    _vm._v("Semester 1")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              semester == "1"
+                ? _c("div", { staticClass: "teacher_name" }, [
+                    _c("div", { staticClass: "col" }, [
                       _c("p", { staticClass: "text-primary text-center" }, [
                         _c("b", [_vm._v(_vm._s(_vm.teacher + " - Teacher"))])
                       ])
                     ])
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name === "1"
-              ? _c(
-                  "table",
-                  {
-                    staticClass: "table table-bordered",
-                    style: { display: "block" }
-                  },
-                  [
-                    _vm._m(1, true),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.my_grades.data, function(my_grade, index) {
-                        return _c("tr", { key: my_grade.id }, [
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center text-danger yellow-td",
-                              attrs: { width: "45%" }
-                            },
-                            [_vm._v(_vm._s(_vm.subjects[0].name))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center green-td",
-                              attrs: { width: "14%" }
-                            },
-                            [_vm._v(_vm._s(my_grade.rating))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center blue-td",
-                              attrs: { width: "14%" }
-                            },
-                            [_vm._v(_vm._s(_vm.avg))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center",
-                              attrs: { width: "27%" }
-                            },
-                            [_vm._v(_vm._s(_vm.date[index]))]
-                          )
-                        ])
-                      }),
-                      0
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name == "1"
-              ? _c(
-                  "div",
-                  {
-                    staticClass: "pag-container pl-2",
-                    style: { display: "block" }
-                  },
-                  [
-                    _c("pagination", {
-                      attrs: { data: _vm.my_grades },
-                      on: { "pagination-change-page": _vm.getMyGrades }
-                    })
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        }),
-        _vm._v(" "),
-        _vm._l(_vm.semesters, function(semester) {
-          return _c("div", { staticClass: "sem-2 bg-light" }, [
-            semester.name == "2"
-              ? _c(
-                  "h6",
-                  {
-                    staticClass: "text-center pt-5",
-                    style: { display: "block" }
-                  },
-                  [_vm._v("Semester 2")]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name == "2"
-              ? _c(
-                  "div",
-                  { staticClass: "teacher_name", style: { display: "block" } },
-                  [
-                    _c("div", { staticClass: "col-md-12" }, [
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "table-container1" }, [
+                semester == "1"
+                  ? _c("table", { staticClass: "table table-bordered" }, [
+                      _vm._m(1, true),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.my_gradesSem1, function(my_grade, index) {
+                          return _c("tr", [
+                            _c(
+                              "td",
+                              {
+                                staticClass:
+                                  "text-center text-danger yellow-td",
+                                attrs: { width: "40%" }
+                              },
+                              [_vm._v(_vm._s(_vm.subjects[0].name))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center green-td",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(my_grade.rating))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center blue-td",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(_vm.avgSem1))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(_vm.date[index]))]
+                            )
+                          ])
+                        }),
+                        0
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            ])
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.semester2, function(semester) {
+            return _c("div", { staticClass: "sem-2 bg-light mb-5" }, [
+              semester == "2"
+                ? _c("h6", { staticClass: "text-center pt-5" }, [
+                    _vm._v("Semester 2")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              semester == "2"
+                ? _c("div", { staticClass: "teacher_name" }, [
+                    _c("div", { staticClass: "col" }, [
                       _c("p", { staticClass: "text-primary text-center" }, [
                         _c("b", [_vm._v(_vm._s(_vm.teacher + " - Teacher"))])
                       ])
                     ])
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name == "2"
-              ? _c(
-                  "table",
-                  {
-                    staticClass: "table table-bordered",
-                    style: { display: "block" }
-                  },
-                  [
-                    _vm._m(2, true),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.my_grades.data, function(my_grade, index) {
-                        return _c("tr", { key: my_grade.id }, [
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center text-danger yellow-td",
-                              attrs: { width: "45%" }
-                            },
-                            [_vm._v(_vm._s(_vm.subjects.name))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center green-td",
-                              attrs: { width: "14%" }
-                            },
-                            [_vm._v(_vm._s(my_grade.rating))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center blue-td",
-                              attrs: { width: "14%" }
-                            },
-                            [_vm._v(_vm._s(_vm.avg))]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center",
-                              attrs: { width: "27%" }
-                            },
-                            [_vm._v(_vm._s(_vm.date[index]))]
-                          )
-                        ])
-                      }),
-                      0
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            semester.name == "2"
-              ? _c(
-                  "div",
-                  {
-                    staticClass: "pag-container pl-2",
-                    style: { display: "block" }
-                  },
-                  [
-                    _c("pagination", {
-                      attrs: { data: _vm.my_grades },
-                      on: { "pagination-change-page": _vm.getMyGrades }
-                    })
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        })
-      ],
-      2
-    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "table-container2" }, [
+                semester == "2"
+                  ? _c("table", { staticClass: "table table-bordered" }, [
+                      _vm._m(2, true),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.my_gradesSem2, function(my_grade, index) {
+                          return _c("tr", [
+                            _c(
+                              "td",
+                              {
+                                staticClass:
+                                  "text-center text-danger yellow-td",
+                                attrs: { width: "40%" }
+                              },
+                              [_vm._v(_vm._s(_vm.subjects[0].name))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center green-td",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(my_grade.rating))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center blue-td",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(_vm.avgSem2))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "text-center",
+                                attrs: { width: "20%" }
+                              },
+                              [_vm._v(_vm._s(_vm.date[index]))]
+                            )
+                          ])
+                        }),
+                        0
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            ])
+          })
+        ],
+        2
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -44639,8 +44594,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h5", [
-      _c("strong", { staticClass: "header-text" }, [_vm._v("My Grades")])
+    return _c("div", { staticClass: "card-body" }, [
+      _c("h5", [
+        _c("strong", { staticClass: "header-text" }, [_vm._v("My Grades")])
+      ])
     ])
   },
   function() {

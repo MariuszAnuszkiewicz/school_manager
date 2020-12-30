@@ -34,7 +34,7 @@ class Pupil extends Model
 
     public function ratings()
     {
-        return $this->belongsToMany(Rating::class)->withTimestamps();
+        return $this->belongsToMany(Rating::class)->withPivot('semester')->withTimestamps();
     }
 
     public function teachers()
