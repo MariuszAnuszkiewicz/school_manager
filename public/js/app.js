@@ -4313,6 +4313,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4321,21 +4329,21 @@ __webpack_require__.r(__webpack_exports__);
       classes_in_school: {},
       assign_classes: {},
       selected: [],
+      semesters: [],
       alerts: [],
       messagesInfo: [],
       isSelected: false,
       switchFlashStyle: '',
-      isUpdate: false,
       message: {
-        warningText: 'There are no any pupils.',
-        infoText: 'You are assign pupils to class.'
+        warningText: '',
+        infoText: ''
       },
       flashStyleWarning: {
         'display': 'none',
         show: {
           'display': 'block',
           'position': 'absolute',
-          'top': '225px',
+          'top': '255px',
           'left': '44.5%',
           'background-color': 'rgba(245, 34, 70, 0.3)',
           'width': '250px',
@@ -4349,10 +4357,10 @@ __webpack_require__.r(__webpack_exports__);
         show: {
           'display': 'block',
           'position': 'absolute',
-          'top': '225px',
-          'left': '44.5%',
+          'top': '255px',
+          'left': '41.5%',
           'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '250px',
+          'width': '350px',
           'height': '35px',
           'text-align': 'center',
           'border-radius': '7px'
@@ -4373,20 +4381,41 @@ __webpack_require__.r(__webpack_exports__);
         _this.showWarning();
       });
     },
-    submitForm: function submitForm() {
+    updatePupils: function updatePupils(formData) {
+      axios.post('update-pupils', formData).then(function (response) {
+        this.showInfo();
+      })["catch"](function (error) {
+        console.log(error.response.data);
+      });
+    },
+    savePupilTeacher: function savePupilTeacher(formData) {
+      if (this.selected.length > 0) {
+        axios.post('save-pupil-teacher', formData).then(function (response) {})["catch"](function (error) {
+          console.log(error.response.data);
+        });
+      }
+    },
+    savePupilSemester: function savePupilSemester(formData) {
       var _this2 = this;
 
       if (this.selected.length > 0) {
-        var formData = new FormData(document.getElementById('classesForm'));
-        formData.append('class_assign', document.querySelector('#selectClass').value);
-        formData.append('pupils', this.selected);
-        axios.post('pupils', formData).then(function (response) {
-          _this2.message.text = response.data.message;
+        axios.post('save-pupil-semester', formData).then(function (response) {
+          _this2.showInfo(response.data.message);
         })["catch"](function (error) {
           console.log(error.response.data);
         });
-        this.isUpdate = true;
-        this.showInfo();
+      }
+    },
+    submitForm: function submitForm() {
+      if (this.selected.length > 0) {
+        var form = this.$refs.classesForm;
+        var formData = new FormData(form);
+        formData.append('class_assign', document.querySelector('#selectClass').value);
+        formData.append('pupils', this.selected);
+        formData.append('semester', this.semesters);
+        this.updatePupils(formData);
+        this.savePupilTeacher(formData);
+        this.savePupilSemester(formData);
       }
     },
     selectAll: function selectAll() {
@@ -4409,20 +4438,30 @@ __webpack_require__.r(__webpack_exports__);
     },
     showWarning: function showWarning() {
       if (this.pupils === undefined) {
-        this.alerts.push(this.message.warningText);
+        this.alerts.push(this.message.warningText = 'There are no any pupils.');
         this.switchFlashStyle = this.flashStyleWarning.show;
         this.alerts.splice(1, this.alerts.length);
       } else {
         this.switchFlashStyle = this.flashStyleWarning;
       }
     },
-    showInfo: function showInfo() {
-      if (this.isUpdate === true) {
-        this.messagesInfo.push(this.message.infoText);
-        this.switchFlashStyle = this.flashStyleInfo.show;
-        this.messagesInfo.splice(1, this.messagesInfo.length);
-      } else {
-        this.switchFlashStyle = this.flashStyleInfo;
+    showInfo: function showInfo(alerts) {
+      if (alerts) {
+        var is = 'is';
+      }
+
+      switch (is) {
+        case 'is':
+          this.messagesInfo.push(alerts);
+          this.switchFlashStyle = this.flashStyleInfo.show;
+          this.messagesInfo.splice(1, this.messagesInfo.length);
+          break;
+
+        default:
+          this.messagesInfo.push(this.message.infoText = 'You are assign pupils to class.');
+          this.switchFlashStyle = this.flashStyleInfo.show;
+          this.messagesInfo.splice(1, this.messagesInfo.length);
+          break;
       }
     }
   },
@@ -10088,7 +10127,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-f55a8072] {\n    padding-top: 2px;\n}\n#selectClass[data-v-f55a8072] {\n    margin-top: 10px;\n    background-color: #F2F2F2;\n    height: 37px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072], .pupil-select[data-v-f55a8072], .semester1-select[data-v-f55a8072], .semester2-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-f55a8072] {\n    padding-top: 2px;\n}\n#selectClass[data-v-f55a8072] {\n    margin-top: 10px;\n    background-color: #F2F2F2;\n    height: 37px;\n}\n\n", ""]);
 
 // exports
 
@@ -47029,8 +47068,9 @@ var render = function() {
             _c(
               "form",
               {
+                ref: "classesForm",
                 staticClass: "form-horizontal",
-                attrs: { method: "POST", id: "classesForm" },
+                attrs: { method: "POST" },
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
@@ -47112,6 +47152,54 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   return _vm.selectAll()
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm._m(3),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.semesters,
+                                  expression: "semesters"
+                                }
+                              ],
+                              staticClass: "semester1-select",
+                              attrs: { type: "radio" },
+                              domProps: {
+                                value: 1,
+                                checked: _vm._q(_vm.semesters, 1)
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.semesters = 1
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.semesters,
+                                  expression: "semesters"
+                                }
+                              ],
+                              staticClass: "semester2-select",
+                              attrs: { type: "radio" },
+                              domProps: {
+                                value: 2,
+                                checked: _vm._q(_vm.semesters, 2)
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.semesters = 2
                                 }
                               }
                             })
@@ -47255,6 +47343,22 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("label", { staticClass: "check-all-label" }, [
       _c("strong", [_vm._v("Select All")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "check-sem1-label ml-4 mr-2" }, [
+      _c("strong", [_vm._v("Semester 1")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "check-sem2-label ml-4 mr-2" }, [
+      _c("strong", [_vm._v("Semester 2")])
     ])
   }
 ]

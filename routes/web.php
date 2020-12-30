@@ -74,7 +74,10 @@ Route::get('/', function () {
         'prefix' => 'teacher',
         'middleware' => 'guard_access',
     ], function () {
-        Route::resource('pupils', TeacherController::class)->only(['index', 'store']);
+        Route::resource('pupils', TeacherController::class)->only(['index']);
+        Route::post('save-pupil-teacher', [TeacherController::class, 'savePupilTeacher']);
+        Route::post('update-pupils', [TeacherController::class, 'updatePupils']);
+        Route::post('save-pupil-semester', [TeacherController::class, 'savePupilSemester']);
         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
         Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
         Route::post('send-message', [TeacherController::class, 'sendMessage']);
