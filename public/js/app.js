@@ -3943,7 +3943,8 @@ __webpack_require__.r(__webpack_exports__);
       if (this.rating.length > 0) {
         axios.post('save-pupil-rating', {
           userId: this.userId,
-          rating: this.rating
+          rating: this.rating,
+          semester: this.semester
         }).then(function (response) {
           _this.flashText = response.data.message;
           _this.confirm = true;

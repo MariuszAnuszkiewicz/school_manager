@@ -89,6 +89,7 @@ export default {
                     {
                         userId: this.userId,
                         rating: this.rating,
+                        semester: this.semester,
                     }
                 ).then(response => {
                     this.flashText = response.data.message;
