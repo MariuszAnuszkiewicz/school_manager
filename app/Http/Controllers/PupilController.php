@@ -31,7 +31,7 @@ class PupilController extends Controller
         $hasSubject = isset($authUser->pupil->subjects) ? $authUser->pupil->subjects->first()->id : null;
         if ((int) $id === $hasSubject) {
             foreach ($authUser->pupil->ratings as $rating) {
-                $data['class_name'] = ClassInSchool::find($rating->pivot->pivotParent->class_in_school_id)->name;
+                $data['className'] = ClassInSchool::find($rating->pivot->pivotParent->class_in_school_id)->name;
                 $data['date'][] = $rating->pivot->created_at->format('Y-m-d H:i');
                 if ($rating->pivot->semester === 1) {
                     $data['ratingsSem1'][] = $rating;
@@ -64,10 +64,10 @@ class PupilController extends Controller
                 return response()->json([
                     'avgSem1' => isset($avgArr['sem1']) ? $avgFunc($avgArr['sem1'], $data['ratingsSem1']) : null,
                     'avgSem2' => isset($avgArr['sem2']) ? $avgFunc($avgArr['sem2'], $data['ratingsSem2']) : null,
-                    'class_name' => isset($data['class_name']) ? $data['class_name'] : null,
+                    'className' => isset($data['className']) ? $data['className'] : null,
                     'date' => isset($data['date']) ? $data['date'] : null,
-                    'my_gradesSem1' => isset($data['ratingsSem1']) ? $data['ratingsSem1'] : null,
-                    'my_gradesSem2' => isset($data['ratingsSem2']) ? $data['ratingsSem2'] : null,
+                    'myGradesSem1' => isset($data['ratingsSem1']) ? $data['ratingsSem1'] : null,
+                    'myGradesSem2' => isset($data['ratingsSem2']) ? $data['ratingsSem2'] : null,
                     'semester1' => isset($data['semester1']) ? $data['semester1'] : null,
                     'semester2' => isset($data['semester2']) ? $data['semester2'] : null,
                     'subjects' => isset($data['subjects']) ? $data['subjects'] : null,

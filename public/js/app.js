@@ -2744,10 +2744,10 @@ __webpack_require__.r(__webpack_exports__);
     return {
       avgSem1: {},
       avgSem2: {},
-      class_name: {},
+      className: {},
       date: {},
-      my_gradesSem1: {},
-      my_gradesSem2: {},
+      myGradesSem1: {},
+      myGradesSem2: {},
       semester1: {},
       semester2: {},
       subjects: {},
@@ -2779,9 +2779,9 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/pupil/my-grades/' + id).then(function (response) {
         _this.avgSem1 = response.data.avgSem1;
-        _this.class_name = response.data.class_name;
+        _this.className = response.data.className;
         _this.date = response.data.date;
-        _this.my_gradesSem1 = response.data.my_gradesSem1;
+        _this.myGradesSem1 = response.data.myGradesSem1;
         _this.semester1 = response.data.semester1;
         _this.subjects = response.data.subjects;
         _this.teacher = response.data.teacher;
@@ -2794,9 +2794,9 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/pupil/my-grades/' + id).then(function (response) {
         _this2.avgSem2 = response.data.avgSem2;
-        _this2.class_name = response.data.class_name;
+        _this2.className = response.data.className;
         _this2.date = response.data.date;
-        _this2.my_gradesSem2 = response.data.my_gradesSem2;
+        _this2.myGradesSem2 = response.data.myGradesSem2;
         _this2.semester2 = response.data.semester2;
         _this2.subjects = response.data.subjects;
         _this2.teacher = response.data.teacher;
@@ -2805,7 +2805,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     showWarning: function showWarning(message) {
-      if (this.my_gradesSem2 === undefined) {
+      if (this.myGradesSem1 === undefined || this.myGradesSem2 === undefined) {
         this.alerts.push(this.message.warningText = message);
         this.switchFlashStyle = this.flashStyleWarning.show;
       }
@@ -44424,7 +44424,7 @@ var render = function() {
                 _c("strong", [
                   _vm._v("Class Name:\n                    "),
                   _c("p", { staticClass: "d-inline text-danger" }, [
-                    _vm._v(_vm._s(_vm.class_name))
+                    _vm._v(_vm._s(_vm.className))
                   ])
                 ])
               ])
@@ -44463,7 +44463,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "tbody",
-                        _vm._l(_vm.my_gradesSem1, function(my_grade, index) {
+                        _vm._l(_vm.myGradesSem1, function(myGrade, index) {
                           return _c("tr", [
                             _c(
                               "td",
@@ -44481,7 +44481,7 @@ var render = function() {
                                 staticClass: "text-center green-td",
                                 attrs: { width: "20%" }
                               },
-                              [_vm._v(_vm._s(my_grade.rating))]
+                              [_vm._v(_vm._s(myGrade.rating))]
                             ),
                             _vm._v(" "),
                             _c(
@@ -44536,7 +44536,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "tbody",
-                        _vm._l(_vm.my_gradesSem2, function(my_grade, index) {
+                        _vm._l(_vm.myGradesSem2, function(myGrade, index) {
                           return _c("tr", [
                             _c(
                               "td",
@@ -44554,7 +44554,7 @@ var render = function() {
                                 staticClass: "text-center green-td",
                                 attrs: { width: "20%" }
                               },
-                              [_vm._v(_vm._s(my_grade.rating))]
+                              [_vm._v(_vm._s(myGrade.rating))]
                             ),
                             _vm._v(" "),
                             _c(
