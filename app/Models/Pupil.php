@@ -27,9 +27,9 @@ class Pupil extends Model
         return $this->belongsToMany(Message::class);
     }
 
-    public function presence()
+    public function presences()
     {
-        return $this->hasOne(Presence::class);
+        return $this->hasMany(Presence::class);
     }
 
     public function ratings()

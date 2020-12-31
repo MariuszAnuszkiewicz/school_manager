@@ -48,7 +48,7 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('detail-rating', require('./components/teacher/pupils/ratings/DetailRating.vue').default);
    Vue.component('teacher-navbar', require('./components/nav/TeacherNavbar.vue').default);
    Vue.component('fill-presence', require('./components/teacher/presence/FillPresence.vue').default);
-
+   Vue.component('detail-presences', require('./components/teacher/presence/DetailPresences.vue').default);
 
 /*********************************************************************************************************************/
 
