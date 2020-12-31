@@ -3176,7 +3176,7 @@ __webpack_require__.r(__webpack_exports__);
       message_text: '',
       message_id: '',
       teacher: {},
-      my_messages: {},
+      myMessages: {},
       pupils: {},
       alerts: [],
       messagesInfo: [],
@@ -3229,7 +3229,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       axios.get('my-messages?page=' + page).then(function (response) {
-        _this.my_messages = response.data.my_messages;
+        _this.myMessages = response.data.myMessages;
         _this.teacher = response.data.teacher;
         _this.pupils = response.data.pupils;
 
@@ -3252,8 +3252,8 @@ __webpack_require__.r(__webpack_exports__);
       this.isSelected = !this.isSelected;
 
       if (this.isSelected) {
-        for (var item in this.my_messages.data) {
-          this.selected.push(this.my_messages.data[item].id);
+        for (var item in this.myMessages.data) {
+          this.selected.push(this.myMessages.data[item].id);
         }
       } else {
         this.selected.splice(0, this.selected.length);
@@ -3280,13 +3280,13 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     showWarning: function showWarning() {
-      if (this.my_messages === undefined) {
+      if (this.myMessages === undefined) {
         this.alerts.push(this.message.warningText);
         this.switchFlashStyle = this.flashStyleWarning.show;
       }
     },
     showInfo: function showInfo() {
-      if (this.my_messages.data.length > 0) {
+      if (this.myMessages.data.length > 0) {
         this.messagesInfo.push(this.message.infoText);
         this.switchFlashStyle = this.flashStyleInfo.show;
       }
@@ -45294,8 +45294,8 @@ var render = function() {
                         ]
                       ),
                       _vm._v(" "),
-                      _vm._l(_vm.my_messages.data, function(my_message, index) {
-                        return _c("tr", { key: my_message.id }, [
+                      _vm._l(_vm.myMessages.data, function(myMessage, index) {
+                        return _c("tr", { key: myMessage.id }, [
                           _c("td", { staticClass: "text-center pt-3" }, [
                             _c("input", {
                               directives: [
@@ -45309,9 +45309,9 @@ var render = function() {
                               staticClass: "messages-select",
                               attrs: { type: "checkbox" },
                               domProps: {
-                                value: my_message.id,
+                                value: myMessage.id,
                                 checked: Array.isArray(_vm.selected)
-                                  ? _vm._i(_vm.selected, my_message.id) > -1
+                                  ? _vm._i(_vm.selected, myMessage.id) > -1
                                   : _vm.selected
                               },
                               on: {
@@ -45321,7 +45321,7 @@ var render = function() {
                                       $$el = $event.target,
                                       $$c = $$el.checked ? true : false
                                     if (Array.isArray($$a)) {
-                                      var $$v = my_message.id,
+                                      var $$v = myMessage.id,
                                         $$i = _vm._i($$a, $$v)
                                       if ($$el.checked) {
                                         $$i < 0 &&
@@ -45352,24 +45352,24 @@ var render = function() {
                             _vm._v(_vm._s(_vm.pupils[index]))
                           ]),
                           _vm._v(" "),
-                          my_message.message.length > 35
+                          myMessage.message.length > 35
                             ? _c("td", { staticClass: "text-center pt-3" }, [
                                 _vm._v(
                                   _vm._s(
-                                    my_message.message.slice(0, 35) + " ... "
+                                    myMessage.message.slice(0, 35) + " ... "
                                   )
                                 )
                               ])
                             : _c("td", { staticClass: "text-center pt-3" }, [
-                                _vm._v(_vm._s(my_message.message))
+                                _vm._v(_vm._s(myMessage.message))
                               ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "text-center pt-3" }, [
                             _vm._v(
                               _vm._s(
                                 _vm._f("formatDate")(
-                                  my_message.created_at,
-                                  my_message.created_at
+                                  myMessage.created_at,
+                                  myMessage.created_at
                                 )
                               )
                             )
@@ -45384,8 +45384,8 @@ var render = function() {
                                 on: {
                                   click: function($event) {
                                     return _vm.openModal(
-                                      my_message.message,
-                                      my_message.id
+                                      myMessage.message,
+                                      myMessage.id
                                     )
                                   }
                                 }
@@ -45397,7 +45397,7 @@ var render = function() {
                               "a",
                               {
                                 attrs: {
-                                  href: "single-message/" + my_message.id
+                                  href: "single-message/" + myMessage.id
                                 }
                               },
                               [_vm._m(3, true)]
@@ -45411,7 +45411,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("pagination", {
-                  attrs: { data: _vm.my_messages },
+                  attrs: { data: _vm.myMessages },
                   on: { "pagination-change-page": _vm.getSources }
                 })
               ],
