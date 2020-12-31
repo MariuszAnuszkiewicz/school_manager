@@ -28,7 +28,7 @@
                             <input @click="selectAll()" type="checkbox" id="select-all" class="select-all ml-2">
                         </div>
                         <div class="col-md-12  text-center pt-2 pb-2 bg-light">
-                            <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-outline-danger" @click="deleteMultipleTables()"><i class="fas fa-trash"></i></button>
                             <button id="send-multiple-message" class="btn btn-success" @click="openModal()">
                                <i class="fas fa-envelope"></i>
                             </button>
@@ -139,8 +139,8 @@ export default {
                 this.isSelected = false;
             }
         },
-        deleteSelected() {
-            axios.post('delete-pupils', {selected: this.selected}).then(response => {
+        deletePupilTeacher() {
+            axios.post('delete-pupil-teacher', {selected: this.selected}).then(response => {
                 this.getSources()
                 if (this.selected.length > 0) {
                     this.messagesInfo.push(this.message.infoText);
@@ -148,6 +148,25 @@ export default {
                 }
                 this.messagesInfo.splice(1, this.messagesInfo.length);
             });
+        },
+        deletePupilSemester() {
+            axios.post('delete-pupil-semester',
+                {
+                        selected: this.selected,
+                        semesters: [1, 2]
+                     }
+            ).then(response => {
+                this.getSources()
+                if (this.selected.length > 0) {
+                    this.messagesInfo.push(this.message.infoText);
+                    this.switchFlashStyle = this.flashStyleInfo.show;
+                }
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+            });
+        },
+        deleteMultipleTables() {
+            this.deletePupilTeacher();
+            this.deletePupilSemester();
         },
         showWarning() {
             if (this.users === undefined) {

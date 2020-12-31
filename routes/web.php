@@ -76,10 +76,11 @@ Route::get('/', function () {
     ], function () {
         Route::resource('pupils', TeacherController::class)->only(['index']);
         Route::post('save-pupil-teacher', [TeacherController::class, 'savePupilTeacher']);
-        Route::post('update-pupils', [TeacherController::class, 'updatePupils']);
         Route::post('save-pupil-semester', [TeacherController::class, 'savePupilSemester']);
+        Route::post('update-pupils', [TeacherController::class, 'updatePupils']);
         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
-        Route::post('delete-pupils', [TeacherController::class, 'deletePupils']);
+        Route::post('delete-pupil-teacher', [TeacherController::class, 'deletePupilTeacher']);
+        Route::post('delete-pupil-semester', [TeacherController::class, 'deletePupilSemester']);
         Route::post('send-message', [TeacherController::class, 'sendMessage']);
         Route::get('my-messages', [TeacherController::class, 'myMessages']);
         Route::put('update-message/{id}', [TeacherController::class, 'updateMessage'])->where('id', '[0-9]+');

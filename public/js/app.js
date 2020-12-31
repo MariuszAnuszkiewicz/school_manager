@@ -4742,10 +4742,10 @@ __webpack_require__.r(__webpack_exports__);
         this.isSelected = false;
       }
     },
-    deleteSelected: function deleteSelected() {
+    deletePupilTeacher: function deletePupilTeacher() {
       var _this2 = this;
 
-      axios.post('delete-pupils', {
+      axios.post('delete-pupil-teacher', {
         selected: this.selected
       }).then(function (response) {
         _this2.getSources();
@@ -4758,6 +4758,28 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.messagesInfo.splice(1, _this2.messagesInfo.length);
       });
+    },
+    deletePupilSemester: function deletePupilSemester() {
+      var _this3 = this;
+
+      axios.post('delete-pupil-semester', {
+        selected: this.selected,
+        semesters: [1, 2]
+      }).then(function (response) {
+        _this3.getSources();
+
+        if (_this3.selected.length > 0) {
+          _this3.messagesInfo.push(_this3.message.infoText);
+
+          _this3.switchFlashStyle = _this3.flashStyleInfo.show;
+        }
+
+        _this3.messagesInfo.splice(1, _this3.messagesInfo.length);
+      });
+    },
+    deleteMultipleTables: function deleteMultipleTables() {
+      this.deletePupilTeacher();
+      this.deletePupilSemester();
     },
     showWarning: function showWarning() {
       if (this.users === undefined) {
@@ -47680,7 +47702,7 @@ var render = function() {
                             staticClass: "btn btn-outline-danger",
                             on: {
                               click: function($event) {
-                                return _vm.deleteSelected()
+                                return _vm.deleteMultipleTables()
                               }
                             }
                           },

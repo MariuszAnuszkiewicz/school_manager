@@ -151,9 +151,19 @@ class TeacherController extends Controller
         return view('teacher.selected_pupils');
     }
 
-    public function deletePupils(Request $request)
+    public function deletePupilTeacher(Request $request)
     {
         auth()->user()->teacher->pupils()->detach($request->selected);
+        return response()->json(['message' => 'pupils has been deleted']);
+    }
+
+    public function deletePupilSemester(Request $request)
+    {
+        $x = 0;
+        while($x < count($request->selected)) {
+            Pupil::find($request->selected[$x])->semesters()->detach($request->semesters);
+            $x++;
+        }
         return response()->json(['message' => 'pupils has been deleted']);
     }
 
