@@ -154,7 +154,7 @@ export default {
                 {
                         selected: this.selected,
                         semesters: [1, 2]
-                     }
+                }
             ).then(response => {
                 this.getSources()
                 if (this.selected.length > 0) {

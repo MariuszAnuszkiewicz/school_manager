@@ -184,9 +184,8 @@ class TeacherController extends Controller
     {
         $teacher = auth()->user()->teacher;
         $data['teacher'] = $teacher->user->name;
-        $data['my_messages'] = $teacher->messages;
-        $ids = [];
-        foreach ($data['my_messages'] as $message) {
+        $data['myMessages'] = isset($teacher->messages) ? $teacher->messages : null;
+        foreach ($data['myMessages'] as $message) {
            if ($message->id) {
                foreach ($message->pupils as $pupil) {
                    $ids[$message->id][] = $pupil->id;
@@ -194,11 +193,11 @@ class TeacherController extends Controller
            }
            $data['pupils'][] = implode(",", $ids[$message->id]);
         }
-        if ($data['my_messages']->count() > 0) {
+        if ($data['myMessages']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
                     'teacher' => $data['teacher'],
-                    'my_messages' => $this->paginate($data['my_messages']),
+                    'myMessages' => $this->paginate($data['myMessages']),
                     'pupils' => $data['pupils'],
                 ]);
             }

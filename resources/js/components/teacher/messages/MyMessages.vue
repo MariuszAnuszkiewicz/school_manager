@@ -30,30 +30,30 @@
                     <div class="col-md-12  text-center d-inline-block pt-2 pb-2 bg-light">
                         <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
                     </div>
-                        <tr v-for="(my_message, index) in my_messages.data" :key="my_message.id">
+                        <tr v-for="(myMessage, index) in myMessages.data" :key="myMessage.id">
                             <td class="text-center pt-3">
                               <input type="checkbox" class="messages-select"
                                      v-model="selected"
-                                     :value="my_message.id"
+                                     :value="myMessage.id"
                                      @change="unSelectAll()">
                             </td>
                             <td class="text-center pt-3">{{ teacher }}</td>
                             <td class="text-center pt-3">{{ pupils[index] }}</td>
-                            <td v-if="my_message.message.length > 35" class="text-center pt-3">{{ my_message.message.slice(0, 35) + ' ... ' }}</td>
-                            <td v-else class="text-center pt-3">{{ my_message.message }}</td>
-                            <td class="text-center pt-3">{{ my_message.created_at | formatDate(my_message.created_at) }}</td>
+                            <td v-if="myMessage.message.length > 35" class="text-center pt-3">{{ myMessage.message.slice(0, 35) + ' ... ' }}</td>
+                            <td v-else class="text-center pt-3">{{ myMessage.message }}</td>
+                            <td class="text-center pt-3">{{ myMessage.created_at | formatDate(myMessage.created_at) }}</td>
                             <td class="text-center pt-2">
-                               <button id="edit-message" class="btn btn-success" @click="openModal(my_message.message, my_message.id)">
+                               <button id="edit-message" class="btn btn-success" @click="openModal(myMessage.message, myMessage.id)">
                                   <i class="fas fa-edit"></i>
                                </button>
-                               <a v-bind:href="'single-message/' + my_message.id">
+                               <a v-bind:href="'single-message/' + myMessage.id">
                                   <button class="btn btn-info"><i class="fas fa-eye"></i></button>
                                </a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <pagination :data="my_messages" @pagination-change-page="getSources"></pagination>
+                <pagination :data="myMessages" @pagination-change-page="getSources"></pagination>
             </div>
         </div>
         <edit-message :message_text="message_text" :message_id="message_id" v-if="showModal === true">
@@ -77,7 +77,7 @@ export default {
             message_text: '',
             message_id: '',
             teacher: {},
-            my_messages: {},
+            myMessages: {},
             pupils: {},
             alerts: [],
             messagesInfo: [],
@@ -127,7 +127,7 @@ export default {
                 page = 1;
             }
             axios.get('my-messages?page=' + page).then(response => {
-                this.my_messages = response.data.my_messages;
+                this.myMessages = response.data.myMessages;
                 this.teacher = response.data.teacher;
                 this.pupils = response.data.pupils;
                 this.showWarning();
@@ -146,8 +146,8 @@ export default {
         selectAll() {
             this.isSelected = !this.isSelected;
             if (this.isSelected) {
-                for(let item in this.my_messages.data){
-                    this.selected.push(this.my_messages.data[item].id);
+                for(let item in this.myMessages.data){
+                    this.selected.push(this.myMessages.data[item].id);
                 }
             } else {
                 this.selected.splice(0, this.selected.length);
@@ -169,13 +169,13 @@ export default {
             }
         },
         showWarning() {
-            if (this.my_messages === undefined) {
+            if (this.myMessages === undefined) {
                 this.alerts.push(this.message.warningText);
                 this.switchFlashStyle = this.flashStyleWarning.show;
             }
         },
         showInfo() {
-            if (this.my_messages.data.length > 0) {
+            if (this.myMessages.data.length > 0) {
                 this.messagesInfo.push(this.message.infoText);
                 this.switchFlashStyle = this.flashStyleInfo.show;
             }
