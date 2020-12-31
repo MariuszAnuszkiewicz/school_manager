@@ -46,15 +46,12 @@ class TeacherController extends Controller
     {
         if ($request->ajax()) {
             if (!empty($request->pupils)) {
-                $ids = explode(",", $request->pupils);
-                for ($i = 0; $i < count($ids); $i++) {
-                    $data[] = (int) $ids[$i];
-                }
                 $teacher = auth()->user()->teacher;
+                $pupilIdPupilTeacherTable = [];
                 foreach ($teacher->pupils as $teacherPivot) {
-                    $quantityPupilsTable[] = $teacherPivot->id;
+                    $pupilIdPupilTeacherTable[] = $teacherPivot->id;
                 }
-                $diffCompare = array_diff($data, $quantityPupilsTable);
+                $diffCompare = array_diff(explode(",", $request->pupils), $pupilIdPupilTeacherTable);
                 $teacher->pupils()->attach($diffCompare);
                 return response()->json(['message' => 'pupils has been assign to classes']);
             }
