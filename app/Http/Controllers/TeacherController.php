@@ -454,10 +454,22 @@ class TeacherController extends Controller
 
     public function detailPresence(Request $request, $id)
     {
-        dd($id);
-        if ($request->ajax()) {
-
+        $user = User::find($id);
+        $pupil = $user->pupil;
+        $data['user'] = $user;
+        $isPresences = isset($pupil->presences) ? $pupil->presences : null;
+        foreach ($isPresences as $presence) {
+            $data['presences'][] = $presence;
         }
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'user' => isset($data['user']) ? $data['user'] : null,
+                    'presences' => isset($data['presences']) ? $this->paginate($data['presences']) : null,
+                ]);
+            }
+        }
+        return view('teacher.presence.detail_presences');
     }
 
     public function paginate($items, $perPage = 5, $page = null, $options = [])
