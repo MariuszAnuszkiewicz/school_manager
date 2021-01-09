@@ -98,7 +98,9 @@ Route::get('/', function () {
         Route::get('fill-presence', [TeacherController::class, 'fillPresence']);
         Route::post('save-presence', [TeacherController::class, 'savePresence']);
         Route::get('detail-presence/{id}', [TeacherController::class, 'detailPresence'])->where('id', '[0-9]+');
-
+        Route::get('events-by-calendar', [EventController::class, 'eventsByCalendar']);
+        Route::post('save-events', [EventController::class, 'saveEvents']);
+        Route::post('save-event-teacher', [EventController::class, 'saveEventTeacher']);
     });
 
 /*********************************************************************************************************************/

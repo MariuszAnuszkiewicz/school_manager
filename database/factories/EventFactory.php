@@ -24,9 +24,9 @@ class EventFactory extends Factory
     {
         return [
             'title' => 'Test with Geography '. $this->faker->unique(true)->numberBetween(1, 10),
-            'day' => Carbon::now()->format('Y-m-d'),
-            'hour_start' => '08:00',
-            'hour_end' => '09:00',
+            'date' => Carbon::now()->format('Y-m-d'),
+            'start' => '08:00',
+            'end' => '09:00',
         ];
     }
 }
