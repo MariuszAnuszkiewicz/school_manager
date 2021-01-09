@@ -5,6 +5,7 @@ window.Vue = require('vue');
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('error-display', require('./components/global/ErrorDisplay.vue').default);
 
+
 // user profile zone \\
 /*********************************************************************************************************************/
 
@@ -49,6 +50,8 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('teacher-navbar', require('./components/nav/TeacherNavbar.vue').default);
    Vue.component('fill-presence', require('./components/teacher/presence/FillPresence.vue').default);
    Vue.component('detail-presences', require('./components/teacher/presence/DetailPresences.vue').default);
+   Vue.component('event-create', require('./components/teacher/event/EventCreate').default);
+   Vue.component('save-event', require('./components/teacher/modals/SaveEvent').default);
 
 /*********************************************************************************************************************/
 

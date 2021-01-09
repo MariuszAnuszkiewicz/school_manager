@@ -12,20 +12,20 @@
                     <thead class="bg-dark">
                         <tr>
                             <th class="text-center text-white pt-2">Teacher</th>
-                            <th class="text-center text-white pt-2">Title</th>
+                            <th class="text-center text-white pt-2">Content</th>
                             <th class="text-center text-white pt-2">Day</th>
-                            <th class="text-center text-white pt-2">Hour Start</th>
-                            <th class="text-center text-white pt-2">Hour End</th>
+                            <th class="text-center text-white pt-2">Start</th>
+                            <th class="text-center text-white pt-2">End</th>
                             <th class="text-center text-white pt-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody >
                         <tr v-for="(event, index) in events.data" :key="event.id">
                             <td class="text-center pt-3">{{ teachers[index] }}</td>
-                            <td class="text-center pt-3">{{ event.title }}</td>
+                            <td class="text-center pt-3">{{ event.content }}</td>
                             <td class="text-center pt-3">{{ event.day }}</td>
-                            <td class="text-center pt-3">{{ event.hour_start }}</td>
-                            <td class="text-center pt-3">{{ event.hour_end }}</td>
+                            <td class="text-center pt-3">{{ event.start }}</td>
+                            <td class="text-center pt-3">{{ event.end }}</td>
                             <td class="text-center">
                                 <button @click.prevent="deleteEvent(event)" class="btn btn-danger">
                                     <i class="fas fa-trash"></i>

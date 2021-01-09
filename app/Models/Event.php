@@ -12,9 +12,9 @@ class Event extends Model
     public $timestamps = true;
     protected $fillable = [
         'title',
-        'day',
-        'hour_start',
-        'hour_end'
+        'date',
+        'start',
+        'end',
     ];
 
     public function teachers()

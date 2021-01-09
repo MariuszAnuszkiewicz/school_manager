@@ -30,6 +30,9 @@
                 <li class="nav">
                     <a :href="urls.fillPresence">Fill Presence</a>
                 </li>
+                <li class="nav">
+                    <a :href="urls.createEvents">Create Events</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -48,6 +51,7 @@ export default {
                 assignRating: '/teacher/assign-rating',
                 listRatings: '/teacher/list-ratings',
                 fillPresence: '/teacher/fill-presence',
+                createEvents: '/teacher/events-by-calendar',
             }
         }
     },
