@@ -68,7 +68,7 @@ class EventController extends Controller
                 ]);
             }
         }
-        return view('teacher.event.event_create');
+        return view('teacher.event.create_event');
     }
 
     public function saveEvents(Request $request)
