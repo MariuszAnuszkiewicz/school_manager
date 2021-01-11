@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title')
-    Event Create
+    Create Event
 @endsection
 @section('content')
-    <event-create></event-create>
+    <create-event></create-event>
 @endsection
