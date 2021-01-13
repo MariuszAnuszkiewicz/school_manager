@@ -129,9 +129,9 @@ export default {
 
     .overlay {
         position: absolute;
-        top: 200px;
+        top: 75px;
         width: 52.5%;
-        height: 92%;
+        height: 175%;
         background-color: rgba(0, 0, 0, 0.8);
         z-index: 5;
     }

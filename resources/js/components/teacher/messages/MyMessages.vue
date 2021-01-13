@@ -27,9 +27,9 @@
                         <label class="check-all-label"><strong>Select All</strong></label>
                         <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
                     </div>
-                    <div class="col-md-12  text-center d-inline-block pt-2 pb-2 bg-light">
-                        <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
-                    </div>
+                        <div class="col-md-12  text-center d-inline-block pt-2 pb-2 bg-light">
+                            <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
+                        </div>
                         <tr v-for="(myMessage, index) in myMessages.data" :key="myMessage.id">
                             <td class="text-center pt-3">
                               <input type="checkbox" class="messages-select"

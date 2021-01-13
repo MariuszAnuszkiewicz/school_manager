@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LessonPlanController;
@@ -99,8 +98,11 @@ Route::get('/', function () {
         Route::post('save-presence', [TeacherController::class, 'savePresence']);
         Route::get('detail-presence/{id}', [TeacherController::class, 'detailPresence'])->where('id', '[0-9]+');
         Route::get('events-by-calendar', [EventController::class, 'eventsByCalendar']);
+        Route::get('list-events', [EventController::class, 'listEventsByTeacher']);
         Route::post('save-events', [EventController::class, 'saveEvents']);
         Route::post('save-event-teacher', [EventController::class, 'saveEventTeacher']);
+        Route::delete('delete-event/{id}', [EventController::class, 'deleteEventByTeacher'])->where('id', '[0-9]+');
+        Route::put('update-event/{id}', [EventController::class, 'updateEvent'])->where('id', '[0-9]+');
     });
 
 /*********************************************************************************************************************/

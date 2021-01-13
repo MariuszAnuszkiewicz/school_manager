@@ -29,7 +29,7 @@ class Teacher extends Model
 
     public function events()
     {
-        return $this->belongsToMany(Event::class);
+        return $this->belongsToMany(Event::class)->latest();
     }
 
     public function subjects()

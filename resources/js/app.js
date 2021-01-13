@@ -50,8 +50,10 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('teacher-navbar', require('./components/nav/TeacherNavbar.vue').default);
    Vue.component('fill-presence', require('./components/teacher/presence/FillPresence.vue').default);
    Vue.component('detail-presences', require('./components/teacher/presence/DetailPresences.vue').default);
-   Vue.component('create-event', require('./components/teacher/event/CreateEvent').default);
-   Vue.component('save-event', require('./components/teacher/modals/SaveEvent').default);
+   Vue.component('create-event', require('./components/teacher/event/CreateEvent.vue').default);
+   Vue.component('save-event', require('./components/teacher/modals/SaveEvent.vue').default);
+   Vue.component('list-events', require('./components/teacher/event/ListEvent.vue').default);
+   Vue.component('edit-event', require('./components/teacher/modals/EditEvent.vue').default);
 
 /*********************************************************************************************************************/
 
