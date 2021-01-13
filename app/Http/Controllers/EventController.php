@@ -71,6 +71,23 @@ class EventController extends Controller
         return view('teacher.event.create_event');
     }
 
+    public function listEventsByTeacher(Request $request)
+    {
+        $data['events'] = auth()->user()->teacher->events;
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'events' => $this->paginate($data['events'])
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any events for pupils"]);
+            }
+        }
+        return view('teacher.event.create_event');
+    }
+
     public function saveEvents(Request $request)
     {
         if ($request->ajax()) {
@@ -90,6 +107,17 @@ class EventController extends Controller
             Event::find($request->eventId)->teachers()->attach(['teacher_id' => $request->teacherId]);
         }
         return response()->json(['message' => 'event has been create']);
+    }
+
+    public function updateEvent(Request $request)
+    {
+        Event::find($request->id)->update(['title' => $request->title]);
+        return response()->json(['message' => 'event has been update']);
+    }
+
+    public function deleteEventByTeacher($id)
+    {
+        Event::find($id)->delete();
     }
 
     public function paginate($items, $perPage = 5, $page = null, $options = [])
