@@ -432,7 +432,7 @@ class TeacherController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'users' => $this->paginate($data['users']),
-                    'pupils' => $data['pupils']
+                    'pupils' => $data['pupils'],
                 ]);
             }
         }
@@ -441,18 +441,28 @@ class TeacherController extends Controller
 
     public function savePresence(Request $request)
     {
+        $countDate = null;
         $userId = User::find($request->userId);
         for ($i = 0; $i < count($userId); $i++) {
-            $pupilIds[] = $userId[$i]->pupil->id;
+            $countDate = Presence::where('pupil_id', $userId[$i]->pupil->id)
+                ->whereDate('date', '=', Carbon::now()->format('Y-m-d'))->get()->count();
         }
-        if ($request->ajax()) {
-            for ($i = 0; $i < count($pupilIds); $i++) {
-                Presence::create([
-                    'pupil_id' => $pupilIds[$i],
-                    'teacher_id' => auth()->user()->teacher->id,
-                    'presence' => 'yes',
-                    'date' => Carbon::now()->format('Y-m-d'),
-                ]);
+        if ($countDate > 0) {
+            return response()->json(['message' => 'presences under this date is exist']);
+        } else {
+            $userId = User::find($request->userId);
+            for ($i = 0; $i < count($userId); $i++) {
+                $pupilIds[] = $userId[$i]->pupil->id;
+            }
+            if ($request->ajax()) {
+                for ($i = 0; $i < count($pupilIds); $i++) {
+                    Presence::create([
+                        'pupil_id' => $pupilIds[$i],
+                        'teacher_id' => auth()->user()->teacher->id,
+                        'presence' => isset($request->presence) ? (string)$request->presence : null,
+                        'date' => Carbon::now()->format('Y-m-d'),
+                    ]);
+                }
             }
         }
         return response()->json(['message' => 'presences has been saved']);
@@ -467,15 +477,34 @@ class TeacherController extends Controller
         foreach ($isPresences as $presence) {
             $data['presences'][] = $presence;
         }
-        if (!empty($data)) {
+        if (isset($data['presences']) && isset($data['user'])) {
             if ($request->ajax()) {
                 return response()->json([
                     'user' => isset($data['user']) ? $data['user'] : null,
-                    'presences' => isset($data['presences']) ? $this->paginate($data['presences']) : null,
+                    'presences' => isset($data['presences']) ? $this->paginate($data['presences'], 10) : null,
                 ]);
+            }
+        }  else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any presences for pupils"]);
             }
         }
         return view('teacher.presence.detail_presences');
+    }
+
+    public function deletePresence(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            Presence::find($id)->delete();
+        }
+    }
+
+    public function updatePresence(Request $request)
+    {
+        if ($request->ajax()) {
+            Presence::find($request->id)->update(['presence' => $request->presence]);
+        }
+        return response()->json(['message' => 'presences has been updated']);
     }
 
     public function paginate($items, $perPage = 5, $page = null, $options = [])
