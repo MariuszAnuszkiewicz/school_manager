@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="flex flash-container flash-style-warning">
-                <div v-if="alerts !== undefined" :style="{ display: 'block' }" v-for="alert in alerts" class="error-explode">
-                   <p>{{ alert }}</p>
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                   <p>{{ messageWarning }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Events List</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -62,7 +62,8 @@ export default {
             eventData: undefined,
             events: {},
             showModalEdit: false,
-            alerts: [],
+            messagesWarning: [],
+            showMessageWarning: 'none',
             message: {
                 warningText: '',
             },
@@ -95,7 +96,9 @@ export default {
         },
         showWarning(warningText) {
             if (this.events === undefined) {
-                this.alerts.push(warningText);
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
