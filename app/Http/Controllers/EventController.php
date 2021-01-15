@@ -73,7 +73,8 @@ class EventController extends Controller
 
     public function listEventsByTeacher(Request $request)
     {
-        $data['events'] = auth()->user()->teacher->events;
+        $data['events'] = auth()->user()->teacher->events->toArray();
+        rsort($data['events']);
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([

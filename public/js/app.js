@@ -18609,7 +18609,8 @@ __webpack_require__.r(__webpack_exports__);
       eventData: undefined,
       events: {},
       showModalEdit: false,
-      alerts: [],
+      messagesWarning: [],
+      showMessageWarning: 'none',
       message: {
         warningText: ''
       }
@@ -18649,7 +18650,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     showWarning: function showWarning(warningText) {
       if (this.events === undefined) {
-        this.alerts.push(warningText);
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -19198,6 +19201,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['eventData'],
   data: function data() {
@@ -19205,6 +19210,8 @@ __webpack_require__.r(__webpack_exports__);
       id: this.eventData.id,
       title: this.eventData.title,
       confirm: false,
+      messagesInfo: [],
+      showMessageInfo: 'none',
       flashTextInfo: ''
     };
   },
@@ -19216,11 +19223,18 @@ __webpack_require__.r(__webpack_exports__);
         id: this.id,
         title: this.title
       }).then(function (response) {
-        _this.flashTextInfo = response.data.message;
-        _this.confirm = true;
+        _this.showInfo(response.data.message);
       })["catch"](function (error) {
         console.log(error.response.data);
       });
+    },
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+        this.confirm = true;
+      }
     }
   }
 });
@@ -61654,22 +61668,23 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row justify-content-center" }, [
-        _c(
-          "div",
-          { staticClass: "flex flash-container flash-style-warning" },
-          _vm._l(_vm.alerts, function(alert) {
-            return _vm.alerts !== undefined
-              ? _c(
-                  "div",
-                  { staticClass: "error-explode", style: { display: "block" } },
-                  [_c("p", [_vm._v(_vm._s(alert))])]
-                )
-              : _vm._e()
-          }),
-          0
-        ),
+        _vm.messagesWarning !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-warning",
+                style: { display: _vm.showMessageWarning }
+              },
+              _vm._l(_vm.messagesWarning, function(messageWarning) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageWarning))])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
-        _vm.alerts[0] === undefined
+        _vm.messagesWarning[0] === undefined
           ? _c(
               "div",
               { staticClass: "col mt-5" },
@@ -62657,7 +62672,12 @@ var render = function() {
                   ? _c(
                       "div",
                       { staticClass: "flex flash-container flash-style-info" },
-                      [_c("p", [_vm._v(_vm._s(_vm.flashTextInfo))])]
+                      _vm._l(_vm.messagesInfo, function(messageInfo) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageInfo))])
+                        ])
+                      }),
+                      0
                     )
                   : _vm._e()
               ])

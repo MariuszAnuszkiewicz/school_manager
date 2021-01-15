@@ -22,7 +22,9 @@
                         </div>
                         <div class="flash-wrapper">
                             <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
-                               <p>{{ flashTextInfo }}</p>
+                                <div v-for="messageInfo in messagesInfo" class="error-explode">
+                                    <p>{{ messageInfo }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -40,20 +42,29 @@ export default {
             id: this.eventData.id,
             title: this.eventData.title,
             confirm: false,
+            messagesInfo: [],
+            showMessageInfo: 'none',
             flashTextInfo: '',
         }
     },
     methods: {
         updateEvent() {
             axios.put('update-event/' + this.id, {
-               id: this.id,
-               title: this.title
+                id: this.id,
+                title: this.title
             }).then(response => {
-               this.flashTextInfo = response.data.message;
-               this.confirm = true;
+                this.showInfo(response.data.message);
             }).catch(function (error) {
-               console.log(error.response.data)
+                console.log(error.response.data)
             });
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+                this.confirm = true;
+            }
         },
     },
 }
