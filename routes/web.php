@@ -97,6 +97,8 @@ Route::get('/', function () {
         Route::get('fill-presence', [TeacherController::class, 'fillPresence']);
         Route::post('save-presence', [TeacherController::class, 'savePresence']);
         Route::get('detail-presence/{id}', [TeacherController::class, 'detailPresence'])->where('id', '[0-9]+');
+        Route::delete('detail-presence/delete/{id}', [TeacherController::class, 'deletePresence'])->where('id', '[0-9]+');
+        Route::put('detail-presence/update', [TeacherController::class, 'updatePresence']);
         Route::get('events-by-calendar', [EventController::class, 'eventsByCalendar']);
         Route::get('list-events', [EventController::class, 'listEventsByTeacher']);
         Route::post('save-events', [EventController::class, 'saveEvents']);
