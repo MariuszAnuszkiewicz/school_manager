@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                    <p>{{ alert }}</p>
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                   <p>{{ messageWarning }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Detail Ratings</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -41,24 +41,10 @@ export default {
             ratings: {},
             subject: {},
             createdAt: {},
-            alerts: [],
-            switchFlashStyle: '',
+            messagesWarning: [],
+            showMessageWarning: 'none',
             message: {
                 warningText: 'There are no any ratings for pupil.',
-            },
-            flashStyleWarning: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '110px',
-                    'left': '44.5%',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '260px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
             },
         }
     },
@@ -70,13 +56,14 @@ export default {
                 this.ratings = response.data.ratings;
                 this.subject = response.data.subject;
                 this.createdAt = response.data.createdAt;
-                this.showWarning();
+                this.showWarning(response.data.message);
             });
         },
-        showWarning() {
-            if (this.ratings === undefined) {
-                this.alerts.push(this.message.warningText);
-                this.switchFlashStyle = this.flashStyleWarning.show;
+        showWarning(warningText) {
+            if (warningText !== undefined) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
@@ -90,18 +77,17 @@ export default {
                 minutesFormat += "0" + date.getMinutes();
             } else {
                 minutesFormat += date.getMinutes();
-                if (value === null) {
-                    return timestamps = "";
-                } else {
-                    return timestamps +=
-                        " " + date.getFullYear() +
-                        "-" + (date.getMonth() + 1) +
-                        "-" + date.getDate() +
-                        " " + date.getHours() +
-                        ":" + minutesFormat;
-                }
+            }
 
-
+            if (value === null) {
+                return timestamps = "";
+            } else {
+                return timestamps +=
+                    " " + date.getFullYear() +
+                    "-" + (date.getMonth() + 1) +
+                    "-" + date.getDate() +
+                    " " + date.getHours() +
+                    ":" + minutesFormat;
             }
         }
     },
@@ -116,8 +102,19 @@ export default {
     .header-text {
         color: #8f8f8f;
     }
+    .flash-style-warning {
+        display: none;
+        position: absolute;
+        top: 250px;
+        left: 42.2%;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
     .error-explode p {
-        padding-top: 4px;
+        padding-top: 5px;
     }
 
 </style>

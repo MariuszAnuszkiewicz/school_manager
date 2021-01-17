@@ -18,11 +18,7 @@
                             </label>
                         </div>
                         <div class="form-group">
-                            <div v-if="this.ratings !== undefined" id="delete-rating" :style="{
-                                   'overflow-y': 'scroll',
-                                   'width': '350px',
-                                   'height': '175px',
-                                }">
+                            <div v-if="this.ratings !== undefined" id="delete-rating">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -40,7 +36,7 @@
                                             </td>
                                             <td>
                                                 <strong class="text-danger">
-                                                    <p class="p-rating text-left pt-3 pl-3" :data-rating="rating">{{ rating }}</p>
+                                                   <p class="p-rating text-left pt-3 pl-3" :data-rating="rating">{{ rating }}</p>
                                                 </strong>
                                             </td>
                                             <td>
@@ -53,10 +49,11 @@
                                 </table>
                             </div>
                             <div v-else-if="this.ratings === undefined">
-                                <p class="text-center pt-1"
-                                   :style="flashStyleWarning.show"
-                                   v-for="error in errors">{{ error }}
-                                </p>
+                                <div class="flex flash-container flash-style-warning">
+                                    <div v-for="messageWarning in messagesWarning" class="error-explode">
+                                        <p>{{ messageWarning }}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -67,8 +64,10 @@
                         </button>
                     </div>
                     <div class="flash-wrapper">
-                        <div v-if="this.confirm === true" :style="flashStyleInfo.show" class="flex flash-container">
-                            <p>{{ flashText }}</p>
+                        <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                            <div v-for="messageInfo in messagesInfo" class="error-explode">
+                                <p>{{ messageInfo }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,37 +86,10 @@ export default {
             selected: [],
             confirm: false,
             onCheckbox: false,
-            flashText: '',
-            flashStyleInfo: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '22px',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '333px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
-            flashStyleWarning: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '5px',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '333px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
+            messagesInfo: [],
+            messagesWarning: [],
+            showMessageInfo: 'none',
+            showMessageWarning: 'none',
         }
     },
     methods: {
@@ -129,11 +101,25 @@ export default {
                         rating: this.selected,
                     }
                 ).then(response => {
-                    this.flashText = response.data.message;
-                    this.confirm = true;
+                    this.showInfo(response.data.message);
                 }).catch(function (error) {
                     console.log(error.response.data)
                 });
+            }
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+                this.confirm = true;
+            }
+        },
+        showWarning(warningText) {
+            if (warningText !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
@@ -162,7 +148,7 @@ export default {
         }
     },
     mounted() {
-        this.deleteRatingSubject();
+        this.showWarning("There aren\'t any ratings for pupils");
     },
 }
 </script>
@@ -201,6 +187,9 @@ export default {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 10px;
         background-color: #F5F5F5;
+        overflow-y: scroll;
+        width: 350px;
+        height: 175px;
     }
     .flash-wrapper {
         margin-bottom: 15px;
@@ -211,6 +200,29 @@ export default {
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 25px;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+    .flash-style-warning {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 5px;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+        padding-bottom: 10px;
     }
 
 </style>

@@ -19,11 +19,7 @@
                                 </label>
                             </div>
                             <div class="form-group">
-                                <div v-if="this.ratings !== undefined" id="edit-rating" :style="{
-                                   'overflow-y': 'scroll',
-                                   'width': '350px',
-                                   'height': '175px',
-                                }">
+                                <div v-if="this.ratings !== undefined" id="edit-rating">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
@@ -71,10 +67,12 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div v-else-if="this.ratings === undefined"><p class="text-center pt-1"
-                                                                               :style="flashStyleWarning.show"
-                                                                               v-for="error in errors">{{ error }}
-                                                                            </p>
+                                <div v-else-if="this.ratings === undefined">
+                                    <div class="flex flash-container flash-style-warning">
+                                        <div v-for="messageWarning in messagesWarning" class="error-explode">
+                                            <p>{{ messageWarning }}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -84,8 +82,10 @@
                                 </button>
                             </div>
                             <div class="flash-wrapper">
-                                <div v-if="this.confirm === true" :style="flashStyleInfo.show" class="flex flash-container">
-                                    <p>{{ flashText }}</p>
+                                <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                                    <div v-for="messageInfo in messagesInfo" class="error-explode">
+                                        <p>{{ messageInfo }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,40 +104,13 @@ export default {
             confirm: false,
             onOptions: false,
             editRating: [],
-            dataRating: '',
+            messagesInfo: [],
+            messagesWarning: [],
+            showMessageInfo: 'none',
+            showMessageWarning: 'none',
             dataCreate: '',
             dataIndex: '',
-            flashText: '',
-            flashStyleInfo: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '9px',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '333px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
-            flashStyleWarning: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '5px',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '333px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
+            dataRating: '',
         }
     },
     methods: {
@@ -149,8 +122,7 @@ export default {
             formData.append('rating', this.editRating);
             formData.append('userId', this.userId);
             axios.post('update-pupil-rating', formData).then(response => {
-                this.flashText = response.data.message;
-                this.confirm = true;
+                this.showInfo(response.data.message);
             }).catch(function (error) {
                 console.log(error.response.data)
             });
@@ -161,7 +133,22 @@ export default {
             this.dataCreate = event.target.getAttribute('data-create').split(',')[index];
             this.editRating = this.dataRating;
             this.dataIndex = index;
-        }
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+                this.confirm = true;
+            }
+        },
+        showWarning(warningText) {
+            if (warningText !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
+            }
+        },
     },
     filters: {
         formatDate(value) {
@@ -187,6 +174,9 @@ export default {
             }
         }
     },
+    mounted() {
+        this.showWarning("There aren\'t any ratings for pupils");
+    }
 }
 </script>
 
@@ -223,14 +213,41 @@ export default {
     }
     .flash-container p {
         position: relative;
-        top: 4px;
+        top: 5px;
+    }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 8px;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+    .flash-style-warning {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 5px;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+        padding-bottom: 10px;
     }
     #edit-rating {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 10px;
         background-color: #F5F5F5;
+        overflow-y: scroll;
+        width: 350px;
+        height: 175px;
     }
     .p-rating {
         cursor: pointer;
     }
+
 </style>

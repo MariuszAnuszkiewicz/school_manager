@@ -19072,7 +19072,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subjects', 'userId', 'ratings', 'createAt', 'errors'],
   data: function data() {
@@ -19082,37 +19081,10 @@ __webpack_require__.r(__webpack_exports__);
       selected: [],
       confirm: false,
       onCheckbox: false,
-      flashText: '',
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '22px',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '5px',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      }
+      messagesInfo: [],
+      messagesWarning: [],
+      showMessageInfo: 'none',
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -19124,11 +19096,25 @@ __webpack_require__.r(__webpack_exports__);
           userId: this.userId,
           rating: this.selected
         }).then(function (response) {
-          _this.flashText = response.data.message;
-          _this.confirm = true;
+          _this.showInfo(response.data.message);
         })["catch"](function (error) {
           console.log(error.response.data);
         });
+      }
+    },
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+        this.confirm = true;
+      }
+    },
+    showWarning: function showWarning(warningText) {
+      if (warningText !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -19152,7 +19138,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.deleteRatingSubject();
+    this.showWarning("There aren\'t any ratings for pupils");
   }
 });
 
@@ -19522,40 +19508,13 @@ __webpack_require__.r(__webpack_exports__);
       confirm: false,
       onOptions: false,
       editRating: [],
-      dataRating: '',
+      messagesInfo: [],
+      messagesWarning: [],
+      showMessageInfo: 'none',
+      showMessageWarning: 'none',
       dataCreate: '',
       dataIndex: '',
-      flashText: '',
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '9px',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '5px',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      }
+      dataRating: ''
     };
   },
   methods: {
@@ -19569,8 +19528,7 @@ __webpack_require__.r(__webpack_exports__);
       formData.append('rating', this.editRating);
       formData.append('userId', this.userId);
       axios.post('update-pupil-rating', formData).then(function (response) {
-        _this.flashText = response.data.message;
-        _this.confirm = true;
+        _this.showInfo(response.data.message);
       })["catch"](function (error) {
         console.log(error.response.data);
       });
@@ -19581,6 +19539,21 @@ __webpack_require__.r(__webpack_exports__);
       this.dataCreate = event.target.getAttribute('data-create').split(',')[index];
       this.editRating = this.dataRating;
       this.dataIndex = index;
+    },
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+        this.confirm = true;
+      }
+    },
+    showWarning: function showWarning(warningText) {
+      if (warningText !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
+      }
     }
   },
   filters: {
@@ -19601,6 +19574,9 @@ __webpack_require__.r(__webpack_exports__);
         return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
       }
     }
+  },
+  mounted: function mounted() {
+    this.showWarning("There aren\'t any ratings for pupils");
   }
 });
 
@@ -19808,6 +19784,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subjects', 'userId'],
   data: function data() {
@@ -19816,22 +19794,8 @@ __webpack_require__.r(__webpack_exports__);
       semester: [],
       rating: [],
       confirm: false,
-      flashText: '',
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '22px',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      }
+      messagesInfo: [],
+      showMessageInfo: 'none'
     };
   },
   methods: {
@@ -19844,11 +19808,18 @@ __webpack_require__.r(__webpack_exports__);
           rating: this.rating,
           semester: this.semester
         }).then(function (response) {
-          _this.flashText = response.data.message;
-          _this.confirm = true;
+          _this.showInfo(response.data.message);
         })["catch"](function (error) {
           console.log(error.response.data);
         });
+      }
+    },
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+        this.confirm = true;
       }
     }
   }
@@ -20873,8 +20844,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -20884,7 +20853,6 @@ __webpack_require__.r(__webpack_exports__);
       semesters: {},
       ratings: {},
       createAt: {},
-      errors: [],
       showModal: {
         save: false,
         edit: false,
@@ -20918,27 +20886,21 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('pupil-rating/' + pupilId).then(function (response) {
         _this2.ratings = response.data.ratings;
         _this2.createAt = response.data.createAt;
-
-        if (response.data.message != 'undefined') {
-          _this2.errors.push(response.data.message);
-        }
-
-        _this2.errors.splice(1, _this2.errors.length);
       });
     },
     openSaveModal: function openSaveModal(userId) {
       this.user.id = userId;
       this.showModal.save = true;
     },
-    openEditModal: function openEditModal(userId, pupilId) {
+    openEditModal: function openEditModal(userId, pupil) {
       this.user.id = userId;
       this.showModal.edit = true;
-      this.getRatingsByPupilId(pupilId);
+      this.getRatingsByPupilId(pupil.id);
     },
-    openDeleteModal: function openDeleteModal(userId, pupilId) {
+    openDeleteModal: function openDeleteModal(userId, pupil) {
       this.user.id = userId;
       this.showModal["delete"] = true;
-      this.getRatingsByPupilId(pupilId);
+      this.getRatingsByPupilId(pupil.id);
     },
     closeModal: function closeModal() {
       this.showModal.save = false;
@@ -21004,24 +20966,10 @@ __webpack_require__.r(__webpack_exports__);
       ratings: {},
       subject: {},
       createdAt: {},
-      alerts: [],
-      switchFlashStyle: '',
+      messagesWarning: [],
+      showMessageWarning: 'none',
       message: {
         warningText: 'There are no any ratings for pupil.'
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '260px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
       }
     };
   },
@@ -21036,13 +20984,14 @@ __webpack_require__.r(__webpack_exports__);
         _this.subject = response.data.subject;
         _this.createdAt = response.data.createdAt;
 
-        _this.showWarning();
+        _this.showWarning(response.data.message);
       });
     },
-    showWarning: function showWarning() {
-      if (this.ratings === undefined) {
-        this.alerts.push(this.message.warningText);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showWarning: function showWarning(warningText) {
+      if (warningText !== undefined) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -21056,12 +21005,12 @@ __webpack_require__.r(__webpack_exports__);
         minutesFormat += "0" + date.getMinutes();
       } else {
         minutesFormat += date.getMinutes();
+      }
 
-        if (value === null) {
-          return timestamps = "";
-        } else {
-          return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
-        }
+      if (value === null) {
+        return timestamps = "";
+      } else {
+        return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
       }
     }
   },
@@ -26197,7 +26146,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-6021deae] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.deleteRating[data-v-6021deae] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.rating-select[data-v-6021deae] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n#delete-rating[data-v-6021deae] {\n    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n    border-radius: 10px;\n    background-color: #F5F5F5;\n}\n.flash-wrapper[data-v-6021deae] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-6021deae] {\n    display: none;\n}\n.flash-container p[data-v-6021deae] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-6021deae] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.deleteRating[data-v-6021deae] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.rating-select[data-v-6021deae] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n#delete-rating[data-v-6021deae] {\n    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n    border-radius: 10px;\n    background-color: #F5F5F5;\n    overflow-y: scroll;\n    width: 350px;\n    height: 175px;\n}\n.flash-wrapper[data-v-6021deae] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-6021deae] {\n    display: none;\n}\n.flash-container p[data-v-6021deae] {\n    position: relative;\n    top: 4px;\n}\n.flash-style-info[data-v-6021deae] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 25px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-6021deae] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 5px;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    padding-bottom: 10px;\n}\n\n", ""]);
 
 // exports
 
@@ -26273,7 +26222,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-597016f0] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.editRating[data-v-597016f0] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-597016f0] {\n    margin-bottom: 15px;\n    position: relative;\n    top: 5px;\n    left: 0px;\n}\n.flash-container[data-v-597016f0] {\n    display: none;\n}\n.flash-container p[data-v-597016f0] {\n    position: relative;\n    top: 4px;\n}\n#edit-rating[data-v-597016f0] {\n    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n    border-radius: 10px;\n    background-color: #F5F5F5;\n}\n.p-rating[data-v-597016f0] {\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-597016f0] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.editRating[data-v-597016f0] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-597016f0] {\n    margin-bottom: 15px;\n    position: relative;\n    top: 5px;\n    left: 0px;\n}\n.flash-container[data-v-597016f0] {\n    display: none;\n}\n.flash-container p[data-v-597016f0] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-info[data-v-597016f0] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 8px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-597016f0] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 5px;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    padding-bottom: 10px;\n}\n#edit-rating[data-v-597016f0] {\n    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n    border-radius: 10px;\n    background-color: #F5F5F5;\n    overflow-y: scroll;\n    width: 350px;\n    height: 175px;\n}\n.p-rating[data-v-597016f0] {\n    cursor: pointer;\n}\n\n", ""]);
 
 // exports
 
@@ -26311,7 +26260,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-0c7ed43b] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.saveRating[data-v-0c7ed43b] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-0c7ed43b] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-0c7ed43b] {\n    display: none;\n}\n.flash-container p[data-v-0c7ed43b] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-0c7ed43b] {\n    position: absolute;\n    top: 200px;\n    left: 24%;\n    width: 52.1%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.saveRating[data-v-0c7ed43b] {\n    display: table;\n    position: relative;\n    top: 65px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-0c7ed43b] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-0c7ed43b] {\n    display: none;\n}\n.flash-container p[data-v-0c7ed43b] {\n    position: relative;\n    top: 4px;\n}\n.flash-style-info[data-v-0c7ed43b] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
@@ -26463,7 +26412,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-60843cc9] {\n    color: #8f8f8f;\n}\n.error-explode p[data-v-60843cc9] {\n    padding-top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-60843cc9] {\n    color: #8f8f8f;\n}\n.flash-style-warning[data-v-60843cc9] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.2%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.error-explode p[data-v-60843cc9] {\n    padding-top: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -62361,129 +62310,113 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
               this.ratings !== undefined
-                ? _c(
-                    "div",
-                    {
-                      style: {
-                        "overflow-y": "scroll",
-                        width: "350px",
-                        height: "175px"
-                      },
-                      attrs: { id: "delete-rating" }
-                    },
-                    [
-                      _c("table", { staticClass: "table table-striped" }, [
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.ratings, function(rating, index) {
-                            return _c("tr", { staticClass: "bg-light" }, [
-                              _c("td", { staticClass: "text-danger" }, [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.selected,
-                                      expression: "selected"
-                                    }
-                                  ],
-                                  staticClass: "rating-select ml-2 mt-3",
-                                  attrs: { type: "checkbox" },
-                                  domProps: {
-                                    value: rating + "|" + _vm.createAt[index],
-                                    checked: Array.isArray(_vm.selected)
-                                      ? _vm._i(
-                                          _vm.selected,
-                                          rating + "|" + _vm.createAt[index]
-                                        ) > -1
-                                      : _vm.selected
-                                  },
-                                  on: {
-                                    change: function($event) {
-                                      var $$a = _vm.selected,
-                                        $$el = $event.target,
-                                        $$c = $$el.checked ? true : false
-                                      if (Array.isArray($$a)) {
-                                        var $$v =
-                                            rating + "|" + _vm.createAt[index],
-                                          $$i = _vm._i($$a, $$v)
-                                        if ($$el.checked) {
-                                          $$i < 0 &&
-                                            (_vm.selected = $$a.concat([$$v]))
-                                        } else {
-                                          $$i > -1 &&
-                                            (_vm.selected = $$a
-                                              .slice(0, $$i)
-                                              .concat($$a.slice($$i + 1)))
-                                        }
+                ? _c("div", { attrs: { id: "delete-rating" } }, [
+                    _c("table", { staticClass: "table table-striped" }, [
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.ratings, function(rating, index) {
+                          return _c("tr", { staticClass: "bg-light" }, [
+                            _c("td", { staticClass: "text-danger" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.selected,
+                                    expression: "selected"
+                                  }
+                                ],
+                                staticClass: "rating-select ml-2 mt-3",
+                                attrs: { type: "checkbox" },
+                                domProps: {
+                                  value: rating + "|" + _vm.createAt[index],
+                                  checked: Array.isArray(_vm.selected)
+                                    ? _vm._i(
+                                        _vm.selected,
+                                        rating + "|" + _vm.createAt[index]
+                                      ) > -1
+                                    : _vm.selected
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$a = _vm.selected,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v =
+                                          rating + "|" + _vm.createAt[index],
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          (_vm.selected = $$a.concat([$$v]))
                                       } else {
-                                        _vm.selected = $$c
+                                        $$i > -1 &&
+                                          (_vm.selected = $$a
+                                            .slice(0, $$i)
+                                            .concat($$a.slice($$i + 1)))
                                       }
+                                    } else {
+                                      _vm.selected = $$c
                                     }
                                   }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("td", [
-                                _c("strong", { staticClass: "text-danger" }, [
-                                  _c(
-                                    "p",
-                                    {
-                                      staticClass:
-                                        "p-rating text-left pt-3 pl-3",
-                                      attrs: { "data-rating": rating }
-                                    },
-                                    [_vm._v(_vm._s(rating))]
-                                  )
-                                ])
-                              ]),
-                              _vm._v(" "),
-                              _c("td", [
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("strong", { staticClass: "text-danger" }, [
                                 _c(
                                   "p",
-                                  { staticClass: "text-center pt-3 pl-3" },
-                                  [
-                                    _vm._v(
-                                      "\n                                                " +
-                                        _vm._s(
-                                          _vm._f("formatDate")(
-                                            _vm.createAt[index],
-                                            _vm.createAt[index]
-                                          )
-                                        ) +
-                                        "\n                                            "
-                                    )
-                                  ]
+                                  {
+                                    staticClass: "p-rating text-left pt-3 pl-3",
+                                    attrs: { "data-rating": rating }
+                                  },
+                                  [_vm._v(_vm._s(rating))]
                                 )
                               ])
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "p",
+                                { staticClass: "text-center pt-3 pl-3" },
+                                [
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(
+                                        _vm._f("formatDate")(
+                                          _vm.createAt[index],
+                                          _vm.createAt[index]
+                                        )
+                                      ) +
+                                      "\n                                            "
+                                  )
+                                ]
+                              )
                             ])
-                          }),
-                          0
-                        )
-                      ])
-                    ]
-                  )
-                : this.ratings === undefined
-                ? _c(
-                    "div",
-                    _vm._l(_vm.errors, function(error) {
-                      return _c(
-                        "p",
-                        {
-                          staticClass: "text-center pt-1",
-                          style: _vm.flashStyleWarning.show
-                        },
-                        [
-                          _vm._v(
-                            _vm._s(error) + "\n                            "
-                          )
-                        ]
+                          ])
+                        }),
+                        0
                       )
-                    }),
-                    0
-                  )
+                    ])
+                  ])
+                : this.ratings === undefined
+                ? _c("div", [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "flex flash-container flash-style-warning"
+                      },
+                      _vm._l(_vm.messagesWarning, function(messageWarning) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageWarning))])
+                        ])
+                      }),
+                      0
+                    )
+                  ])
                 : _vm._e()
             ])
           ]),
@@ -62520,11 +62453,13 @@ var render = function() {
             this.confirm === true
               ? _c(
                   "div",
-                  {
-                    staticClass: "flex flash-container",
-                    style: _vm.flashStyleInfo.show
-                  },
-                  [_c("p", [_vm._v(_vm._s(_vm.flashText))])]
+                  { staticClass: "flex flash-container flash-style-info" },
+                  _vm._l(_vm.messagesInfo, function(messageInfo) {
+                    return _c("div", { staticClass: "error-explode" }, [
+                      _c("p", [_vm._v(_vm._s(messageInfo))])
+                    ])
+                  }),
+                  0
                 )
               : _vm._e()
           ])
@@ -63026,231 +62961,213 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   this.ratings !== undefined
-                    ? _c(
-                        "div",
-                        {
-                          style: {
-                            "overflow-y": "scroll",
-                            width: "350px",
-                            height: "175px"
-                          },
-                          attrs: { id: "edit-rating" }
-                        },
-                        [
-                          _c("table", { staticClass: "table table-striped" }, [
-                            _vm._m(2),
-                            _vm._v(" "),
-                            _c(
-                              "tbody",
-                              _vm._l(_vm.ratings, function(rating, index) {
-                                return _c("tr", { staticClass: "bg-light" }, [
-                                  _c(
-                                    "td",
-                                    {
-                                      staticClass: "text-danger",
-                                      on: {
-                                        "~click": function($event) {
-                                          $event.preventDefault()
-                                          return _vm.onRatingOptions(
-                                            $event,
-                                            index
-                                          )
-                                        }
+                    ? _c("div", { attrs: { id: "edit-rating" } }, [
+                        _c("table", { staticClass: "table table-striped" }, [
+                          _vm._m(2),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.ratings, function(rating, index) {
+                              return _c("tr", { staticClass: "bg-light" }, [
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass: "text-danger",
+                                    on: {
+                                      "~click": function($event) {
+                                        $event.preventDefault()
+                                        return _vm.onRatingOptions(
+                                          $event,
+                                          index
+                                        )
                                       }
-                                    },
-                                    [
-                                      _vm.onOptions === false
-                                        ? _c("div", [
-                                            _c("strong", [
-                                              _c(
-                                                "p",
-                                                {
-                                                  staticClass:
-                                                    "p-rating text-left pt-3 pl-3",
-                                                  attrs: {
-                                                    "data-rating": rating,
-                                                    "data-create": _vm.createAt
-                                                  }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(rating) +
-                                                      "\n                                                        "
-                                                  )
-                                                ]
-                                              )
-                                            ])
-                                          ])
-                                        : _vm.onOptions === true &&
-                                          _vm.dataRating === rating &&
-                                          _vm.dataIndex === index
-                                        ? _c("div", [
+                                    }
+                                  },
+                                  [
+                                    _vm.onOptions === false
+                                      ? _c("div", [
+                                          _c("strong", [
                                             _c(
-                                              "label",
-                                              { attrs: { id: "label-rating" } },
+                                              "p",
+                                              {
+                                                staticClass:
+                                                  "p-rating text-left pt-3 pl-3",
+                                                attrs: {
+                                                  "data-rating": rating,
+                                                  "data-create": _vm.createAt
+                                                }
+                                              },
                                               [
-                                                _vm._m(3, true),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "select",
-                                                  {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value: _vm.editRating,
-                                                        expression: "editRating"
-                                                      }
-                                                    ],
-                                                    attrs: {
-                                                      id: "rating-values"
-                                                    },
-                                                    on: {
-                                                      change: function($event) {
-                                                        var $$selectedVal = Array.prototype.filter
-                                                          .call(
-                                                            $event.target
-                                                              .options,
-                                                            function(o) {
-                                                              return o.selected
-                                                            }
-                                                          )
-                                                          .map(function(o) {
-                                                            var val =
-                                                              "_value" in o
-                                                                ? o._value
-                                                                : o.value
-                                                            return val
-                                                          })
-                                                        _vm.editRating = $event
-                                                          .target.multiple
-                                                          ? $$selectedVal
-                                                          : $$selectedVal[0]
-                                                      }
-                                                    }
-                                                  },
-                                                  [
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "1" } },
-                                                      [_vm._v("1")]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "2" } },
-                                                      [_vm._v("2")]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "3" } },
-                                                      [_vm._v("3")]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "4" } },
-                                                      [_vm._v("4")]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "5" } },
-                                                      [_vm._v("5")]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "option",
-                                                      { attrs: { value: "6" } },
-                                                      [_vm._v("6")]
-                                                    )
-                                                  ]
+                                                _vm._v(
+                                                  _vm._s(rating) +
+                                                    "\n                                                        "
                                                 )
                                               ]
                                             )
                                           ])
-                                        : _vm._e()
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _vm.onOptions === true &&
-                                    _vm.dataIndex === index
-                                      ? _c("div", [
-                                          _c(
-                                            "p",
-                                            {
-                                              staticClass:
-                                                "text-center pt-3 pl-3"
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                                        " +
-                                                  _vm._s(
-                                                    _vm._f("formatDate")(
-                                                      _vm.createAt[index],
-                                                      _vm.createAt[index]
-                                                    )
-                                                  ) +
-                                                  "\n                                                    "
-                                              )
-                                            ]
-                                          )
                                         ])
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.onOptions === false
+                                      : _vm.onOptions === true &&
+                                        _vm.dataRating === rating &&
+                                        _vm.dataIndex === index
                                       ? _c("div", [
                                           _c(
-                                            "p",
-                                            {
-                                              staticClass:
-                                                "text-center pt-3 pl-3"
-                                            },
+                                            "label",
+                                            { attrs: { id: "label-rating" } },
                                             [
-                                              _vm._v(
-                                                "\n                                                        " +
-                                                  _vm._s(
-                                                    _vm._f("formatDate")(
-                                                      _vm.createAt[index],
-                                                      _vm.createAt[index]
-                                                    )
-                                                  ) +
-                                                  "\n                                                    "
+                                              _vm._m(3, true),
+                                              _vm._v(" "),
+                                              _c(
+                                                "select",
+                                                {
+                                                  directives: [
+                                                    {
+                                                      name: "model",
+                                                      rawName: "v-model",
+                                                      value: _vm.editRating,
+                                                      expression: "editRating"
+                                                    }
+                                                  ],
+                                                  attrs: {
+                                                    id: "rating-values"
+                                                  },
+                                                  on: {
+                                                    change: function($event) {
+                                                      var $$selectedVal = Array.prototype.filter
+                                                        .call(
+                                                          $event.target.options,
+                                                          function(o) {
+                                                            return o.selected
+                                                          }
+                                                        )
+                                                        .map(function(o) {
+                                                          var val =
+                                                            "_value" in o
+                                                              ? o._value
+                                                              : o.value
+                                                          return val
+                                                        })
+                                                      _vm.editRating = $event
+                                                        .target.multiple
+                                                        ? $$selectedVal
+                                                        : $$selectedVal[0]
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "1" } },
+                                                    [_vm._v("1")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "2" } },
+                                                    [_vm._v("2")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "3" } },
+                                                    [_vm._v("3")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "4" } },
+                                                    [_vm._v("4")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "5" } },
+                                                    [_vm._v("5")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "6" } },
+                                                    [_vm._v("6")]
+                                                  )
+                                                ]
                                               )
                                             ]
                                           )
                                         ])
                                       : _vm._e()
-                                  ])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm.onOptions === true &&
+                                  _vm.dataIndex === index
+                                    ? _c("div", [
+                                        _c(
+                                          "p",
+                                          {
+                                            staticClass: "text-center pt-3 pl-3"
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                                        " +
+                                                _vm._s(
+                                                  _vm._f("formatDate")(
+                                                    _vm.createAt[index],
+                                                    _vm.createAt[index]
+                                                  )
+                                                ) +
+                                                "\n                                                    "
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.onOptions === false
+                                    ? _c("div", [
+                                        _c(
+                                          "p",
+                                          {
+                                            staticClass: "text-center pt-3 pl-3"
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                                        " +
+                                                _vm._s(
+                                                  _vm._f("formatDate")(
+                                                    _vm.createAt[index],
+                                                    _vm.createAt[index]
+                                                  )
+                                                ) +
+                                                "\n                                                    "
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    : _vm._e()
                                 ])
-                              }),
-                              0
-                            )
-                          ])
-                        ]
-                      )
-                    : this.ratings === undefined
-                    ? _c(
-                        "div",
-                        _vm._l(_vm.errors, function(error) {
-                          return _c(
-                            "p",
-                            {
-                              staticClass: "text-center pt-1",
-                              style: _vm.flashStyleWarning.show
-                            },
-                            [
-                              _vm._v(
-                                _vm._s(error) +
-                                  "\n                                                                        "
-                              )
-                            ]
+                              ])
+                            }),
+                            0
                           )
-                        }),
-                        0
-                      )
+                        ])
+                      ])
+                    : this.ratings === undefined
+                    ? _c("div", [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "flex flash-container flash-style-warning"
+                          },
+                          _vm._l(_vm.messagesWarning, function(messageWarning) {
+                            return _c("div", { staticClass: "error-explode" }, [
+                              _c("p", [_vm._v(_vm._s(messageWarning))])
+                            ])
+                          }),
+                          0
+                        )
+                      ])
                     : _vm._e()
                 ]),
                 _vm._v(" "),
@@ -63287,10 +63204,14 @@ var render = function() {
                     ? _c(
                         "div",
                         {
-                          staticClass: "flex flash-container",
-                          style: _vm.flashStyleInfo.show
+                          staticClass: "flex flash-container flash-style-info"
                         },
-                        [_c("p", [_vm._v(_vm._s(_vm.flashText))])]
+                        _vm._l(_vm.messagesInfo, function(messageInfo) {
+                          return _c("div", { staticClass: "error-explode" }, [
+                            _c("p", [_vm._v(_vm._s(messageInfo))])
+                          ])
+                        }),
+                        0
                       )
                     : _vm._e()
                 ])
@@ -63766,11 +63687,13 @@ var render = function() {
             this.confirm === true
               ? _c(
                   "div",
-                  {
-                    staticClass: "flex flash-container",
-                    style: _vm.flashStyleInfo.show
-                  },
-                  [_c("p", [_vm._v(_vm._s(_vm.flashText))])]
+                  { staticClass: "flex flash-container flash-style-info" },
+                  _vm._l(_vm.messagesInfo, function(messageInfo) {
+                    return _c("div", { staticClass: "error-explode" }, [
+                      _c("p", [_vm._v(_vm._s(messageInfo))])
+                    ])
+                  }),
+                  0
                 )
               : _vm._e()
           ])
@@ -65191,7 +65114,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.users.data, function(user, index) {
+                _vm._l(_vm.users.data, function(user, i) {
                   return _c("tr", { key: user.id }, [
                     _c("td", { staticClass: "text-center pt-3" }, [
                       _vm._v(_vm._s(user.id))
@@ -65221,10 +65144,7 @@ var render = function() {
                           staticClass: "btn btn-success",
                           on: {
                             click: function($event) {
-                              return _vm.openEditModal(
-                                user.id,
-                                _vm.pupils.data[index].id
-                              )
+                              return _vm.openEditModal(user.id, _vm.pupils[i])
                             }
                           }
                         },
@@ -65237,10 +65157,7 @@ var render = function() {
                           staticClass: "btn btn-danger",
                           on: {
                             click: function($event) {
-                              return _vm.openDeleteModal(
-                                user.id,
-                                _vm.pupils.data[index].id
-                              )
+                              return _vm.openDeleteModal(user.id, _vm.pupils[i])
                             }
                           }
                         },
@@ -65300,8 +65217,7 @@ var render = function() {
                 userId: _vm.user.id,
                 ratings: _vm.ratings,
                 createAt: _vm.createAt,
-                subjects: _vm.subjects,
-                errors: _vm.errors
+                subjects: _vm.subjects
               }
             },
             [
@@ -65338,8 +65254,7 @@ var render = function() {
                 userId: _vm.user.id,
                 ratings: _vm.ratings,
                 createAt: _vm.createAt,
-                subjects: _vm.subjects,
-                errors: _vm.errors
+                subjects: _vm.subjects
               }
             },
             [
@@ -65424,20 +65339,23 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.alerts, function(alert) {
-          return _vm.alerts !== undefined
-            ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(alert))])
+      _vm.messagesWarning !== undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
               ])
-            : _vm._e()
-        }),
-        0
-      ),
+            }),
+            0
+          )
+        : _vm._e(),
       _vm._v(" "),
-      _vm.alerts[0] === undefined
+      _vm.messagesWarning[0] === undefined
         ? _c("div", { staticClass: "col mt-5" }, [
             _vm._m(0),
             _vm._v(" "),
