@@ -17518,26 +17518,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       events: {},
       teachers: {},
-      alerts: [],
-      switchFlashStyle: '',
-      showHide: '',
-      message: {
-        text: 'There are no any events.'
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '0%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      messagesWarning: [],
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -17552,7 +17534,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.events = response.data.events;
         _this2.teachers = response.data.teachers;
 
-        _this2.getWarning();
+        _this2.showWarning(response.data.message);
       });
     },
     deleteEvent: function deleteEvent(event) {
@@ -17562,10 +17544,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.getSources();
       });
     },
-    getWarning: function getWarning() {
-      if (this.events === undefined) {
-        this.alerts.push(this.message.text);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showWarning: function showWarning(warningText) {
+      if (warningText !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -25918,7 +25901,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-6b9819da] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-6b9819da] {\n    color: #8f8f8f;\n}\n.flash-container p[data-v-6b9819da] {\n    position: relative;\n    top: 4px;\n}\n.flash-style-warning[data-v-6b9819da] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.2%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.error-explode p[data-v-6b9819da] {\n    padding-top: 3px;\n}\n\n", ""]);
 
 // exports
 
@@ -60190,23 +60173,29 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.alerts, function(alert) {
-          return _vm.alerts !== undefined
-            ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(alert))])
-              ])
-            : _vm._e()
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _vm.alerts[0] === undefined
+      _vm.messagesWarning !== undefined
         ? _c(
             "div",
-            { staticClass: "col mt-5", style: { display: _vm.showHide } },
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning[0] === undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "col mt-5",
+              style: { display: _vm.showMessageWarning }
+            },
             [
               _vm._m(0),
               _vm._v(" "),
@@ -60222,11 +60211,11 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(event.content))
+                        _vm._v(_vm._s(event.title))
                       ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-center pt-3" }, [
-                        _vm._v(_vm._s(event.day))
+                        _vm._v(_vm._s(event.date))
                       ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-center pt-3" }, [
@@ -60293,11 +60282,11 @@ var staticRenderFns = [
         ]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center text-white pt-2" }, [
-          _vm._v("Content")
+          _vm._v("Title")
         ]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center text-white pt-2" }, [
-          _vm._v("Day")
+          _vm._v("Date")
         ]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center text-white pt-2" }, [
