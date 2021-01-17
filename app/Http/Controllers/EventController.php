@@ -30,6 +30,10 @@ class EventController extends Controller
                     'teachers' => $data['teachers']
                 ]);
             }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any events for pupils"]);
+            }
         }
         return view('pupil.events');
     }
