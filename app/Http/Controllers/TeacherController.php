@@ -297,7 +297,7 @@ class TeacherController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'users' => $this->paginate($data['users'], 7),
-                    'pupils' => $this->paginate($data['pupils'], 7),
+                    'pupils' => $data['pupils'],
                     'subjects' => $data['subjects'],
                 ]);
             }
@@ -322,10 +322,6 @@ class TeacherController extends Controller
                     'createAt' => $data['createAt'],
                 ]);
             }
-        } else {
-            if ($request->ajax()) {
-                return response()->json(['message' => "There aren't any ratings for pupils"]);
-            }
         }
     }
 
@@ -344,7 +340,7 @@ class TeacherController extends Controller
             DB::table('pupil_rating')->where([
                 ['pupil_id', '=', User::find($request->userId)->pupil->id],
                 ['rating_id', '=', $request->dataRating],
-                ['created_at', '=', $request->dataCreate],
+                ['created_at', '=', str_replace("T", " ", $request->dataCreate)],
             ])->update(['rating_id' => $request->rating]);
         }
         return response()->json(['message' => 'rating has been updated']);
@@ -385,10 +381,6 @@ class TeacherController extends Controller
                     'ratings' => $data['ratings'],
                     'subject' => $data['subject'],
                 ]);
-            }
-        } else {
-            if ($request->ajax()) {
-                return response()->json(['message' => "There aren't any ratings for pupils"]);
             }
         }
         return view('teacher.list_ratings');

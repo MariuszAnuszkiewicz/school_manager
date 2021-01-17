@@ -12,17 +12,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(user, index) in users.data" :key="user.id">
+                        <tr v-for="(user, i) in users.data" :key="user.id">
                             <td class="text-center pt-3">{{ user.id }}</td>
                             <td class="text-center pt-3">{{ user.name }}</td>
                             <td class="text-center">
                                 <button class="btn btn-primary" @click="openSaveModal(user.id)">
                                     <i class="fas fa-star"></i>
                                 </button>
-                                <button class="btn btn-success" @click="openEditModal(user.id, pupils.data[index].id)">
+                                <button class="btn btn-success" @click="openEditModal(user.id, pupils[i])">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-danger" @click="openDeleteModal(user.id, pupils.data[index].id)">
+                                <button class="btn btn-danger" @click="openDeleteModal(user.id, pupils[i])">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -46,8 +46,7 @@
                      :userId="user.id"
                      :ratings="ratings"
                      :createAt="createAt"
-                     :subjects="subjects"
-                     :errors="errors">
+                     :subjects="subjects">
             <h3 slot="header" class="modal-title">
                 Edit Rating
             </h3>
@@ -59,8 +58,7 @@
                        :userId="user.id"
                        :ratings="ratings"
                        :createAt="createAt"
-                       :subjects="subjects"
-                       :errors="errors">
+                       :subjects="subjects">
             <h3 slot="header" class="modal-title">
                 Delete Rating
             </h3>
@@ -81,7 +79,6 @@ export default {
             semesters: {},
             ratings: {},
             createAt: {},
-            errors: [],
             showModal: {
                 save: false,
                 edit: false,
@@ -108,25 +105,21 @@ export default {
             axios.get('pupil-rating/' + pupilId).then(response => {
                 this.ratings = response.data.ratings
                 this.createAt = response.data.createAt
-                if (response.data.message != 'undefined') {
-                    this.errors.push(response.data.message);
-                }
-                this.errors.splice(1, this.errors.length);
             });
         },
         openSaveModal(userId) {
             this.user.id = userId;
             this.showModal.save = true;
         },
-        openEditModal(userId, pupilId) {
+        openEditModal(userId, pupil) {
             this.user.id = userId;
             this.showModal.edit = true;
-            this.getRatingsByPupilId(pupilId);
+            this.getRatingsByPupilId(pupil.id);
         },
-        openDeleteModal(userId, pupilId) {
+        openDeleteModal(userId, pupil) {
             this.user.id = userId;
             this.showModal.delete = true;
-            this.getRatingsByPupilId(pupilId);
+            this.getRatingsByPupilId(pupil.id);
         },
         closeModal() {
             this.showModal.save = false;

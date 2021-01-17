@@ -45,8 +45,10 @@
                         </button>
                     </div>
                     <div class="flash-wrapper">
-                        <div v-if="this.confirm === true" :style="flashStyleInfo.show" class="flex flash-container">
-                            <p>{{ flashText }}</p>
+                        <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                            <div v-for="messageInfo in messagesInfo" class="error-explode">
+                                <p>{{ messageInfo }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,22 +66,8 @@ export default {
             semester: [],
             rating: [],
             confirm: false,
-            flashText: '',
-            flashStyleInfo: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '22px',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '333px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
+            messagesInfo: [],
+            showMessageInfo: 'none',
         }
     },
     methods: {
@@ -92,11 +80,18 @@ export default {
                         semester: this.semester,
                     }
                 ).then(response => {
-                    this.flashText = response.data.message;
-                    this.confirm = true;
+                    this.showInfo(response.data.message);
                 }).catch(function (error) {
                     console.log(error.response.data)
                 });
+            }
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+                this.confirm = true;
             }
         },
     },
@@ -134,6 +129,17 @@ export default {
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 22px;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
     }
 
 </style>
