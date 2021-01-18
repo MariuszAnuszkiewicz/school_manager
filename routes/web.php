@@ -57,7 +57,7 @@ Route::get('/', function () {
     /* pupil zone */
     Route::group([
         'prefix' => 'pupil',
-        'middleware' => 'guard_access',
+        'middleware' => ['guard_access', 'auth'],
     ], function () {
         Route::resource('events', EventController::class)->only(['index', 'destroy']);
         Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
