@@ -18,9 +18,13 @@
                                 </button>
                             </div>
                         </form>
-                        <div :style="switchFlashStyle" class="flex flash-container">
-                            <p class="pb-1">{{ message.text }}</p>
-                        </div>
+                       <div class="flash-wrapper">
+                           <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                               <div v-for="messageInfo in messagesInfo" class="error-explode">
+                                  <p>{{ messageInfo }}</p>
+                               </div>
+                           </div>
+                       </div>
                     </div>
                 </div>
             </div>
@@ -34,25 +38,10 @@ export default {
     data() {
         return {
             message_content: '',
-            success: '',
-            switchFlashStyle: '',
+            confirm: false,
+            messagesInfo: [],
             message: {
-                text: 'Send message was successfully.',
-            },
-            flashStyleInfo: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '10px',
-                    'left': '65px',
-                    'background-color': 'rgba(120, 208, 170, 0.3)',
-                    'width': '250px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'margin-bottom': '25px',
-                }
+                infoText: 'Send message was successfully.',
             },
         }
     },
@@ -63,26 +52,22 @@ export default {
                     email: this.teachers[0].email,
                     message: this.message_content,
                 }).then(response => {
+                    this.showInfo(this.message.infoText);
                 }).catch((error) => {
-                    this.success = false;
+                    console.log(error.response.data)
                 });
-                this.success = true;
-                this.showFlashMessage();
-                this.message_content = '';
             }
         },
-        showFlashMessage() {
-            if (this.success === true) {
-                setTimeout(() => {
-                    this.switchFlashStyle = this.flashStyleInfo.show
-                }, 500);
-            } else {
-                this.switchFlashStyle = this.flashStyleInfo
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.confirm = true;
             }
         },
     },
     mounted() {
-        this.sendEmail()
+        this.sendEmail();
     }
 }
 </script>
@@ -114,6 +99,19 @@ export default {
    }
    .flash-container p {
        position: relative;
-       top: 4px;
+       top: 5px;
    }
+   .flash-style-info {
+       display: block;
+       position: relative;
+       top: 2px;
+       left: 22px;
+       background-color: rgba(60, 204, 102, 0.3);
+       width: 333px;
+       height: 35px;
+       text-align: center;
+       border-radius: 7px;
+       margin: 0px 0px 15px 0px;
+   }
+
 </style>

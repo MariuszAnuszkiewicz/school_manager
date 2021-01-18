@@ -17902,30 +17902,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['teachers'],
   data: function data() {
     return {
       message_content: '',
-      success: '',
-      switchFlashStyle: '',
+      confirm: false,
+      messagesInfo: [],
       message: {
-        text: 'Send message was successfully.'
-      },
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '10px',
-          'left': '65px',
-          'background-color': 'rgba(120, 208, 170, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'margin-bottom': '25px'
-        }
+        infoText: 'Send message was successfully.'
       }
     };
   },
@@ -17937,23 +17926,18 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('send-email', {
           email: this.teachers[0].email,
           message: this.message_content
-        }).then(function (response) {})["catch"](function (error) {
-          _this.success = false;
+        }).then(function (response) {
+          _this.showInfo(_this.message.infoText);
+        })["catch"](function (error) {
+          console.log(error.response.data);
         });
-        this.success = true;
-        this.showFlashMessage();
-        this.message_content = '';
       }
     },
-    showFlashMessage: function showFlashMessage() {
-      var _this2 = this;
-
-      if (this.success === true) {
-        setTimeout(function () {
-          _this2.switchFlashStyle = _this2.flashStyleInfo.show;
-        }, 500);
-      } else {
-        this.switchFlashStyle = this.flashStyleInfo;
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.confirm = true;
       }
     }
   },
@@ -25944,7 +25928,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-192f14d3] {\n     position: absolute;\n     top: 200px;\n     width: 52%;\n     height: 75%;\n     background-color: rgba(0, 0, 0, 0.8);\n     z-index: 5;\n}\n.myTeachersModal[data-v-192f14d3] {\n    display: table;\n    position: absolute;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-192f14d3] {\n    display: none;\n}\n.flash-container p[data-v-192f14d3] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-192f14d3] {\n     position: absolute;\n     top: 200px;\n     width: 52%;\n     height: 75%;\n     background-color: rgba(0, 0, 0, 0.8);\n     z-index: 5;\n}\n.myTeachersModal[data-v-192f14d3] {\n    display: table;\n    position: absolute;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-192f14d3] {\n    display: none;\n}\n.flash-container p[data-v-192f14d3] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-info[data-v-192f14d3] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    margin: 0px 0px 15px 0px;\n}\n\n", ""]);
 
 // exports
 
@@ -60748,18 +60732,20 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "flex flash-container",
-                  style: _vm.switchFlashStyle
-                },
-                [
-                  _c("p", { staticClass: "pb-1" }, [
-                    _vm._v(_vm._s(_vm.message.text))
-                  ])
-                ]
-              )
+              _c("div", { staticClass: "flash-wrapper" }, [
+                this.confirm === true
+                  ? _c(
+                      "div",
+                      { staticClass: "flex flash-container flash-style-info" },
+                      _vm._l(_vm.messagesInfo, function(messageInfo) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageInfo))])
+                        ])
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ])
             ])
           ]
         )
