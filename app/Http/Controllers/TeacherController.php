@@ -263,6 +263,10 @@ class TeacherController extends Controller
                     'pupils' => $this->paginate($data['pupils']),
                 ]);
             }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There are no any pupils."]);
+            }
         }
         return view('teacher.list_emails');
     }
