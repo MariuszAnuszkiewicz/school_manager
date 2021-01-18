@@ -64,9 +64,6 @@ export default {
             showModalEdit: false,
             messagesWarning: [],
             showMessageWarning: 'none',
-            message: {
-                warningText: '',
-            },
         }
     },
     methods: {
@@ -76,7 +73,9 @@ export default {
             }
             axios.get('list-events?page=' + page).then(response => {
                 this.events = response.data.events;
-                this.showWarning(response.data.message);
+                if (this.events === undefined) {
+                    this.showWarning(response.data.message);
+                }
             });
         },
         deleteEvent(event) {
@@ -95,7 +94,7 @@ export default {
             }, 150);
         },
         showWarning(warningText) {
-            if (this.events === undefined) {
+            if (warningText !== null) {
                 this.messagesWarning.push(warningText);
                 this.messagesWarning.splice(1, this.messagesWarning.length);
                 this.showMessageWarning = 'block';
@@ -125,12 +124,18 @@ export default {
     .header-text {
         color: #8f8f8f;
     }
-
+    .flash-container {
+        display: none;
+    }
+    .flash-container p {
+        position: relative;
+        top: 5px;
+    }
     .flash-style-warning {
         display: none;
         position: relative;
-        top: 2px;
-        left: 22px;
+        top: 25px;
+        left: 0%;
         background-color: rgba(245, 34, 70, 0.3);
         width: 333px;
         height: 35px;

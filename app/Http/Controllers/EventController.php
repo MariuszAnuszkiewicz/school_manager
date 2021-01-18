@@ -79,7 +79,8 @@ class EventController extends Controller
     {
         $data['events'] = auth()->user()->teacher->events->toArray();
         rsort($data['events']);
-        if (!empty($data)) {
+        //dd(empty($data['events']));
+        if (!empty($data['events'])) {
             if ($request->ajax()) {
                 return response()->json([
                     'events' => $this->paginate($data['events'])

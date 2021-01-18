@@ -18544,10 +18544,7 @@ __webpack_require__.r(__webpack_exports__);
       events: {},
       showModalEdit: false,
       messagesWarning: [],
-      showMessageWarning: 'none',
-      message: {
-        warningText: ''
-      }
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -18561,7 +18558,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('list-events?page=' + page).then(function (response) {
         _this2.events = response.data.events;
 
-        _this2.showWarning(response.data.message);
+        if (_this2.events === undefined) {
+          _this2.showWarning(response.data.message);
+        }
       });
     },
     deleteEvent: function deleteEvent(event) {
@@ -18583,7 +18582,7 @@ __webpack_require__.r(__webpack_exports__);
       }, 150);
     },
     showWarning: function showWarning(warningText) {
-      if (this.events === undefined) {
+      if (warningText !== null) {
         this.messagesWarning.push(warningText);
         this.messagesWarning.splice(1, this.messagesWarning.length);
         this.showMessageWarning = 'block';
@@ -26022,7 +26021,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-547c519f] {\n    color: #8f8f8f;\n}\n.flash-style-warning[data-v-547c519f] {\n    display: none;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-547c519f] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-547c519f] {\n    display: none;\n}\n.flash-container p[data-v-547c519f] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-warning[data-v-547c519f] {\n    display: none;\n    position: relative;\n    top: 25px;\n    left: 0%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
