@@ -19,6 +19,10 @@ class SubjectController extends Controller
                     'subjects' => $data['subjects']
                 ]);
             }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There are no any My Teachers."]);
+            }
         }
         return view('pupil.my_teachers');
     }
