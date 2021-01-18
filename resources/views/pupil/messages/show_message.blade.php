@@ -4,6 +4,6 @@
 @endsection
 @section('content')
     <div class="card-body">
-       <single-message></single-message>
+       <single-message-pupil></single-message-pupil>
     </div>
 @endsection

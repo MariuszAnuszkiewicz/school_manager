@@ -17725,26 +17725,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       messages: {},
       teachers: {},
-      alerts: [],
-      switchFlashStyle: '',
-      showHide: '',
-      message: {
-        text: 'There are no any messages.'
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '0%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      messagesWarning: [],
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -17759,7 +17741,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.messages = response.data.messages;
         _this2.teachers = response.data.teachers;
 
-        _this2.getWarning();
+        _this2.showWarning(response.data.message);
       });
     },
     deleteMessage: function deleteMessage(message) {
@@ -17769,10 +17751,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.getSources();
       });
     },
-    getWarning: function getWarning() {
-      if (this.messages === undefined) {
-        this.alerts.push(this.message.text);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showWarning: function showWarning(warningText) {
+      if (warningText !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -17839,23 +17822,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      messages: {},
+      message: {},
       teacher: {}
     };
   },
   methods: {
-    getMessage: function getMessage() {
+    getSources: function getSources(id) {
       var _this = this;
 
-      var id = window.location.href.split('/').pop();
       axios.get('/pupil/messages/' + id).then(function (response) {
-        _this.messages = response.data;
+        _this.message = response.data.message;
         _this.teacher = response.data.teacher;
       });
     }
   },
+  filters: {
+    formatDate: function formatDate(value) {
+      var date = new Date(value);
+      var timestamps = '';
+      var minutesFormat = '';
+
+      if (date.getMinutes() < 10) {
+        minutesFormat += "0" + date.getMinutes();
+      } else {
+        minutesFormat += date.getMinutes();
+      }
+
+      if (value === null) {
+        return timestamps = "";
+      } else {
+        return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
+      }
+    }
+  },
   mounted: function mounted() {
-    this.getMessage();
+    var id = window.location.href.split('/').pop();
+    this.getSources(id);
   }
 });
 
@@ -25904,7 +25906,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-5c8d08f3] {\r\n    font-size: 12px;\n}\n.header-text[data-v-5c8d08f3] {\r\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\r\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\r\n    position: relative;\r\n    top: 4px;\n}\r\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-5c8d08f3] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-5c8d08f3] {\n    display: none;\n}\n.flash-container p[data-v-5c8d08f3] {\n    position: relative;\n    top: 4px;\n}\n.flash-style-warning[data-v-5c8d08f3] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.2%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
@@ -25923,7 +25925,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-50403408] {\r\n    font-size: 12px;\n}\n.header-text[data-v-50403408] {\r\n    color: #8f8f8f;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-50403408] {\n    color: #8f8f8f;\n}\n\n", ""]);
 
 // exports
 
@@ -60413,23 +60415,29 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.alerts, function(alert) {
-          return _vm.alerts !== undefined
-            ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(alert))])
-              ])
-            : _vm._e()
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _vm.alerts[0] === undefined
+      _vm.messagesWarning !== undefined
         ? _c(
             "div",
-            { staticClass: "col mt-5", style: { display: _vm.showHide } },
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning[0] === undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "col mt-5",
+              style: { display: _vm.showMessageWarning }
+            },
             [
               _vm._m(0),
               _vm._v(" "),
@@ -60456,10 +60464,12 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _c("td", { staticClass: "text-center pt-3" }, [
-                        _c("a", { attrs: { href: "messages/" + message.id } }, [
-                          _vm._m(2, true)
-                        ]),
+                      _c("td", { staticClass: "text-center" }, [
+                        _c(
+                          "a",
+                          { attrs: { href: "/pupil/messages/" + message.id } },
+                          [_vm._m(2, true)]
+                        ),
                         _vm._v(" "),
                         _c(
                           "button",
@@ -60515,7 +60525,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Message")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Create Date")]),
+        _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Date Create")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center pt-2" }, [_vm._v("Actions")])
       ])
@@ -60560,7 +60570,7 @@ var render = function() {
           _vm._m(1),
           _vm._v(" "),
           _c("div", { staticClass: "form-group bg-light pt-2 pb-2" }, [
-            _c("strong", [_vm._v(_vm._s(_vm.messages.message.id))])
+            _c("strong", [_vm._v(_vm._s(_vm.message.id))])
           ])
         ]),
         _vm._v(" "),
@@ -60577,7 +60587,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "form-group bg-light pt-2 pb-2" }, [
             _c("p", { staticClass: "mt-3" }, [
-              _vm._v(_vm._s(_vm.messages.message.message))
+              _vm._v(_vm._s(_vm.message.message))
             ])
           ])
         ]),
@@ -60589,8 +60599,9 @@ var render = function() {
             _c("p", { staticClass: "mt-3" }, [
               _vm._v(
                 _vm._s(
-                  new Date(_vm.messages.message.created_at).toLocaleString(
-                    "pl-PL"
+                  _vm._f("formatDate")(
+                    _vm.message.created_at,
+                    _vm.message.created_at
                   )
                 )
               )
@@ -60639,7 +60650,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "mb-2" }, [
-      _c("strong", [_vm._v("Create Date:")])
+      _c("strong", [_vm._v("Date Create:")])
     ])
   }
 ]
@@ -78097,7 +78108,7 @@ Vue.component('my-edit-profile', __webpack_require__(/*! ./components/user_profi
 
 Vue.component('events', __webpack_require__(/*! ./components/pupil/events/Events.vue */ "./resources/js/components/pupil/events/Events.vue")["default"]);
 Vue.component('messages', __webpack_require__(/*! ./components/pupil/messages/Messages.vue */ "./resources/js/components/pupil/messages/Messages.vue")["default"]);
-Vue.component('single-message', __webpack_require__(/*! ./components/pupil/messages/SingleMessage.vue */ "./resources/js/components/pupil/messages/SingleMessage.vue")["default"]);
+Vue.component('single-message-pupil', __webpack_require__(/*! ./components/pupil/messages/SingleMessage.vue */ "./resources/js/components/pupil/messages/SingleMessage.vue")["default"]);
 Vue.component('lesson-plan', __webpack_require__(/*! ./components/pupil/lesson_plan/LessonPlan.vue */ "./resources/js/components/pupil/lesson_plan/LessonPlan.vue")["default"]);
 Vue.component('my-teachers', __webpack_require__(/*! ./components/pupil/my_teachers/MyTeachers.vue */ "./resources/js/components/pupil/my_teachers/MyTeachers.vue")["default"]);
 Vue.component('my-teachers-modal', __webpack_require__(/*! ./components/pupil/modals/MyTeachersModal.vue */ "./resources/js/components/pupil/modals/MyTeachersModal.vue")["default"]);

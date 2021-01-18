@@ -8,7 +8,7 @@
                         <strong>Id:</strong>
                     </div>
                     <div class="form-group bg-light pt-2 pb-2">
-                        <strong>{{ messages.message.id }}</strong>
+                        <strong>{{ message.id }}</strong>
                     </div>
                 </div>
 
@@ -26,16 +26,16 @@
                         <strong>Message:</strong>
                     </div>
                     <div class="form-group bg-light pt-2 pb-2">
-                        <p class="mt-3">{{ messages.message.message}}</p>
+                        <p class="mt-3">{{ message.message }}</p>
                     </div>
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="mb-2">
-                        <strong>Create Date:</strong>
+                        <strong>Date Create:</strong>
                     </div>
                     <div class="form-group bg-light pt-2 pb-2">
-                        <p class="mt-3">{{ new Date(messages.message.created_at).toLocaleString('pl-PL') }}</p>
+                        <p class="mt-3">{{ message.created_at | formatDate(message.created_at) }}</p>
                     </div>
                 </div>
             </div>
@@ -46,32 +46,53 @@
 export default {
     data() {
         return {
-            messages: {},
+            message: {},
             teacher: {},
         }
     },
-
     methods: {
-        getMessage() {
-            let id = window.location.href.split('/').pop();
+        getSources(id) {
             axios.get('/pupil/messages/' + id).then(response => {
-                this.messages = response.data
-                this.teacher = response.data.teacher
+                this.message = response.data.message;
+                this.teacher = response.data.teacher;
             });
         },
     },
+    filters: {
+        formatDate(value) {
+            var date = new Date(value);
+            let timestamps = '';
+            let minutesFormat = '';
+
+            if (date.getMinutes() < 10) {
+                minutesFormat += "0" + date.getMinutes();
+            } else {
+                minutesFormat += date.getMinutes();
+            }
+
+            if (value === null) {
+                return timestamps = "";
+            } else {
+                return timestamps +=
+                  " " + date.getFullYear() +
+                  "-" + (date.getMonth() + 1) +
+                  "-" + date.getDate() +
+                  " " + date.getHours() +
+                  ":" + minutesFormat;
+            }
+        }
+    },
     mounted() {
-        this.getMessage()
+        let id = window.location.href.split('/').pop();
+        this.getSources(id);
     },
 }
 </script>
 
 <style scoped>
-button {
-    font-size: 12px;
-}
-.header-text {
-    color: #8f8f8f;
-}
+
+    .header-text {
+        color: #8f8f8f;
+    }
 
 </style>
