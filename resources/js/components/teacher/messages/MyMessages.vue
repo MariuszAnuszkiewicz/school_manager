@@ -1,15 +1,17 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                    <p>{{ alert }}</p>
-                </div>
-                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
-                    <p>{{ messageInfo }}</p>
+            <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
+                <div v-for="messageInfo in messagesInfo" class="error-explode">
+                   <p>{{ messageInfo }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                   <p>{{ messageWarning }}</p>
+                </div>
+            </div>
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">My Messages</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -27,7 +29,7 @@
                         <label class="check-all-label"><strong>Select All</strong></label>
                         <input @click="selectAll()" type="checkbox" id="select-all" class="select-all d-inline-block ml-2">
                     </div>
-                        <div class="col-md-12  text-center d-inline-block pt-2 pb-2 bg-light">
+                        <div class="col-md-12 text-center d-inline-block pt-2 pb-2 bg-light">
                             <button class="btn btn-outline-danger" @click="deleteSelected()"><i class="fas fa-trash"></i></button>
                         </div>
                         <tr v-for="(myMessage, index) in myMessages.data" :key="myMessage.id">
@@ -76,49 +78,16 @@ export default {
         return {
             message_text: '',
             message_id: '',
-            teacher: {},
             myMessages: {},
+            teacher: {},
             pupils: {},
-            alerts: [],
             messagesInfo: [],
+            messagesWarning: [],
+            showMessageInfo: 'none',
+            showMessageWarning: 'none',
             selected: [],
             isSelected: false,
             showModal: false,
-            switchFlashStyle: '',
-            message: {
-                warningText: 'There are no any messages.',
-                infoText: 'Message has been deleted',
-            },
-            flashStyleInfo: {
-            'display': 'none',
-                show: {
-                   'display': 'block',
-                   'position': 'absolute',
-                   'top': '110px',
-                   'left': '44.5%',
-                   'background-color': 'rgba(60, 204, 102, 0.3)',
-                   'width': '333px',
-                   'height': '35px',
-                   'text-align': 'center',
-                   'border-radius': '7px',
-                   'padding-bottom': '10px',
-                }
-            },
-            flashStyleWarning: {
-            'display': 'none',
-                show: {
-                   'display': 'block',
-                   'position': 'absolute',
-                   'top': '110px',
-                   'left': '44.5%',
-                   'background-color': 'rgba(245, 34, 70, 0.3)',
-                   'width': '333px',
-                   'height': '35px',
-                   'text-align': 'center',
-                   'border-radius': '7px',
-                   'padding-bottom': '10px',
-                }
-            },
         }
     },
     methods: {
@@ -130,7 +99,9 @@ export default {
                 this.myMessages = response.data.myMessages;
                 this.teacher = response.data.teacher;
                 this.pupils = response.data.pupils;
-                this.showWarning();
+                if (response.data.message) {
+                    this.showWarning(response.data.message);
+                }
             });
         },
         openModal(message, message_id) {
@@ -164,34 +135,47 @@ export default {
             if (this.selected.length > 0) {
                 axios.post('delete-messages', {selected: this.selected}).then(response => {
                     this.getSources();
-                    this.showInfo();
+                    this.showInfo('Message has been deleted');
                 });
             }
         },
-        showWarning() {
-            if (this.myMessages === undefined) {
-                this.alerts.push(this.message.warningText);
-                this.switchFlashStyle = this.flashStyleWarning.show;
+        showInfo(infoText) {
+            if (this.messagesInfo !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
             }
         },
-        showInfo() {
-            if (this.myMessages.data.length > 0) {
-                this.messagesInfo.push(this.message.infoText);
-                this.switchFlashStyle = this.flashStyleInfo.show;
+        showWarning(warningText) {
+            if (this.messagesWarning !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
     filters: {
         formatDate(value) {
             var date = new Date(value);
+            let timestamps = '';
             let minutesFormat = '';
+
             if (date.getMinutes() < 10) {
                 minutesFormat += "0" + date.getMinutes();
             } else {
                 minutesFormat += date.getMinutes();
             }
-            let timestamps = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getHours();
-            return timestamps += " " + date.getHours() + ":" + minutesFormat
+
+            if (value === null) {
+                return timestamps = "";
+            } else {
+                return timestamps +=
+                    " " + date.getFullYear() +
+                    "-" + (date.getMonth() + 1) +
+                    "-" + date.getDate() +
+                    " " + date.getHours() +
+                    ":" + minutesFormat;
+            }
         }
     },
     mounted() {
@@ -227,6 +211,28 @@ export default {
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .flash-style-info {
+        display: none;
+        position: absolute;
+        top: 120px;
+        left: 42.1%;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+    .flash-style-warning {
+        display: none;
+        position: absolute;
+        top: 250px;
+        left: 42.1%;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
     }
     .error-explode p {
         padding-top: 2px;
