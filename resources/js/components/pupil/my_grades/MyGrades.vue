@@ -1,15 +1,15 @@
 <template>
    <div class="container">
        <div class="row justify-content-center mt-4">
-           <div :style="switchFlashStyle" class="flex flash-container">
-               <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                   <p>{{ alert }}</p>
+           <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+               <div v-for="messageWarning in messagesWarning" class="error-explode">
+                  <p>{{ messageWarning }}</p>
                </div>
            </div>
-           <div v-if="alerts[0] === undefined" :style="{ display: 'block' }" class="col-md-12 mt-2 mb-4">
+           <div v-if="messagesWarning[0] === undefined" :style="{ display: showMessageWarning }" class="col-md-12 mt-2 mb-4">
                <h5 class="text-center">
                    <strong>Class Name:
-                       <p class="d-inline text-danger">{{ className }}</p>
+                      <p class="d-inline text-danger">{{ className }}</p>
                    </strong>
                </h5>
            </div>
@@ -91,25 +91,8 @@ export default {
             semester2: {},
             subjects: {},
             teacher: {},
-            switchFlashStyle: '',
-            alerts: [],
-            message: {
-                warningText: '',
-            },
-            flashStyleWarning: {
-               'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '250px',
-                    'left': '41.7%',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '350px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
-            },
+            messagesWarning: [],
+            showMessageWarning: 'none',
         }
     },
     methods: {
@@ -137,10 +120,11 @@ export default {
                 this.showWarning(response.data.message);
             })
         },
-        showWarning(message) {
-            if (this.myGradesSem1 === undefined || this.myGradesSem2 === undefined) {
-                this.alerts.push(this.message.warningText = message);
-                this.switchFlashStyle = this.flashStyleWarning.show;
+        showWarning(warningText) {
+            if (warningText !== undefined) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
@@ -218,6 +202,17 @@ export default {
    }
    .error-explode p {
        padding-top: 2px;
+   }
+   .flash-style-warning {
+       display: none;
+       position: absolute;
+       top: 250px;
+       left: 42.2%;
+       background-color: rgba(245, 34, 70, 0.3);
+       width: 333px;
+       height: 35px;
+       text-align: center;
+       border-radius: 7px;
    }
 
 </style>

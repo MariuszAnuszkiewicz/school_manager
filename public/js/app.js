@@ -18063,25 +18063,8 @@ __webpack_require__.r(__webpack_exports__);
       semester2: {},
       subjects: {},
       teacher: {},
-      switchFlashStyle: '',
-      alerts: [],
-      message: {
-        warningText: ''
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '250px',
-          'left': '41.7%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '350px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      messagesWarning: [],
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -18115,10 +18098,11 @@ __webpack_require__.r(__webpack_exports__);
         _this2.showWarning(response.data.message);
       });
     },
-    showWarning: function showWarning(message) {
-      if (this.myGradesSem1 === undefined || this.myGradesSem2 === undefined) {
-        this.alerts.push(this.message.warningText = message);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showWarning: function showWarning(warningText) {
+      if (warningText !== undefined) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -25996,7 +25980,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.grades-container[data-v-735a0bd8] {\n    width: 100%;\n    display: block;\n}\n.table-container1[data-v-735a0bd8] {\n    display: block;\n    padding-top: 2px;\n}\n.table-container2[data-v-735a0bd8] {\n    position: relative;\n    top: -9px;\n    display: block;\n    padding-top: 2px;\n}\n.table > tr[data-v-735a0bd8] {\n    width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-735a0bd8] {\n    display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n    position: relative;\n    top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n    display: block;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.grades-container[data-v-735a0bd8] {\n    width: 100%;\n    display: block;\n}\n.table-container1[data-v-735a0bd8] {\n    display: block;\n    padding-top: 2px;\n}\n.table-container2[data-v-735a0bd8] {\n    position: relative;\n    top: -9px;\n    display: block;\n    padding-top: 2px;\n}\n.table > tr[data-v-735a0bd8] {\n    width: 100%;\n}\n.yellow-tr[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.7);\n}\n.yellow-td[data-v-735a0bd8] {\n    background-color:rgba(248, 230, 117, 0.5);\n}\n.green-tr[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.7);\n}\n.green-td[data-v-735a0bd8] {\n    background-color:rgba(60, 179, 78, 0.5);\n}\n.blue-tr[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.7);\n}\n.blue-td[data-v-735a0bd8] {\n    background-color:rgba(175, 225, 240, 0.5);\n}\n.sem-1[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.sem-2[data-v-735a0bd8] {\n    padding-left: 2px;\n    padding-right: 2px;\n    width: 100%;\n    display: block;\n    border: 1px solid #efeff2;\n}\n.header-text[data-v-735a0bd8] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-735a0bd8] {\n    display: none;\n}\n.flash-container p[data-v-735a0bd8] {\n    position: relative;\n    top: 4px;\n}\n.teacher_name[data-v-735a0bd8] {\n    display: block;\n}\n.error-explode p[data-v-735a0bd8] {\n    padding-top: 2px;\n}\n.flash-style-warning[data-v-735a0bd8] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.2%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
@@ -60815,27 +60799,33 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center mt-4" }, [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        _vm._l(_vm.alerts, function(alert) {
-          return _vm.alerts !== undefined
-            ? _c("div", { staticClass: "error-explode" }, [
-                _c("p", [_vm._v(_vm._s(alert))])
-              ])
-            : _vm._e()
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _vm.alerts[0] === undefined
+      _vm.messagesWarning !== undefined
         ? _c(
             "div",
-            { staticClass: "col-md-12 mt-2 mb-4", style: { display: "block" } },
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning[0] === undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "col-md-12 mt-2 mb-4",
+              style: { display: _vm.showMessageWarning }
+            },
             [
               _c("h5", { staticClass: "text-center" }, [
                 _c("strong", [
-                  _vm._v("Class Name:\n                    "),
+                  _vm._v("Class Name:\n                   "),
                   _c("p", { staticClass: "d-inline text-danger" }, [
                     _vm._v(_vm._s(_vm.className))
                   ])
