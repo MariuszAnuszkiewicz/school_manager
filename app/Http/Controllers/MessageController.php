@@ -24,18 +24,25 @@ class MessageController extends Controller
                     'teachers' => $data['teachers']
                 ]);
             }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There are no any messages for pupils"]);
+            }
         }
-        return view('pupil.messages');
+        return view('pupil.messages.messages');
     }
 
     public function show(Request $request, $id)
     {
-        $message = Message::where('id', $id)->first();
-        $teacher = Teacher::find($message->teacher_id)->user->name;
+        $data['message'] = Message::where('id', $id)->first();
+        $data['teachers'] = Teacher::find($data['message']->teacher_id)->user->name;
         if ($request->ajax()) {
-            return response()->json(['message' => $message, 'teacher' => $teacher]);
+            return response()->json([
+                'message' => $data['message'],
+                'teacher' => $data['teachers'],
+            ]);
         }
-        return view('pupil.show_message');
+        return view('pupil.messages.show_message');
     }
 
     public function destroy($id)

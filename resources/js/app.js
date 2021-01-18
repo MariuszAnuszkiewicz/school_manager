@@ -20,7 +20,7 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
 
     Vue.component('events', require('./components/pupil/events/Events.vue').default);
     Vue.component('messages', require('./components/pupil/messages/Messages.vue').default);
-    Vue.component('single-message', require('./components/pupil/messages/SingleMessage.vue').default);
+    Vue.component('single-message-pupil', require('./components/pupil/messages/SingleMessage.vue').default);
     Vue.component('lesson-plan', require('./components/pupil/lesson_plan/LessonPlan.vue').default);
     Vue.component('my-teachers', require('./components/pupil/my_teachers/MyTeachers.vue').default);
     Vue.component('my-teachers-modal', require('./components/pupil/modals/MyTeachersModal.vue').default);
