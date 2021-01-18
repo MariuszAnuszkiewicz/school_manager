@@ -42,11 +42,9 @@ export default {
     },
 
   methods: {
-      getMessage() {
-          let id = window.location.href.split('/').pop();
+      getMessage(id) {
           axios.get('/teacher/single-message/' + id).then(response => {
-              this.message = response.data.message
-              console.log(this.message)
+              this.message = response.data.message;
           });
       },
   },
@@ -64,7 +62,8 @@ export default {
       }
   },
   mounted() {
-     this.getMessage()
+      let id = window.location.href.split('/').pop();
+      this.getMessage(id);
   },
 }
 </script>

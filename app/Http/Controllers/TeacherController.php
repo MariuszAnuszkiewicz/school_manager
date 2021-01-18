@@ -206,7 +206,7 @@ class TeacherController extends Controller
                 return response()->json(['message' => "There aren't any my messages"]);
             }
         }
-        return view('teacher.my_messages');
+        return view('teacher.messages.my_messages');
     }
 
     public function updateMessage(Request $request)
@@ -241,7 +241,7 @@ class TeacherController extends Controller
                 return response()->json(['message' => "There aren't any my messages"]);
             }
         }
-        return view('teacher.single_message');
+        return view('teacher.messages.single_message');
     }
 
     public function listEmails(Request $request)

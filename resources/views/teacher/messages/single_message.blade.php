@@ -3,5 +3,5 @@
     My Single Message
 @endsection
 @section('content')
-    <single-message></single-message>
+    <single-message-teacher></single-message-teacher>
 @endsection
