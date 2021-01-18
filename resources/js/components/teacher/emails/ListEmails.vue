@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                    <p>{{ alert }}</p>
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                    <p>{{ messageWarning }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">List Emails To Send</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -62,25 +62,8 @@ export default {
             selectedEmails: [],
             isSelected: false,
             showModal: false,
-            alerts: [],
-            switchFlashStyle: '',
-            message: {
-                warningText: 'There are no any pupils.',
-            },
-            flashStyleWarning: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '110px',
-                    'left': '44.5%',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '250px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
-            },
+            messagesWarning: [],
+            showMessageWarning: 'none',
         }
     },
     methods: {
@@ -90,7 +73,9 @@ export default {
             }
             axios.get('list-emails?page=' + page).then(response => {
                 this.pupils = response.data.pupils
-                this.showWarning();
+                if (this.pupils === undefined) {
+                    this.showWarning(response.data.message);
+                }
             });
         },
         selectAll() {
@@ -111,10 +96,11 @@ export default {
                 this.showModal = false;
             }, 150);
         },
-        showWarning() {
-            if (this.pupils === undefined) {
-                this.alerts.push(this.message.warningText);
-                this.switchFlashStyle = this.flashStyleWarning.show;
+        showWarning(warningText) {
+            if (this.messagesWarning !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
     },
@@ -143,6 +129,17 @@ export default {
         width: 18px;
         height: 18px;
         background-color: #fffed5;
+    }
+    .flash-style-warning {
+        display: none;
+        position: absolute;
+        top: 250px;
+        left: 42.1%;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
     }
 
 </style>

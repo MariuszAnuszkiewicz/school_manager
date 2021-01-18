@@ -18247,25 +18247,8 @@ __webpack_require__.r(__webpack_exports__);
       selectedEmails: [],
       isSelected: false,
       showModal: false,
-      alerts: [],
-      switchFlashStyle: '',
-      message: {
-        warningText: 'There are no any pupils.'
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      messagesWarning: [],
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -18279,7 +18262,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('list-emails?page=' + page).then(function (response) {
         _this.pupils = response.data.pupils;
 
-        _this.showWarning();
+        if (_this.pupils === undefined) {
+          _this.showWarning(response.data.message);
+        }
       });
     },
     selectAll: function selectAll() {
@@ -18303,10 +18288,11 @@ __webpack_require__.r(__webpack_exports__);
         _this2.showModal = false;
       }, 150);
     },
-    showWarning: function showWarning() {
-      if (this.pupils === undefined) {
-        this.alerts.push(this.message.warningText);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showWarning: function showWarning(warningText) {
+      if (this.messagesWarning !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
@@ -25890,7 +25876,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-50602ac5] {\n    color: #8f8f8f;\n}\n.select-all[data-v-50602ac5] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupils-select[data-v-50602ac5] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-50602ac5] {\n    color: #8f8f8f;\n}\n.select-all[data-v-50602ac5] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupils-select[data-v-50602ac5] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-style-warning[data-v-50602ac5] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.1%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
@@ -61026,20 +61012,23 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row justify-content-center" }, [
-        _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          _vm._l(_vm.alerts, function(alert) {
-            return _vm.alerts !== undefined
-              ? _c("div", { staticClass: "error-explode" }, [
-                  _c("p", [_vm._v(_vm._s(alert))])
+        _vm.messagesWarning !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-warning",
+                style: { display: _vm.showMessageWarning }
+              },
+              _vm._l(_vm.messagesWarning, function(messageWarning) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageWarning))])
                 ])
-              : _vm._e()
-          }),
-          0
-        ),
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
-        _vm.alerts[0] === undefined
+        _vm.messagesWarning[0] === undefined
           ? _c("div", { staticClass: "col mt-5" }, [
               _vm._m(0),
               _vm._v(" "),
