@@ -12,8 +12,12 @@
                 </div>
                 <div class="profile-header-container">
                     <div class="profile-header-img">
-                       <img v-if="this.showPreview === true" v-bind:src="imagePreview" class="rounded-circle" v-show="showPreview">
-                       <img v-else v-bind:src="'/images/user/avatars/' + this.subPath + user.avatar" class="rounded-circle">
+                       <div v-if="this.showPreview === true">
+                          <img v-bind:src="imagePreview" class="rounded-circle" v-show="showPreview">
+                       </div>
+                       <div v-if="this.showPreview === false">
+                          <img v-bind:src="'/images/user/avatars/' + subPath + user.avatar" class="rounded-circle">
+                       </div>
                     </div>
                 </div>
                 <div id="upload-wrapper" class="large-12 medium-12 small-12 cell">
@@ -30,12 +34,11 @@
                         </button>
                     </div>
                 </div>
-                <div class="flash-wrapper">
-                    <div v-if="this.confirm === true" :style="flashStyle.show" class="flex flash-container">
-                        <p>{{ message.text }}</p>
+                <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                    <div v-for="messageInfo in messagesInfo" class="error-explode">
+                        <p>{{ messageInfo }}</p>
                     </div>
                 </div>
-              <error-display :errors="errors" :confirm="confirm"></error-display>
             </div>
         </div>
         <my-edit-profile :user="user" v-if="showModal === true">
@@ -51,11 +54,9 @@
 
 <script>
 import MyEditProfile from "./modals/MyEditProfile";
-import ErrorDisplay from "../global/ErrorDisplay";
 export default {
     components: {
         MyEditProfile,
-        ErrorDisplay
     },
     data() {
         return {
@@ -63,27 +64,14 @@ export default {
             userRole: {},
             picture: '',
             subPath: '',
+            imagePreview: '',
             showModal: false,
             showPreview: false,
-            imagePreview: '',
             confirm: false,
-            errors: [],
+            messagesInfo: [],
+            showMessageInfo: 'none',
             message: {
                 text: 'Your avatar has been updated successfully.',
-            },
-            flashStyle: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '10px',
-                    'left': '33.7%',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '350px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
             },
         }
     },
@@ -114,23 +102,24 @@ export default {
             }
         },
         submitForm() {
-            let self = this;
+            let _this = this;
             let formData = new FormData(document.getElementById('uploadForm'));
             formData.append('picture', document.querySelector('#inputPicture').files[0]);
-            axios.post('/user_profile/user', formData)
-                .then(response => {
+            axios.post('/user_profile/user', formData).then(response => {
+                if (_this.picture.name !== undefined) {
+                   _this.showInfo(_this.message.text);
+                }
             }).catch(function (error) {
-                let quantityItems = error.response.data.errors.picture.length;
-                let uploadConfirmBtn = document.getElementById("uploadConfirm");
-                uploadConfirmBtn.addEventListener('click', function () {
-                    if (self.picture.name !== undefined) {
-                        for (let i = 0; i < quantityItems; i++) {
-                            self.errors.push(error.response.data.errors.picture[i]);
-                        }
-                        self.errors.splice(quantityItems, self.errors.length);
-                    }
-                }.bind(this), false);
+                console.log(error);
             });
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+                this.confirm = true;
+            }
         },
         uploadConfirm() {
             if (this.imagePreview !== '') {
@@ -139,13 +128,11 @@ export default {
         },
         openModal() {
             this.showModal = true;
-            this.showHide = 'none';
         },
         closeModal() {
-            this.showModal = false;
             setTimeout(() => {
-                this.showHide = 'block';
-            }, 500);
+               this.showModal = false;
+            }, 250);
         },
     },
     mounted() {
@@ -258,4 +245,16 @@ export default {
         background-color: #4c6fb1;
         color: white;
     }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 35px;
+        left: 34.2%;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 350px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+
 </style>

@@ -3,8 +3,6 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 Vue.component('pagination', require('laravel-vue-pagination'));
-Vue.component('error-display', require('./components/global/ErrorDisplay.vue').default);
-
 
 // user profile zone \\
 /*********************************************************************************************************************/

@@ -10,51 +10,46 @@ class UserProfileController extends Controller
 {
     public function show(Request $request, $id)
     {
-        $authUser = auth()->user();
         $user = User::find($id);
-        if ($authUser->id === $user->id) {
+        if (auth()->user()->id === $user->id) {
             foreach ($user->roles as $role) {
                 if ($request->ajax()) {
                     return response()->json([
-                        'user' => $user,
+                        'user' => isset($user) ? $user : null,
                         'userRole' => ucfirst($role->name),
                     ]);
                 }
             }
-        } else {
-            return redirect('/user_profile/user/' . $authUser->id);
         }
         return view('user_profile.user_profile');
     }
 
     public function updateAvatar(UpdatePictureRequest $request)
     {
-        $validator = $request->validated();
-        $authUser = auth()->user();
         if ($request->ajax()) {
-            if ($request->hasFile('picture')) {
-                $fileName = $request->picture;
-                $avatarName = $authUser->id . '_avatar' . time() . '.' . $fileName->getClientOriginalExtension();
-                $fileName->move(public_path('/images/user/avatars'), $avatarName);
-                $authUser->avatar = $avatarName;
-                $authUser->save();
-                $folder = public_path() . '/images/user/avatars/';
-                $arr = [];
-                foreach (glob($folder . "*") as $filename) {
-                    $pattern = $authUser->id . '_avatar';
-                    if (preg_match("/{$pattern}/", $filename)) {
-                        $path[] = $filename;
+            if ($request->isMethod('post')) {
+                if ($request->hasFile('picture')) {
+                    $authUser = auth()->user();
+                    $fileName = $request->picture;
+                    $avatarName = $authUser->id . '_avatar' . time() . '.' . $fileName->getClientOriginalExtension();
+                    $fileName->move(public_path('/images/user/avatars'), $avatarName);
+                    $authUser->avatar = $avatarName;
+                    $authUser->save();
+                    $folder = public_path() . '/images/user/avatars/';
+                    $arr = [];
+                    foreach (glob($folder . "*") as $filename) {
+                        $pattern = $authUser->id . '_avatar';
+                        if (preg_match("/{$pattern}/", $filename)) {
+                            $path[] = $filename;
+                        }
+                    }
+                    asort($arr);
+                    for ($i = 0; $i < count($path) - 1; $i++) {
+                        if (count($path) > 1) {
+                            unlink($path[$i]);
+                        }
                     }
                 }
-                asort($arr);
-                for ($i = 0; $i < count($path) - 1; $i++) {
-                    if (count($path) > 1) {
-                        unlink($path[$i]);
-                    }
-                }
-            }
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors(), 200]);
             }
         }
     }
@@ -64,5 +59,6 @@ class UserProfileController extends Controller
         if ($request->ajax()) {
             User::where('id', $id)->update($request->all());
         }
+        return response()->json(['message' => 'Your personal data has been updated successfully.']);
     }
 }
