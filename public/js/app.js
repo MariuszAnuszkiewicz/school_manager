@@ -18657,54 +18657,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       message_text: '',
       message_id: '',
-      teacher: {},
       myMessages: {},
+      teacher: {},
       pupils: {},
-      alerts: [],
       messagesInfo: [],
+      messagesWarning: [],
+      showMessageInfo: 'none',
+      showMessageWarning: 'none',
       selected: [],
       isSelected: false,
-      showModal: false,
-      switchFlashStyle: '',
-      message: {
-        warningText: 'There are no any messages.',
-        infoText: 'Message has been deleted'
-      },
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '333px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      }
+      showModal: false
     };
   },
   methods: {
@@ -18720,7 +18689,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.teacher = response.data.teacher;
         _this.pupils = response.data.pupils;
 
-        _this.showWarning();
+        if (response.data.message) {
+          _this.showWarning(response.data.message);
+        }
       });
     },
     openModal: function openModal(message, message_id) {
@@ -18762,26 +18733,29 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (response) {
           _this3.getSources();
 
-          _this3.showInfo();
+          _this3.showInfo('Message has been deleted');
         });
       }
     },
-    showWarning: function showWarning() {
-      if (this.myMessages === undefined) {
-        this.alerts.push(this.message.warningText);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showInfo: function showInfo(infoText) {
+      if (this.messagesInfo !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
       }
     },
-    showInfo: function showInfo() {
-      if (this.myMessages.data.length > 0) {
-        this.messagesInfo.push(this.message.infoText);
-        this.switchFlashStyle = this.flashStyleInfo.show;
+    showWarning: function showWarning(warningText) {
+      if (this.messagesWarning !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
   filters: {
     formatDate: function formatDate(value) {
       var date = new Date(value);
+      var timestamps = '';
       var minutesFormat = '';
 
       if (date.getMinutes() < 10) {
@@ -18790,8 +18764,11 @@ __webpack_require__.r(__webpack_exports__);
         minutesFormat += date.getMinutes();
       }
 
-      var timestamps = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getHours();
-      return timestamps += " " + date.getHours() + ":" + minutesFormat;
+      if (value === null) {
+        return timestamps = "";
+      } else {
+        return timestamps += " " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + minutesFormat;
+      }
     }
   },
   mounted: function mounted() {
@@ -25970,7 +25947,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-4cc8df9a] {\n    color: #8f8f8f;\n}\n.select-all[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.messages-select[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-4cc8df9a] {\n    display: none;\n}\n.flash-container p[data-v-4cc8df9a] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-4cc8df9a] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-4cc8df9a] {\n    color: #8f8f8f;\n}\n.select-all[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.messages-select[data-v-4cc8df9a] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-4cc8df9a] {\n    display: none;\n}\n.flash-container p[data-v-4cc8df9a] {\n    position: relative;\n    top: 4px;\n}\n.flash-style-info[data-v-4cc8df9a] {\n    display: none;\n    position: absolute;\n    top: 120px;\n    left: 42.1%;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-4cc8df9a] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 42.1%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.error-explode p[data-v-4cc8df9a] {\n    padding-top: 2px;\n}\n\n", ""]);
 
 // exports
 
@@ -61633,30 +61610,39 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row justify-content-center" }, [
-        _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          [
-            _vm._l(_vm.alerts, function(alert) {
-              return _vm.alerts !== undefined
-                ? _c("div", { staticClass: "error-explode" }, [
-                    _c("p", [_vm._v(_vm._s(alert))])
-                  ])
-                : _vm._e()
-            }),
-            _vm._v(" "),
-            _vm._l(_vm.messagesInfo, function(messageInfo) {
-              return _vm.messagesInfo !== undefined
-                ? _c("div", { staticClass: "error-explode" }, [
-                    _c("p", [_vm._v(_vm._s(messageInfo))])
-                  ])
-                : _vm._e()
-            })
-          ],
-          2
-        ),
+        _vm.messagesInfo !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-info",
+                style: { display: _vm.showMessageInfo }
+              },
+              _vm._l(_vm.messagesInfo, function(messageInfo) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageInfo))])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
-        _vm.alerts[0] === undefined
+        _vm.messagesWarning !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-warning",
+                style: { display: _vm.showMessageWarning }
+              },
+              _vm._l(_vm.messagesWarning, function(messageWarning) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageWarning))])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.messagesWarning[0] === undefined
           ? _c(
               "div",
               { staticClass: "col mt-5" },
@@ -61694,7 +61680,7 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "col-md-12  text-center d-inline-block pt-2 pb-2 bg-light"
+                            "col-md-12 text-center d-inline-block pt-2 pb-2 bg-light"
                         },
                         [
                           _c(
