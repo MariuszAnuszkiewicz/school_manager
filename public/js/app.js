@@ -18887,13 +18887,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getMessage: function getMessage() {
+    getMessage: function getMessage(id) {
       var _this = this;
 
-      var id = window.location.href.split('/').pop();
       axios.get('/teacher/single-message/' + id).then(function (response) {
         _this.message = response.data.message;
-        console.log(_this.message);
       });
     }
   },
@@ -18913,7 +18911,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getMessage();
+    var id = window.location.href.split('/').pop();
+    this.getMessage(id);
   }
 });
 
@@ -78110,7 +78109,7 @@ Vue.component('selected-pupils', __webpack_require__(/*! ./components/teacher/pu
 Vue.component('send-message', __webpack_require__(/*! ./components/teacher/modals/SendMessage.vue */ "./resources/js/components/teacher/modals/SendMessage.vue")["default"]);
 Vue.component('my-messages', __webpack_require__(/*! ./components/teacher/messages/MyMessages.vue */ "./resources/js/components/teacher/messages/MyMessages.vue")["default"]);
 Vue.component('edit-message', __webpack_require__(/*! ./components/teacher/modals/EditMessage.vue */ "./resources/js/components/teacher/modals/EditMessage.vue")["default"]);
-Vue.component('single-message', __webpack_require__(/*! ./components/teacher/messages/SingleMessage.vue */ "./resources/js/components/teacher/messages/SingleMessage.vue")["default"]);
+Vue.component('single-message-teacher', __webpack_require__(/*! ./components/teacher/messages/SingleMessage.vue */ "./resources/js/components/teacher/messages/SingleMessage.vue")["default"]);
 Vue.component('list-emails', __webpack_require__(/*! ./components/teacher/emails/ListEmails.vue */ "./resources/js/components/teacher/emails/ListEmails.vue")["default"]);
 Vue.component('send-emails', __webpack_require__(/*! ./components/teacher/modals/SendEmail.vue */ "./resources/js/components/teacher/modals/SendEmail.vue")["default"]);
 Vue.component('assign-rating', __webpack_require__(/*! ./components/teacher/pupils/ratings/AssignRating.vue */ "./resources/js/components/teacher/pupils/ratings/AssignRating.vue")["default"]);

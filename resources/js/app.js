@@ -38,7 +38,7 @@ Vue.component('error-display', require('./components/global/ErrorDisplay.vue').d
    Vue.component('send-message', require('./components/teacher/modals/SendMessage.vue').default);
    Vue.component('my-messages', require('./components/teacher/messages/MyMessages.vue').default);
    Vue.component('edit-message', require('./components/teacher/modals/EditMessage.vue').default);
-   Vue.component('single-message', require('./components/teacher/messages/SingleMessage.vue').default);
+   Vue.component('single-message-teacher', require('./components/teacher/messages/SingleMessage.vue').default);
    Vue.component('list-emails', require('./components/teacher/emails/ListEmails.vue').default);
    Vue.component('send-emails', require('./components/teacher/modals/SendEmail.vue').default);
    Vue.component('assign-rating', require('./components/teacher/pupils/ratings/AssignRating.vue').default);
