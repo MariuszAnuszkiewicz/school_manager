@@ -25,13 +25,13 @@
                     </div>
                     <div class="modal-footer">
                         <slot name="footer"></slot>
-                        <button type="button" id="update" class="btn btn-primary" @click.stop="userUpdate()">
+                        <button type="button" id="personal-data-btn" class="btn btn-primary" @click.once="userUpdate()">
                             Update
                         </button>
                     </div>
-                    <div class="flash-wrapper">
-                        <div v-if="this.confirm === true" :style="flashStyle.show" class="flex flash-container">
-                            <p>{{ message.text }}</p>
+                    <div v-if="this.confirm === true" class="flex flash-container flash-style-info">
+                        <div v-for="messageInfo in messagesInfo" class="error-explode">
+                            <p>{{ messageInfo }}</p>
                         </div>
                     </div>
                 </div>
@@ -49,49 +49,39 @@ export default {
             email: '',
             phone: '',
             confirm: false,
-            message: {
-                text: 'Your personal data has been updated successfully.',
-            },
-            flashStyle: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'relative',
-                    'top': '2px',
-                    'left': '9px',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '375px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                    'padding-bottom': '10px',
-                }
-            },
+            messagesInfo: [],
         }
     },
     methods: {
         userUpdate() {
+            let _this = this;
             let id = window.location.href.split('/').pop();
-                axios.put('/user_profile/user/' + id, {
-                    name: this.user.name,
-                    email: this.user.email,
-                    phone: this.user.phone,
-                }).then(function (response) {
-
-                }).catch(function (error) {
-                   
-                });
-                this.confirmUpdate();
+            axios.put('/user_profile/user/' + id, {
+                name: this.user.name,
+                email: this.user.email,
+                phone: this.user.phone,
+            }).then(function (response) {
+                _this.confirmUpdate(response.data.message);
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
-        confirmUpdate: function(){
-            let updateBtn = document.getElementById("update");
+        confirmUpdate: function(response) {
+            let updateBtn = document.getElementById("personal-data-btn");
             updateBtn.addEventListener('click', function () {
-                this.confirm = true;
+                this.showInfo(response);
             }.bind(this), false);
+        },
+        showInfo(infoText) {
+            if (infoText !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.confirm = true;
+            }
         },
     },
     mounted() {
-        this.userUpdate()
+        this.userUpdate();
     }
 }
 </script>
@@ -101,7 +91,7 @@ export default {
         display: table;
         position: absolute;
         top: 240px;
-        left: 38.5%;
+        left: 40.2%;
         width: 400px;
         height: 300px;
         background-color: #4c6fb1;
@@ -118,15 +108,24 @@ export default {
     .paragraph-phone {
         padding-left: 10px;
     }
-    .flash-wrapper {
-        margin-bottom: 15px;
-    }
     .flash-container {
         display: none;
     }
     .flash-container p {
         position: relative;
         top: 4px;
+    }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 9px;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 375px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+        margin: 0px 0px 15px 0px;
     }
 
 </style>
