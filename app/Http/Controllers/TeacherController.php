@@ -344,7 +344,7 @@ class TeacherController extends Controller
             DB::table('pupil_rating')->where([
                 ['pupil_id', '=', User::find($request->userId)->pupil->id],
                 ['rating_id', '=', $request->dataRating],
-                ['created_at', '=', str_replace("T", " ", $request->dataCreate)],
+                ['created_at', '=', str_replace("T", " ", strstr($request->dataCreate, ".", true))],
             ])->update(['rating_id' => $request->rating]);
         }
         return response()->json(['message' => 'rating has been updated']);
