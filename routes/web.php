@@ -76,6 +76,7 @@ Route::get('/', function () {
         Route::resource('pupils', TeacherController::class)->only(['index']);
         Route::post('save-pupil-teacher', [TeacherController::class, 'savePupilTeacher']);
         Route::post('save-pupil-semester', [TeacherController::class, 'savePupilSemester']);
+        Route::post('save-pupil-subject', [TeacherController::class, 'savePupilSubject']);
         Route::post('update-pupils', [TeacherController::class, 'updatePupils']);
         Route::get('selected-pupils', [TeacherController::class, 'selectedPupils']);
         Route::post('delete-pupil-teacher', [TeacherController::class, 'deletePupilTeacher']);

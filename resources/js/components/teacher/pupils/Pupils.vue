@@ -1,15 +1,17 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                    <p>{{ alert }}</p>
-                </div>
-                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
-                    <p>{{ messageInfo }}</p>
+            <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
+                <div v-for="messageInfo in messagesInfo" class="error-explode">
+                   <p>{{ messageInfo }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                   <p>{{ messageWarning }}</p>
+                </div>
+            </div>
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <form @submit.prevent="submitForm()" method="POST" ref="classesForm" class="form-horizontal">
                     <div class="col-md-12 text-center">
                         <h6 class="header-text">Assign Class</h6>
@@ -49,16 +51,16 @@
                                            v-model="semesters"
                                            :value="2">
                                 </div>
-                                <tr v-for="(user, index) in users" :key="user.id">
+                                <tr v-for="(user, i) in users" :key="user.id">
                                     <td class="text-center">
                                         <input type="checkbox" class="pupil-select"
                                                v-model="selected"
-                                               :value="pupils[index].id"
+                                               :value="pupils[i].id"
                                                @change="unSelectAll()">
                                     </td>
-                                    <td class="text-center">{{ pupils[index].id }}</td>
+                                    <td class="text-center">{{ pupils[i].id }}</td>
                                     <td class="text-center">{{ user.id }}</td>
-                                    <td class="text-center"><span class="text-danger"><b>{{ assign_classes[index].name }}</b></span></td>
+                                    <td class="text-center"><span class="text-danger"><b>{{ assign_classes.name }}</b></span></td>
                                     <td v-if="user.name.length > 35" class="text-center">{{ user.name.slice(0, 35) + ' ... '  }}</td>
                                     <td v-else class="text-center">{{ user.name }}</td>
                                 </tr>
@@ -79,43 +81,17 @@ export default {
             pupils: {},
             classes_in_school: {},
             assign_classes: {},
+            subject: {},
             selected: [],
             semesters: [],
-            alerts: [],
             messagesInfo: [],
+            messagesWarning: [],
+            showMessageInfo: 'none',
+            showMessageWarning: 'none',
             isSelected: false,
-            switchFlashStyle: '',
             message: {
                warningText: '',
                infoText: '',
-            },
-            flashStyleWarning: {
-                'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '255px',
-                    'left': '44.5%',
-                    'background-color': 'rgba(245, 34, 70, 0.3)',
-                    'width': '250px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
-            },
-            flashStyleInfo: {
-               'display': 'none',
-                show: {
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '255px',
-                    'left': '41.5%',
-                    'background-color': 'rgba(60, 204, 102, 0.3)',
-                    'width': '350px',
-                    'height': '35px',
-                    'text-align': 'center',
-                    'border-radius': '7px',
-                }
             },
         }
     },
@@ -124,9 +100,12 @@ export default {
             axios.get('pupils').then(response => {
                 this.users = response.data.users;
                 this.pupils = response.data.pupils;
+                this.subject = response.data.subject;
                 this.classes_in_school = response.data.classes_in_school;
                 this.assign_classes = response.data.assign_classes;
-                this.showWarning();
+                if (this.users === undefined) {
+                    this.showWarning(response.data.message);
+                }
             });
         },
         updatePupils(formData) {
@@ -148,6 +127,18 @@ export default {
         savePupilSemester(formData) {
             if (this.selected.length > 0) {
                 axios.post('save-pupil-semester', formData).then(response => {
+
+                }).catch(function (error) {
+                    console.log(error.response.data);
+                });
+            }
+        },
+        savePupilSubject() {
+            if (this.selected.length > 0) {
+                axios.post('save-pupil-subject', {
+                    pupils: this.selected,
+                    subject: this.subject,
+                }).then(response => {
                     this.showInfo(response.data.message);
                 }).catch(function (error) {
                     console.log(error.response.data);
@@ -164,6 +155,7 @@ export default {
                 this.updatePupils(formData);
                 this.savePupilTeacher(formData);
                 this.savePupilSemester(formData);
+                this.savePupilSubject();
             }
         },
         selectAll() {
@@ -183,13 +175,11 @@ export default {
                this.isSelected = false;
             }
         },
-        showWarning() {
-            if (this.pupils === undefined) {
-                this.alerts.push(this.message.warningText = 'There are no any pupils.');
-                this.switchFlashStyle = this.flashStyleWarning.show;
-                this.alerts.splice(1, this.alerts.length);
-            } else {
-                this.switchFlashStyle = this.flashStyleWarning;
+        showWarning(warningText) {
+            if (this.messagesWarning !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
         showInfo(alerts) {
@@ -199,12 +189,12 @@ export default {
             switch (is) {
                 case 'is':
                     this.messagesInfo.push(alerts);
-                    this.switchFlashStyle = this.flashStyleInfo.show;
+                    this.showMessageInfo = 'block',
                     this.messagesInfo.splice(1, this.messagesInfo.length);
                     break;
                 default:
                     this.messagesInfo.push(this.message.infoText = 'You are assign pupils to class.');
-                    this.switchFlashStyle = this.flashStyleInfo.show;
+                    this.showMessageInfo = 'block',
                     this.messagesInfo.splice(1, this.messagesInfo.length);
                     break;
             }
@@ -236,6 +226,28 @@ export default {
     }
     .error-explode p {
         padding-top: 2px;
+    }
+    .flash-style-info {
+        display: none;
+        position: absolute;
+        top: 255px;
+        left: 41.7%;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 350px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+    .flash-style-warning {
+        display: none;
+        position: absolute;
+        top: 250px;
+        left: 41.5%;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 350px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
     }
     #selectClass {
         margin-top: 10px;
