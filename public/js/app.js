@@ -20258,6 +20258,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -20265,43 +20267,17 @@ __webpack_require__.r(__webpack_exports__);
       pupils: {},
       classes_in_school: {},
       assign_classes: {},
+      subject: {},
       selected: [],
       semesters: [],
-      alerts: [],
       messagesInfo: [],
+      messagesWarning: [],
+      showMessageInfo: 'none',
+      showMessageWarning: 'none',
       isSelected: false,
-      switchFlashStyle: '',
       message: {
         warningText: '',
         infoText: ''
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '255px',
-          'left': '44.5%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      },
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '255px',
-          'left': '41.5%',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '350px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
       }
     };
   },
@@ -20312,10 +20288,13 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('pupils').then(function (response) {
         _this.users = response.data.users;
         _this.pupils = response.data.pupils;
+        _this.subject = response.data.subject;
         _this.classes_in_school = response.data.classes_in_school;
         _this.assign_classes = response.data.assign_classes;
 
-        _this.showWarning();
+        if (_this.users === undefined) {
+          _this.showWarning(response.data.message);
+        }
       });
     },
     updatePupils: function updatePupils(formData) {
@@ -20333,10 +20312,20 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     savePupilSemester: function savePupilSemester(formData) {
+      if (this.selected.length > 0) {
+        axios.post('save-pupil-semester', formData).then(function (response) {})["catch"](function (error) {
+          console.log(error.response.data);
+        });
+      }
+    },
+    savePupilSubject: function savePupilSubject() {
       var _this2 = this;
 
       if (this.selected.length > 0) {
-        axios.post('save-pupil-semester', formData).then(function (response) {
+        axios.post('save-pupil-subject', {
+          pupils: this.selected,
+          subject: this.subject
+        }).then(function (response) {
           _this2.showInfo(response.data.message);
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -20353,6 +20342,7 @@ __webpack_require__.r(__webpack_exports__);
         this.updatePupils(formData);
         this.savePupilTeacher(formData);
         this.savePupilSemester(formData);
+        this.savePupilSubject();
       }
     },
     selectAll: function selectAll() {
@@ -20373,13 +20363,11 @@ __webpack_require__.r(__webpack_exports__);
         this.isSelected = false;
       }
     },
-    showWarning: function showWarning() {
-      if (this.pupils === undefined) {
-        this.alerts.push(this.message.warningText = 'There are no any pupils.');
-        this.switchFlashStyle = this.flashStyleWarning.show;
-        this.alerts.splice(1, this.alerts.length);
-      } else {
-        this.switchFlashStyle = this.flashStyleWarning;
+    showWarning: function showWarning(warningText) {
+      if (this.messagesWarning !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     },
     showInfo: function showInfo(alerts) {
@@ -20390,14 +20378,12 @@ __webpack_require__.r(__webpack_exports__);
       switch (is) {
         case 'is':
           this.messagesInfo.push(alerts);
-          this.switchFlashStyle = this.flashStyleInfo.show;
-          this.messagesInfo.splice(1, this.messagesInfo.length);
+          this.showMessageInfo = 'block', this.messagesInfo.splice(1, this.messagesInfo.length);
           break;
 
         default:
           this.messagesInfo.push(this.message.infoText = 'You are assign pupils to class.');
-          this.switchFlashStyle = this.flashStyleInfo.show;
-          this.messagesInfo.splice(1, this.messagesInfo.length);
+          this.showMessageInfo = 'block', this.messagesInfo.splice(1, this.messagesInfo.length);
           break;
       }
     }
@@ -26180,7 +26166,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072], .pupil-select[data-v-f55a8072], .semester1-select[data-v-f55a8072], .semester2-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-f55a8072] {\n    padding-top: 2px;\n}\n#selectClass[data-v-f55a8072] {\n    margin-top: 10px;\n    background-color: #F2F2F2;\n    height: 37px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-f55a8072] {\n    color: #8f8f8f;\n}\n.select-all[data-v-f55a8072], .pupil-select[data-v-f55a8072], .semester1-select[data-v-f55a8072], .semester2-select[data-v-f55a8072] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container p[data-v-f55a8072] {\n    position: relative;\n    top: 4px;\n}\n.error-explode p[data-v-f55a8072] {\n    padding-top: 2px;\n}\n.flash-style-info[data-v-f55a8072] {\n    display: none;\n    position: absolute;\n    top: 255px;\n    left: 41.7%;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 350px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-f55a8072] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 41.5%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 350px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n#selectClass[data-v-f55a8072] {\n    margin-top: 10px;\n    background-color: #F2F2F2;\n    height: 37px;\n}\n\n", ""]);
 
 // exports
 
@@ -64255,30 +64241,39 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c(
-        "div",
-        { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-        [
-          _vm._l(_vm.alerts, function(alert) {
-            return _vm.alerts !== undefined
-              ? _c("div", { staticClass: "error-explode" }, [
-                  _c("p", [_vm._v(_vm._s(alert))])
-                ])
-              : _vm._e()
-          }),
-          _vm._v(" "),
-          _vm._l(_vm.messagesInfo, function(messageInfo) {
-            return _vm.messagesInfo !== undefined
-              ? _c("div", { staticClass: "error-explode" }, [
-                  _c("p", [_vm._v(_vm._s(messageInfo))])
-                ])
-              : _vm._e()
-          })
-        ],
-        2
-      ),
+      _vm.messagesInfo !== undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-info",
+              style: { display: _vm.showMessageInfo }
+            },
+            _vm._l(_vm.messagesInfo, function(messageInfo) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageInfo))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
       _vm._v(" "),
-      _vm.alerts[0] === undefined
+      _vm.messagesWarning !== undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning[0] === undefined
         ? _c("div", { staticClass: "col mt-5" }, [
             _c(
               "form",
@@ -64421,7 +64416,7 @@ var render = function() {
                           ]
                         ),
                         _vm._v(" "),
-                        _vm._l(_vm.users, function(user, index) {
+                        _vm._l(_vm.users, function(user, i) {
                           return _c("tr", { key: user.id }, [
                             _c("td", { staticClass: "text-center" }, [
                               _c("input", {
@@ -64436,12 +64431,10 @@ var render = function() {
                                 staticClass: "pupil-select",
                                 attrs: { type: "checkbox" },
                                 domProps: {
-                                  value: _vm.pupils[index].id,
+                                  value: _vm.pupils[i].id,
                                   checked: Array.isArray(_vm.selected)
-                                    ? _vm._i(
-                                        _vm.selected,
-                                        _vm.pupils[index].id
-                                      ) > -1
+                                    ? _vm._i(_vm.selected, _vm.pupils[i].id) >
+                                      -1
                                     : _vm.selected
                                 },
                                 on: {
@@ -64451,7 +64444,7 @@ var render = function() {
                                         $$el = $event.target,
                                         $$c = $$el.checked ? true : false
                                       if (Array.isArray($$a)) {
-                                        var $$v = _vm.pupils[index].id,
+                                        var $$v = _vm.pupils[i].id,
                                           $$i = _vm._i($$a, $$v)
                                         if ($$el.checked) {
                                           $$i < 0 &&
@@ -64475,7 +64468,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "text-center" }, [
-                              _vm._v(_vm._s(_vm.pupils[index].id))
+                              _vm._v(_vm._s(_vm.pupils[i].id))
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "text-center" }, [
@@ -64485,7 +64478,7 @@ var render = function() {
                             _c("td", { staticClass: "text-center" }, [
                               _c("span", { staticClass: "text-danger" }, [
                                 _c("b", [
-                                  _vm._v(_vm._s(_vm.assign_classes[index].name))
+                                  _vm._v(_vm._s(_vm.assign_classes.name))
                                 ])
                               ])
                             ]),

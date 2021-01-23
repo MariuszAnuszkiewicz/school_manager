@@ -9,6 +9,8 @@ use App\Models\Pupil;
 use App\Models\Message;
 use App\Models\Presence;
 use App\Models\User;
+use App\Models\Teacher;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -21,41 +23,27 @@ class TeacherController extends Controller
     public function index(Request $request)
     {
         $pupils = Pupil::with('teachers')->orderBy('user_id', 'ASC')->get();
-        foreach ($pupils as $pupil) {
+        foreach ($pupils as $key => $pupil) {
             $data['users'][] = isset($pupil->user) ? $pupil->user: null;
             $data['pupils'][] = isset($pupil) ? $pupil: null;
-            $data['assign_classes'][] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
+            $data['assign_classes'] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
         }
-        foreach (ClassInSchool::all() as $classInSchool) {
-            $data['classes_in_school'][] = isset($classInSchool) ? $classInSchool: null;
+        $teacher = Teacher::find(auth()->user()->pupil->teachers->first()->id);
+        foreach($teacher->subjects as $subject) {
+            $data['subject'] = $subject->id;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
                     'users' => $data['users'],
                     'pupils' => $data['pupils'],
-                    'classes_in_school' => $data['classes_in_school'],
+                    'subject' => $data['subject'],
                     'assign_classes' => $data['assign_classes'],
+                    'classes_in_school' => ClassInSchool::all(),
                 ]);
             }
         }
         return view('teacher.pupils');
-    }
-
-    public function savePupilTeacher(Request $request)
-    {
-        if ($request->ajax()) {
-            if (!empty($request->pupils)) {
-                $teacher = auth()->user()->teacher;
-                $pupilIdPupilTeacherTable = [];
-                foreach ($teacher->pupils as $teacherPivot) {
-                    $pupilIdPupilTeacherTable[] = $teacherPivot->id;
-                }
-                $diffCompare = array_diff(explode(",", $request->pupils), $pupilIdPupilTeacherTable);
-                $teacher->pupils()->attach($diffCompare);
-                return response()->json(['message' => 'pupils has been assign to classes']);
-            }
-        }
     }
 
     public function updatePupils(Request $request)
@@ -68,62 +56,86 @@ class TeacherController extends Controller
         }
     }
 
+    public function savePupilTeacher(Request $request)
+    {
+        if ($request->ajax()) {
+            if (!empty($request->pupils)) {
+                $teacher = auth()->user()->teacher;
+                foreach ($teacher->pupils as $teacherPivot) {
+                    $pupilIdPivotTable[] = $teacherPivot->id;
+                }
+                $diffCompare = array_diff(explode(",", $request->pupils),  $pupilIdPivotTable);
+                $teacher->pupils()->attach($diffCompare);
+                return response()->json(['message' => 'pupils has been assign to classes']);
+            }
+        }
+    }
+
     public function savePupilSemester(Request $request)
     {
         if ($request->ajax()) {
             if (!empty($request->pupils) && !empty($request->semester)) {
                 $ids = explode(",", $request->pupils);
-                $pupilIdPupilSemesterTable = [];
+                $pupilIdPivotTable = [];
+                $semesterIdPivotTable = [];
                 for ($i = 0; $i < count($ids); $i++) {
                     foreach(Pupil::find($ids[$i])->semesters as $pupilPivot) {
-                        $pupilIdPupilSemesterTable[] = $pupilPivot->pivot->pupil_id;
-                        $semesterIdPupilSemesterTable[] = $pupilPivot->pivot->semester_id;
+                        $pupilIdPivotTable[] = $pupilPivot->pivot->pupil_id;
+                        $semesterIdPivotTable[] = isset($pupilPivot->pivot->semester_id) ? $pupilPivot->pivot->semester_id : null;
                     }
                 }
-                $singleValue = [];
-                $countValues = array_count_values($pupilIdPupilSemesterTable);
-                foreach ($countValues as $key => $countValue) {
-                    if ($countValue == 1) {
-                        $singleValue[$key] = $countValue;
-                    }
-                }
-                $fillEmptyValue = array_keys($singleValue);
-                if (count($pupilIdPupilSemesterTable) < 1) {
-                    if ($request->semester === '1' || $request->semester === '2') {
-                        for ($i = 0; $i < count($ids); $i++) {
-                            Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
-                        }
-                    }
-                }
-                if (count($pupilIdPupilSemesterTable) > 0) {
+                if (!empty($ids)) {
+                    $diffCompare = array_diff($ids, $pupilIdPivotTable);
                     if ($request->semester === '1') {
-                        $semester1Id = in_array('1', $semesterIdPupilSemesterTable);
+                        $semester1Id = in_array('1', $semesterIdPivotTable);
                         if ($semester1Id === false) {
-                            for ($i = 0; $i < count($pupilIdPupilSemesterTable); $i++) {
-                                Pupil::find($pupilIdPupilSemesterTable[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
+                            for ($i = 0; $i < count($ids); $i++) {
+                                Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
                             }
                         } else {
-                            for ($i = 0; $i < count($fillEmptyValue); $i++) {
-                                Pupil::find($fillEmptyValue[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
+                            for ($i = 0; $i < count($diffCompare); $i++) {
+                                Pupil::find(array_values($diffCompare)[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
                             }
-                            return response()->json(['message' => 'Assign pupils to semester 1 now is exist']);
                         }
                     }
                     elseif ($request->semester === '2') {
-                        $semester2Id = in_array('2', $semesterIdPupilSemesterTable);
+                        $semester2Id = in_array('2', $semesterIdPivotTable);
                         if ($semester2Id === false) {
-                            for ($i = 0; $i < count($pupilIdPupilSemesterTable); $i++) {
-                                Pupil::find($pupilIdPupilSemesterTable[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
+                            for ($i = 0; $i < count($ids); $i++) {
+                                Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
                             }
                         } else {
-                            for ($i = 0; $i < count($fillEmptyValue); $i++) {
-                                Pupil::find($fillEmptyValue[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
+                            for ($i = 0; $i < count($diffCompare); $i++) {
+                                Pupil::find(array_values($diffCompare)[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
                             }
-                            return response()->json(['message' => 'Assign pupils to semester 2 now is exist']);
                         }
                     }
                 }
                 return response()->json(['message' => 'pupils has been assign to classes']);
+            }
+        }
+    }
+
+    public function savePupilSubject(Request $request)
+    {
+        if ($request->ajax()) {
+            $ids = $request->pupils;
+            for ($i = 0; $i < count($ids); $i++) {
+                foreach(Pupil::find($ids[$i])->subjects as $pupilPivot) {
+                    $pupilIdPivotTable[] = $pupilPivot->pivot->pupil_id;
+                    $subjectIdPivotTable[] = $pupilPivot->pivot->subject_id;
+                }
+            }
+            $diffCompare = array_diff($ids, $pupilIdPivotTable);
+            if (!empty($diffCompare)) {
+                for ($i = 0; $i < count($diffCompare); $i++) {
+                    Pupil::find(array_values($diffCompare)[$i])->subjects()->attach(['subject_id' => (int)$request->subject]);
+                }
+            }
+            if (in_array($request->subject, $subjectIdPivotTable) == false) {
+                for ($i = 0; $i < count($ids); $i++) {
+                    Pupil::find($ids[$i])->subjects()->attach(['subject_id' => (int) $request->subject]);
+                }
             }
         }
     }
