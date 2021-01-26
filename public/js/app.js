@@ -17576,61 +17576,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      planElements: {},
       "class": {},
-      switchStyleFlash: '',
-      showHide: '',
-      message: {
-        text: 'There are no any lesson plan.'
-      },
-      flashStyle: {
-        'position': 'relative',
-        'top': '100px',
-        'left': '38.7%',
-        'background-color': 'rgba(245, 34, 70, 0.3)',
-        'width': '250px',
-        'height': '35px',
-        'text-align': 'center',
-        'border-radius': '7px',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '100px',
-          'left': '38.7%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      lessonPlan: {},
+      messagesWarning: [],
+      showMessageWarning: 'none'
     };
   },
   methods: {
-    getLessonPlan: function getLessonPlan() {
+    getSources: function getSources() {
       var _this = this;
 
       axios.get('lesson-plan').then(function (response) {
-        _this.planElements = response.data.lessonPlan;
         _this["class"] = response.data["class"];
 
-        _this.changeStyle();
+        if (response.data.lessonPlan !== undefined) {
+          _this.lessonPlan = response.data.lessonPlan;
+        } else {
+          _this.showWarning(response.data.message);
+        }
       });
     },
-    changeStyle: function changeStyle() {
-      if (this.planElements.length < 1) {
-        this.showHide = 'none';
-        this.switchStyleFlash = this.flashStyle.show;
-      } else {
-        this.switchStyleFlash = this.flashStyle;
+    showWarning: function showWarning(warningText) {
+      if (warningText !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     }
   },
   mounted: function mounted() {
-    this.getLessonPlan();
+    this.getSources();
   }
 });
 
@@ -25698,7 +25678,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-dccf3d68] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-dccf3d68] {\n    display: none;\n}\n.flash-container p[data-v-dccf3d68] {\n    position: relative;\n    top: 4px;\n}\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-dccf3d68] {\n    color: #8f8f8f;\n}\n.flash-container[data-v-dccf3d68] {\n    display: none;\n}\n.flash-container p[data-v-dccf3d68] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-warning[data-v-dccf3d68] {\n    display: none;\n    position: absolute;\n    top: 250px;\n    left: 44.1%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 250px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n", ""]);
 
 // exports
 
@@ -60033,71 +60013,83 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "flex flash-container", style: _vm.switchStyleFlash },
-      [_c("p", [_vm._v(_vm._s(_vm.message.text))])]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "row justify-content-center",
-        style: { display: this.showHide }
-      },
-      [
-        _c("div", { staticClass: "container col-md-12 mt-5" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "text-center pb-3" }, [
-            _c("h5", { staticClass: "pt-3 pb-0" }, [
-              _c("strong", [
-                _vm._v("Your Class:\n                        "),
-                _c("p", { staticClass: "d-inline text-danger" }, [
-                  _vm._v(_vm._s(this.class))
-                ])
-              ])
+    _vm.messagesWarning !== undefined
+      ? _c(
+          "div",
+          {
+            staticClass: "flex flash-container flash-style-warning",
+            style: { display: _vm.showMessageWarning }
+          },
+          _vm._l(_vm.messagesWarning, function(messageWarning) {
+            return _c("div", { staticClass: "error-explode" }, [
+              _c("p", [_vm._v(_vm._s(messageWarning))])
             ])
-          ]),
-          _vm._v(" "),
-          _c("table", { staticClass: "table table-striped" }, [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "tbody",
-              _vm._l(_vm.planElements, function(planElement) {
-                return _c("tr", { key: planElement.id }, [
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.hours))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.monday))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.tuesday))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.wednesday))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.thursday))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center pt-3" }, [
-                    _vm._v(_vm._s(planElement.friday))
+          }),
+          0
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.messagesWarning[0] === undefined
+      ? _c(
+          "div",
+          {
+            staticClass: "row justify-content-center",
+            style: { display: _vm.showMessageWarning }
+          },
+          [
+            _c("div", { staticClass: "container col-md-12 mt-5" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-center pb-3" }, [
+                _c("h5", { staticClass: "pt-3 pb-0" }, [
+                  _c("strong", [
+                    _vm._v("Your Class:\n                        "),
+                    _c("p", { staticClass: "d-inline text-danger" }, [
+                      _vm._v(_vm._s(this.class))
+                    ])
                   ])
                 ])
-              }),
-              0
-            )
-          ])
-        ])
-      ]
-    )
+              ]),
+              _vm._v(" "),
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.lessonPlan, function(plan) {
+                    return _c("tr", { key: plan.id }, [
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.hours))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.monday))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.tuesday))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.wednesday))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.thursday))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(plan.friday))
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
