@@ -186,7 +186,7 @@ class TeacherController extends Controller
                 'teacher_id' => auth()->user()->teacher->id,
                 'message' => $request->message,
             ]);
-            $switchSingleMultipleIds = isset($request->pupil_id) ? $request->pupil_id : $request->selected;
+            $switchSingleMultipleIds = isset($request->pupilId) ? $request->pupilId : $request->selected;
             $message->pupils()->attach($switchSingleMultipleIds);
             return response()->json(['message' => 'Message send successfully']);
         }

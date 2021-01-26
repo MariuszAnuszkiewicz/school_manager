@@ -34,7 +34,7 @@
 
 <script>
 export default {
-    props: ['selected', 'pupil_id'],
+    props: ['selected', 'pupilData'],
     data() {
         return {
             message: '',
@@ -45,12 +45,11 @@ export default {
     },
     methods: {
         sendMessage() {
-            let lastId = this.pupil_id.length - 1;
             if (this.message != '') {
                 axios.post('send-message',
                    {
                       selected: this.selected,
-                      pupil_id: this.pupil_id[lastId],
+                      pupilId: this.pupilData.id,
                       message: this.message,
                     }
                 ).then(response => {
