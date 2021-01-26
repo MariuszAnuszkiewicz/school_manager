@@ -19723,22 +19723,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       message: '',
       confirm: false,
-      flashText: '',
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'relative',
-          'top': '2px',
-          'left': '50px',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '275px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px',
-          'padding-bottom': '10px'
-        }
-      }
+      messagesInfo: [],
+      showMessageInfo: 'none'
     };
   },
   methods: {
@@ -19750,11 +19736,18 @@ __webpack_require__.r(__webpack_exports__);
           selectedEmails: this.selectedEmails,
           message: this.message
         }).then(function (response) {
-          _this.flashText = response.data.message;
-          _this.confirm = true;
+          _this.showInfo(response.data.message);
         })["catch"](function (error) {
           console.log(error.response.data);
         });
+      }
+    },
+    showInfo: function showInfo(infoText) {
+      if (infoText !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+        this.confirm = true;
       }
     }
   }
@@ -26076,7 +26069,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-fba6217a] {\n    position: absolute;\n    top: 200px;\n    width: 52%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.sendEmail[data-v-fba6217a] {\n    display: table;\n    position: relative;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-fba6217a] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-fba6217a] {\n    display: none;\n}\n.flash-container p[data-v-fba6217a] {\n    position: relative;\n    top: 4px;\n}\n\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-fba6217a] {\n    position: absolute;\n    top: 200px;\n    width: 52%;\n    height: 75%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.sendEmail[data-v-fba6217a] {\n    display: table;\n    position: relative;\n    top: 150px;\n    left: 33%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-fba6217a] {\n    display: none;\n}\n.flash-container p[data-v-fba6217a] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-info[data-v-fba6217a] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    margin: 0px 0px 15px 0px;\n}\n\n", ""]);
 
 // exports
 
@@ -63602,18 +63595,18 @@ var render = function() {
                 2
               ),
               _vm._v(" "),
-              _c("div", { staticClass: "flash-wrapper" }, [
-                this.confirm === true
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "flex flash-container",
-                        style: _vm.flashStyleInfo.show
-                      },
-                      [_c("p", [_vm._v(_vm._s(_vm.flashText))])]
-                    )
-                  : _vm._e()
-              ])
+              this.confirm === true
+                ? _c(
+                    "div",
+                    { staticClass: "flex flash-container flash-style-info" },
+                    _vm._l(_vm.messagesInfo, function(messageInfo) {
+                      return _c("div", { staticClass: "error-explode" }, [
+                        _c("p", [_vm._v(_vm._s(messageInfo))])
+                      ])
+                    }),
+                    0
+                  )
+                : _vm._e()
             ])
           ]
         )
