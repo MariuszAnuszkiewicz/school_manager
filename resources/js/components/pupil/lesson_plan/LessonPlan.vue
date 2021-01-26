@@ -1,17 +1,17 @@
 <template>
     <div class="container">
-        <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
-            <div v-for="messageWarning in messagesWarning" class="error-explode">
-                <p>{{ messageWarning }}</p>
+        <div class="row justify-content-center">
+            <div v-if="messagesWarning.length > 0" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                    <p>{{ messageWarning }}</p>
+                </div>
             </div>
-        </div>
-        <div v-if="messagesWarning[0] === undefined" :style="{ display: showMessageWarning }" class="row justify-content-center">
-            <div class="container col-md-12 mt-5">
+            <div v-if="messagesWarning.length === 0" :style="{ display: 'block' }" class="col-md-12 mt-5">
                 <div class="card-body"><h5><strong class="header-text">Lesson Plan</strong></h5></div>
                 <div class="text-center pb-3">
                     <h5 class="pt-3 pb-0">
                         <strong>Your Class:
-                            <p class="d-inline text-danger">{{ this.class }}</p>
+                            <p class="d-inline text-danger">{{ assignClass }}</p>
                         </strong>
                     </h5>
                 </div>
@@ -46,7 +46,7 @@
 export default {
     data() {
         return {
-            class: {},
+            assignClass: {},
             lessonPlan: {},
             messagesWarning: [],
             showMessageWarning: 'none',
@@ -55,9 +55,10 @@ export default {
     methods: {
         getSources() {
             axios.get('lesson-plan').then(response => {
-                this.class = response.data.class;
+                this.assignClass = response.data.assignClass;
                 if (response.data.lessonPlan !== undefined) {
                     this.lessonPlan = response.data.lessonPlan;
+                    //console.log(this.lessonPlan);
                 } else {
                     this.showWarning(response.data.message);
                 }
