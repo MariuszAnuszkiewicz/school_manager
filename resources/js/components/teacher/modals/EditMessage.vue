@@ -20,9 +20,9 @@
                               Update
                           </button>
                       </div>
-                      <div class="flash-wrapper">
-                          <div v-if="this.confirm === true" :style="flashStyleInfo.show" class="flex flash-container">
-                             <p>{{ flashTextInfo }}</p>
+                      <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
+                          <div v-for="messageInfo in messagesInfo" class="error-explode">
+                              <p>{{ messageInfo }}</p>
                           </div>
                       </div>
                   </div>
@@ -39,21 +39,8 @@ export default {
       return {
           message: this.message_text,
           confirm: false,
-          flashTextInfo: '',
-          flashStyleInfo: {
-              'display': 'none',
-              show: {
-                  'display': 'block',
-                  'position': 'relative',
-                  'top': '2px',
-                  'left': '22px',
-                  'background-color': 'rgba(60, 204, 102, 0.3)',
-                  'width': '333px',
-                  'height': '35px',
-                  'text-align': 'center',
-                  'border-radius': '7px',
-              }
-          },
+          messagesInfo: [],
+          showMessageInfo: 'none',
       }
   },
   methods: {
@@ -66,12 +53,18 @@ export default {
           }).then(function (response) {
               let updateMessageBtn = document.getElementById("update-message");
               updateMessageBtn.addEventListener('click', function () {
-                  _this.flashTextInfo = response.data.message;
-                  _this.confirm = true;
+                  _this.showInfo(response.data.message);
               }.bind(this), false);
           }).catch(function (error) {
               console.log(error.response.data)
           });
+      },
+      showInfo(infoText) {
+          if (this.messagesInfo !== null) {
+              this.messagesInfo.push(infoText);
+              this.messagesInfo.splice(1, this.messagesInfo.length);
+              this.showMessageInfo = 'block';
+          }
       },
   },
   mounted() {
@@ -102,15 +95,24 @@ export default {
         padding: 10px 10px 10px 10px;
         transition: opacity .3s ease;
     }
-    .flash-wrapper {
-        margin-bottom: 15px;
-    }
     .flash-container {
         display: none;
     }
     .flash-container p {
         position: relative;
         top: 5px;
+    }
+    .flash-style-info {
+        display: block;
+        position: relative;
+        top: 2px;
+        left: 22px;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+        margin: 0px 0px 15px 0px;
     }
 
 </style>
