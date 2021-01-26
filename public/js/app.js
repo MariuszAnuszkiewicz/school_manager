@@ -17581,7 +17581,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      "class": {},
+      assignClass: {},
       lessonPlan: {},
       messagesWarning: [],
       showMessageWarning: 'none'
@@ -17592,10 +17592,10 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('lesson-plan').then(function (response) {
-        _this["class"] = response.data["class"];
+        _this.assignClass = response.data.assignClass;
 
         if (response.data.lessonPlan !== undefined) {
-          _this.lessonPlan = response.data.lessonPlan;
+          _this.lessonPlan = response.data.lessonPlan; //console.log(this.lessonPlan);
         } else {
           _this.showWarning(response.data.message);
         }
@@ -60013,31 +60013,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _vm.messagesWarning !== undefined
-      ? _c(
-          "div",
-          {
-            staticClass: "flex flash-container flash-style-warning",
-            style: { display: _vm.showMessageWarning }
-          },
-          _vm._l(_vm.messagesWarning, function(messageWarning) {
-            return _c("div", { staticClass: "error-explode" }, [
-              _c("p", [_vm._v(_vm._s(messageWarning))])
-            ])
-          }),
-          0
-        )
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.messagesWarning[0] === undefined
-      ? _c(
-          "div",
-          {
-            staticClass: "row justify-content-center",
-            style: { display: _vm.showMessageWarning }
-          },
-          [
-            _c("div", { staticClass: "container col-md-12 mt-5" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _vm.messagesWarning.length > 0
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning.length === 0
+        ? _c(
+            "div",
+            { staticClass: "col-md-12 mt-5", style: { display: "block" } },
+            [
               _vm._m(0),
               _vm._v(" "),
               _c("div", { staticClass: "text-center pb-3" }, [
@@ -60045,7 +60042,7 @@ var render = function() {
                   _c("strong", [
                     _vm._v("Your Class:\n                        "),
                     _c("p", { staticClass: "d-inline text-danger" }, [
-                      _vm._v(_vm._s(this.class))
+                      _vm._v(_vm._s(_vm.assignClass))
                     ])
                   ])
                 ])
@@ -60086,10 +60083,10 @@ var render = function() {
                   0
                 )
               ])
-            ])
-          ]
-        )
-      : _vm._e()
+            ]
+          )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = [
