@@ -1,15 +1,17 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div :style="switchFlashStyle" class="flex flash-container">
-                <div v-if="alerts !== undefined" v-for="alert in alerts" class="error-explode">
-                    <p>{{ alert }}</p>
-                </div>
-                <div v-if="messagesInfo !== undefined" v-for="messageInfo in messagesInfo" class="error-explode">
+            <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
+                <div v-for="messageInfo in messagesInfo" class="error-explode">
                     <p>{{ messageInfo }}</p>
                 </div>
             </div>
-            <div v-if="alerts[0] === undefined" class="col mt-5">
+            <div v-if="messagesWarning !== undefined" :style="{ display: showMessageWarning }" class="flex flash-container flash-style-warning">
+                <div v-for="messageWarning in messagesWarning" class="error-explode">
+                    <p>{{ messageWarning }}</p>
+                </div>
+            </div>
+            <div v-if="messagesWarning[0] === undefined" class="col mt-5">
                 <div class="card-body"><h5><strong class="header-text">Selected Pupils</strong></h5></div>
                 <table class="table table-striped">
                     <thead class="bg-dark">
@@ -29,23 +31,23 @@
                         </div>
                         <div class="col-md-12  text-center pt-2 pb-2 bg-light">
                             <button class="btn btn-outline-danger" @click="deleteMultipleTables()"><i class="fas fa-trash"></i></button>
-                            <button id="send-multiple-message" class="btn btn-success" @click="openModal()">
+                            <button id="send-multiple-message" class="btn btn-success" @click="openModal(selected)">
                                <i class="fas fa-envelope"></i>
                             </button>
                         </div>
-                        <tr v-for="(user, index) in users" :key="user.id">
+                        <tr v-for="(user, i) in users" :key="user.id">
                             <td class="text-center pt-3">
                                 <input type="checkbox" class="pupil-select"
                                        v-model="selected"
-                                       :value="pupils[index].id"
+                                       :value="pupils[i].id"
                                        @change="unSelectAll()">
                             </td>
-                            <td class="text-center pt-3">{{ pupils[index].id }}</td>
+                            <td class="text-center pt-3">{{ pupils[i].id }}</td>
                             <td class="text-center pt-3">{{ user.id }}</td>
-                            <td class="text-center pt-3">{{ assign_classes[index].name }}</td>
+                            <td class="text-center pt-3">{{ assign_classes[i].name }}</td>
                             <td class="text-center pt-3">{{ user.name }}</td>
                             <td class="text-center">
-                                <button id="send-message" class="btn btn-success" @click="openModal(pupils[index].id)">
+                                <button id="send-message" class="btn btn-success" @click="openModal(pupils[i])">
                                     <i class="fas fa-envelope"></i>
                                 </button>
                             </td>
@@ -54,7 +56,7 @@
                 </table>
             </div>
         </div>
-        <send-message :selected="selected" :pupil_id="pupil_id" v-if="showModal === true">
+        <send-message :selected="selected" :pupilData="pupilData" v-if="showModal === true">
             <h3 slot="header" class="modal-title">
                 Send Message
             </h3>
@@ -72,54 +74,26 @@ export default {
             users: {},
             pupils: {},
             assign_classes: {},
-            selected: [],
+            pupilData: undefined,
             isSelected: false,
             showModal: false,
-            switchFlashStyle: '',
-            pupil_id: [],
-            alerts: [],
+            selected: [],
             messagesInfo: [],
-            message: {
-                warningText: 'There are no any pupils.',
-                infoText: 'Pupil has been deleted',
-            },
-            flashStyleWarning: {
-              'display': 'none',
-                show: {
-                  'display': 'block',
-                  'position': 'absolute',
-                  'top': '110px',
-                  'left': '44.5%',
-                  'background-color': 'rgba(245, 34, 70, 0.3)',
-                  'width': '250px',
-                  'height': '35px',
-                  'text-align': 'center',
-                  'border-radius': '7px',
-                }
-            },
-            flashStyleInfo: {
-              'display': 'none',
-                show: {
-                  'display': 'block',
-                  'position': 'absolute',
-                  'top': '110px',
-                  'left': '44.5%',
-                  'background-color': 'rgba(60, 204, 102, 0.3)',
-                  'width': '250px',
-                  'height': '35px',
-                  'text-align': 'center',
-                  'border-radius': '7px',
-                }
-            },
+            messagesWarning: [],
+            showMessageInfo: 'none',
+            showMessageWarning: 'none',
         }
     },
     methods: {
         getSources() {
             axios.get('selected-pupils').then(response => {
-                this.users = response.data.users;
                 this.pupils = response.data.pupils;
                 this.assign_classes = response.data.assign_classes;
-                this.showWarning();
+                if (response.data.users) {
+                    this.users = response.data.users;
+                } else {
+                    this.showWarning(response.data.message);
+                }
             });
         },
         selectAll() {
@@ -141,12 +115,8 @@ export default {
         },
         deletePupilTeacher() {
             axios.post('delete-pupil-teacher', {selected: this.selected}).then(response => {
-                this.getSources()
-                if (this.selected.length > 0) {
-                    this.messagesInfo.push(this.message.infoText);
-                    this.switchFlashStyle = this.flashStyleInfo.show;
-                }
-                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.getSources();
+                this.showInfo(response.data.message);
             });
         },
         deletePupilSemester() {
@@ -156,32 +126,40 @@ export default {
                         semesters: [1, 2]
                 }
             ).then(response => {
-                this.getSources()
-                if (this.selected.length > 0) {
-                    this.messagesInfo.push(this.message.infoText);
-                    this.switchFlashStyle = this.flashStyleInfo.show;
-                }
-                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.getSources();
+                this.showInfo(response.data.message);
             });
         },
         deleteMultipleTables() {
-            this.deletePupilTeacher();
-            this.deletePupilSemester();
+            if (this.selected.length > 0) {
+                this.deletePupilTeacher();
+                this.deletePupilSemester();
+            }
         },
-        showWarning() {
-            if (this.users === undefined) {
-                this.alerts.push(this.message.warningText);
-                this.switchFlashStyle = this.flashStyleWarning.show;
+        showInfo(infoText) {
+            if (this.messagesInfo !== null) {
+                this.messagesInfo.push(infoText);
+                this.messagesInfo.splice(1, this.messagesInfo.length);
+                this.showMessageInfo = 'block';
+            }
+        },
+        showWarning(warningText) {
+            if (this.messagesWarning !== null) {
+                this.messagesWarning.push(warningText);
+                this.messagesWarning.splice(1, this.messagesWarning.length);
+                this.showMessageWarning = 'block';
             }
         },
         openModal(pupil = null) {
+            if (pupil !== null) {
+                this.pupilData = pupil;
+            }
             this.showModal = true;
-            this.pupil_id.push(pupil);
         },
         closeModal() {
-            this.showModal = false;
             setTimeout(() => {
-            }, 500);
+                this.showModal = false;
+            }, 150);
         },
     },
     mounted() {
@@ -226,6 +204,28 @@ export default {
     }
     .error-explode p {
         padding-top: 2px;
+    }
+    .flash-style-info {
+        display: none;
+        position: absolute;
+        top: 120px;
+        left: 42.1%;
+        background-color: rgba(60, 204, 102, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
+    }
+    .flash-style-warning {
+        display: none;
+        position: absolute;
+        top: 120px;
+        left: 42.1%;
+        background-color: rgba(245, 34, 70, 0.3);
+        width: 333px;
+        height: 35px;
+        text-align: center;
+        border-radius: 7px;
     }
 
 </style>

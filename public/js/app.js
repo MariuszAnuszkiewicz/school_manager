@@ -19799,7 +19799,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'pupil_id'],
+  props: ['selected', 'pupilData'],
   data: function data() {
     return {
       message: '',
@@ -19812,12 +19812,10 @@ __webpack_require__.r(__webpack_exports__);
     sendMessage: function sendMessage() {
       var _this = this;
 
-      var lastId = this.pupil_id.length - 1;
-
       if (this.message != '') {
         axios.post('send-message', {
           selected: this.selected,
-          pupil_id: this.pupil_id[lastId],
+          pupilId: this.pupilData.id,
           message: this.message
         }).then(function (response) {
           _this.showInfo(response.data.message);
@@ -20445,51 +20443,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       users: {},
       pupils: {},
       assign_classes: {},
-      selected: [],
+      pupilData: undefined,
       isSelected: false,
       showModal: false,
-      switchFlashStyle: '',
-      pupil_id: [],
-      alerts: [],
+      selected: [],
       messagesInfo: [],
-      message: {
-        warningText: 'There are no any pupils.',
-        infoText: 'Pupil has been deleted'
-      },
-      flashStyleWarning: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(245, 34, 70, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      },
-      flashStyleInfo: {
-        'display': 'none',
-        show: {
-          'display': 'block',
-          'position': 'absolute',
-          'top': '110px',
-          'left': '44.5%',
-          'background-color': 'rgba(60, 204, 102, 0.3)',
-          'width': '250px',
-          'height': '35px',
-          'text-align': 'center',
-          'border-radius': '7px'
-        }
-      }
+      messagesWarning: [],
+      showMessageInfo: 'none',
+      showMessageWarning: 'none'
     };
   },
   methods: {
@@ -20497,11 +20466,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('selected-pupils').then(function (response) {
-        _this.users = response.data.users;
         _this.pupils = response.data.pupils;
         _this.assign_classes = response.data.assign_classes;
 
-        _this.showWarning();
+        if (response.data.users) {
+          _this.users = response.data.users;
+        } else {
+          _this.showWarning(response.data.message);
+        }
       });
     },
     selectAll: function selectAll() {
@@ -20530,13 +20502,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.getSources();
 
-        if (_this2.selected.length > 0) {
-          _this2.messagesInfo.push(_this2.message.infoText);
-
-          _this2.switchFlashStyle = _this2.flashStyleInfo.show;
-        }
-
-        _this2.messagesInfo.splice(1, _this2.messagesInfo.length);
+        _this2.showInfo(response.data.message);
       });
     },
     deletePupilSemester: function deletePupilSemester() {
@@ -20548,33 +20514,44 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this3.getSources();
 
-        if (_this3.selected.length > 0) {
-          _this3.messagesInfo.push(_this3.message.infoText);
-
-          _this3.switchFlashStyle = _this3.flashStyleInfo.show;
-        }
-
-        _this3.messagesInfo.splice(1, _this3.messagesInfo.length);
+        _this3.showInfo(response.data.message);
       });
     },
     deleteMultipleTables: function deleteMultipleTables() {
-      this.deletePupilTeacher();
-      this.deletePupilSemester();
+      if (this.selected.length > 0) {
+        this.deletePupilTeacher();
+        this.deletePupilSemester();
+      }
     },
-    showWarning: function showWarning() {
-      if (this.users === undefined) {
-        this.alerts.push(this.message.warningText);
-        this.switchFlashStyle = this.flashStyleWarning.show;
+    showInfo: function showInfo(infoText) {
+      if (this.messagesInfo !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+      }
+    },
+    showWarning: function showWarning(warningText) {
+      if (this.messagesWarning !== null) {
+        this.messagesWarning.push(warningText);
+        this.messagesWarning.splice(1, this.messagesWarning.length);
+        this.showMessageWarning = 'block';
       }
     },
     openModal: function openModal() {
       var pupil = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (pupil !== null) {
+        this.pupilData = pupil;
+      }
+
       this.showModal = true;
-      this.pupil_id.push(pupil);
     },
     closeModal: function closeModal() {
-      this.showModal = false;
-      setTimeout(function () {}, 500);
+      var _this4 = this;
+
+      setTimeout(function () {
+        _this4.showModal = false;
+      }, 150);
     }
   },
   mounted: function mounted() {
@@ -26158,7 +26135,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-8250827c] {\n    color: #8f8f8f;\n}\n.select-all[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-8250827c] {\n    display: none;\n}\n.flash-container p[data-v-8250827c] {\n    position: relative;\n    top: 4px;\n}\n#send-message[data-v-8250827c] {\n   padding-top: 2px;\n   margin-top: 2px;\n   padding-bottom: 2px;\n   margin-bottom: 2px;\n}\n.error-explode p[data-v-8250827c] {\n    padding-top: 2px;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-8250827c] {\n    color: #8f8f8f;\n}\n.select-all[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.pupil-select[data-v-8250827c] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-container[data-v-8250827c] {\n    display: none;\n}\n.flash-container p[data-v-8250827c] {\n    position: relative;\n    top: 4px;\n}\n#send-message[data-v-8250827c] {\n   padding-top: 2px;\n   margin-top: 2px;\n   padding-bottom: 2px;\n   margin-bottom: 2px;\n}\n.error-explode p[data-v-8250827c] {\n    padding-top: 2px;\n}\n.flash-style-info[data-v-8250827c] {\n    display: none;\n    position: absolute;\n    top: 120px;\n    left: 42.1%;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-8250827c] {\n    display: none;\n    position: absolute;\n    top: 120px;\n    left: 42.1%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n\n", ""]);
 
 // exports
 
@@ -64578,30 +64555,39 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row justify-content-center" }, [
-        _c(
-          "div",
-          { staticClass: "flex flash-container", style: _vm.switchFlashStyle },
-          [
-            _vm._l(_vm.alerts, function(alert) {
-              return _vm.alerts !== undefined
-                ? _c("div", { staticClass: "error-explode" }, [
-                    _c("p", [_vm._v(_vm._s(alert))])
-                  ])
-                : _vm._e()
-            }),
-            _vm._v(" "),
-            _vm._l(_vm.messagesInfo, function(messageInfo) {
-              return _vm.messagesInfo !== undefined
-                ? _c("div", { staticClass: "error-explode" }, [
-                    _c("p", [_vm._v(_vm._s(messageInfo))])
-                  ])
-                : _vm._e()
-            })
-          ],
-          2
-        ),
+        _vm.messagesInfo !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-info",
+                style: { display: _vm.showMessageInfo }
+              },
+              _vm._l(_vm.messagesInfo, function(messageInfo) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageInfo))])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
-        _vm.alerts[0] === undefined
+        _vm.messagesWarning !== undefined
+          ? _c(
+              "div",
+              {
+                staticClass: "flex flash-container flash-style-warning",
+                style: { display: _vm.showMessageWarning }
+              },
+              _vm._l(_vm.messagesWarning, function(messageWarning) {
+                return _c("div", { staticClass: "error-explode" }, [
+                  _c("p", [_vm._v(_vm._s(messageWarning))])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.messagesWarning[0] === undefined
           ? _c("div", { staticClass: "col mt-5" }, [
               _vm._m(0),
               _vm._v(" "),
@@ -64658,7 +64644,7 @@ var render = function() {
                             attrs: { id: "send-multiple-message" },
                             on: {
                               click: function($event) {
-                                return _vm.openModal()
+                                return _vm.openModal(_vm.selected)
                               }
                             }
                           },
@@ -64667,7 +64653,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _vm._l(_vm.users, function(user, index) {
+                    _vm._l(_vm.users, function(user, i) {
                       return _c("tr", { key: user.id }, [
                         _c("td", { staticClass: "text-center pt-3" }, [
                           _c("input", {
@@ -64682,10 +64668,9 @@ var render = function() {
                             staticClass: "pupil-select",
                             attrs: { type: "checkbox" },
                             domProps: {
-                              value: _vm.pupils[index].id,
+                              value: _vm.pupils[i].id,
                               checked: Array.isArray(_vm.selected)
-                                ? _vm._i(_vm.selected, _vm.pupils[index].id) >
-                                  -1
+                                ? _vm._i(_vm.selected, _vm.pupils[i].id) > -1
                                 : _vm.selected
                             },
                             on: {
@@ -64695,7 +64680,7 @@ var render = function() {
                                     $$el = $event.target,
                                     $$c = $$el.checked ? true : false
                                   if (Array.isArray($$a)) {
-                                    var $$v = _vm.pupils[index].id,
+                                    var $$v = _vm.pupils[i].id,
                                       $$i = _vm._i($$a, $$v)
                                     if ($$el.checked) {
                                       $$i < 0 &&
@@ -64719,7 +64704,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(_vm.pupils[index].id))
+                          _vm._v(_vm._s(_vm.pupils[i].id))
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
@@ -64727,7 +64712,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
-                          _vm._v(_vm._s(_vm.assign_classes[index].name))
+                          _vm._v(_vm._s(_vm.assign_classes[i].name))
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
@@ -64742,7 +64727,7 @@ var render = function() {
                               attrs: { id: "send-message" },
                               on: {
                                 click: function($event) {
-                                  return _vm.openModal(_vm.pupils[index].id)
+                                  return _vm.openModal(_vm.pupils[i])
                                 }
                               }
                             },
@@ -64762,7 +64747,7 @@ var render = function() {
       _vm.showModal === true
         ? _c(
             "send-message",
-            { attrs: { selected: _vm.selected, pupil_id: _vm.pupil_id } },
+            { attrs: { selected: _vm.selected, pupilData: _vm.pupilData } },
             [
               _c(
                 "h3",
