@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class GuardAccess
 {
+    const ADMIN = 'admin';
     const PUPIL = 'pupil';
     const TEACHER = 'teacher';
     private $auth;
@@ -23,6 +24,12 @@ class GuardAccess
         $userTypeByUrl = substr($request->path(), 0, strpos($request->path(), '/'));
         $userType = $this->auth->roles->first()->name;
         switch ($userType) {
+            case 'admin':
+                if ($userType === self::ADMIN && $userTypeByUrl === self::ADMIN) {
+                    return $next($request);
+                }
+                return redirect('/admin/index');
+
             case 'pupil':
                 if ($userType === self::PUPIL && $userTypeByUrl === self::PUPIL) {
                     return $next($request);
