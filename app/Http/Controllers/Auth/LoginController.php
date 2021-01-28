@@ -30,6 +30,9 @@ class LoginController extends Controller
 
     protected function authenticated()
     {
+        if (auth()->user()->roles->last()->name == 'admin') {
+            return redirect('/admin/index');
+        }
         if (auth()->user()->roles->last()->name == 'pupil') {
             return redirect('/pupil/events');
         }

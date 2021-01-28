@@ -58,7 +58,6 @@ export default {
                 this.assignClass = response.data.assignClass;
                 if (response.data.lessonPlan !== undefined) {
                     this.lessonPlan = response.data.lessonPlan;
-                    //console.log(this.lessonPlan);
                 } else {
                     this.showWarning(response.data.message);
                 }

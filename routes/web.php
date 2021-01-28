@@ -10,6 +10,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\PupilController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,15 @@ Route::get('/', function () {
         Route::post('save-event-teacher', [EventController::class, 'saveEventTeacher']);
         Route::delete('delete-event/{id}', [EventController::class, 'deleteEventByTeacher'])->where('id', '[0-9]+');
         Route::put('update-event/{id}', [EventController::class, 'updateEvent'])->where('id', '[0-9]+');
+    });
+
+    /* admin zone */
+    Route::group([
+        'prefix' => 'admin',
+        'middleware' => 'guard_access',
+    ], function () {
+        Route::get('index', [AdminController::class, 'index']);
+        Route::get('subject-teacher-list', [AdminController::class, 'listSubjectsForTeachers']);
     });
 
 /*********************************************************************************************************************/

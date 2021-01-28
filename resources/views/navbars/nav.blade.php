@@ -24,6 +24,11 @@
         <ul class="navbar-nav mr-auto">
             @auth
                 <div id="nav-container">
+                    @if (Request::segment(1) === 'admin')
+                        <div class="mt-2">
+                            <admin-navbar></admin-navbar>
+                        </div>
+                    @endif
                     @if (Request::segment(1) === 'pupil')
                         <div class="mt-2">
                             <pupil-navbar></pupil-navbar>

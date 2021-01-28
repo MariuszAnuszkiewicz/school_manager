@@ -16,6 +16,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 // pupil zone \\
 /*********************************************************************************************************************/
 
+    Vue.component('pupil-navbar', require('./components/nav/PupilNavbar.vue').default);
     Vue.component('events', require('./components/pupil/events/Events.vue').default);
     Vue.component('messages', require('./components/pupil/messages/Messages.vue').default);
     Vue.component('single-message-pupil', require('./components/pupil/messages/SingleMessage.vue').default);
@@ -23,7 +24,6 @@ Vue.component('pagination', require('laravel-vue-pagination'));
     Vue.component('my-teachers', require('./components/pupil/my_teachers/MyTeachers.vue').default);
     Vue.component('my-teachers-modal', require('./components/pupil/modals/MyTeachersModal.vue').default);
     Vue.component('my-grades', require('./components/pupil/my_grades/MyGrades.vue').default);
-    Vue.component('pupil-navbar', require('./components/nav/PupilNavbar.vue').default);
 
 /*********************************************************************************************************************/
 
@@ -31,6 +31,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 // teacher zone \\
 /*********************************************************************************************************************/
 
+   Vue.component('teacher-navbar', require('./components/nav/TeacherNavbar.vue').default);
    Vue.component('pupils', require('./components/teacher/pupils/Pupils.vue').default);
    Vue.component('selected-pupils', require('./components/teacher/pupils/SelectedPupils.vue').default);
    Vue.component('send-message', require('./components/teacher/modals/SendMessage.vue').default);
@@ -45,7 +46,6 @@ Vue.component('pagination', require('laravel-vue-pagination'));
    Vue.component('delete-rating', require('./components/teacher/modals/DeleteRating.vue').default);
    Vue.component('list-ratings', require('./components/teacher/pupils/ratings/ListRating.vue').default);
    Vue.component('detail-rating', require('./components/teacher/pupils/ratings/DetailRating.vue').default);
-   Vue.component('teacher-navbar', require('./components/nav/TeacherNavbar.vue').default);
    Vue.component('fill-presence', require('./components/teacher/presence/FillPresence.vue').default);
    Vue.component('detail-presences', require('./components/teacher/presence/DetailPresences.vue').default);
    Vue.component('edit-presence', require('./components/teacher/modals/EditPresence.vue').default);
@@ -53,6 +53,16 @@ Vue.component('pagination', require('laravel-vue-pagination'));
    Vue.component('save-event', require('./components/teacher/modals/SaveEvent.vue').default);
    Vue.component('list-events', require('./components/teacher/event/ListEvent.vue').default);
    Vue.component('edit-event', require('./components/teacher/modals/EditEvent.vue').default);
+
+/*********************************************************************************************************************/
+
+
+// admin zone \\
+/*********************************************************************************************************************/
+
+   Vue.component('admin-navbar', require('./components/nav/AdminNavbar.vue').default);
+   Vue.component('subject-teacher', require('./components/admin/SubjectTeacher.vue').default);
+
 
 /*********************************************************************************************************************/
 
