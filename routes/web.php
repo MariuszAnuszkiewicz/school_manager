@@ -115,7 +115,9 @@ Route::get('/', function () {
         'middleware' => 'guard_access',
     ], function () {
         Route::get('index', [AdminController::class, 'index']);
-        Route::get('subject-teacher-list', [AdminController::class, 'listSubjectsForTeachers']);
+        Route::get('assign-subject-teacher', [AdminController::class, 'assignSubjectsForTeachers']);
+        Route::post('subject-assign', [AdminController::class, 'subjectAssign']);
+
     });
 
 /*********************************************************************************************************************/

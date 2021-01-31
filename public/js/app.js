@@ -17260,17 +17260,109 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       teachers: {},
+      subjectAssign: {},
       subjects: {},
+      users: {},
+      selected: [],
+      isSelected: false,
+      messagesInfo: [],
       messagesWarning: [],
+      showMessageInfo: 'none',
       showMessageWarning: 'none'
     };
   },
   methods: {
-    getSources: function getSources() {},
+    getSources: function getSources() {
+      var _this = this;
+
+      axios.get('assign-subject-teacher').then(function (response) {
+        _this.teachers = response.data.teachers;
+        _this.subjects = response.data.subjects;
+        _this.subjectAssign = response.data.subjectAssign;
+        _this.users = response.data.users;
+      });
+    },
+    saveSubjectTeacher: function saveSubjectTeacher(formData) {
+      var _this2 = this;
+
+      if (this.selected.length > 0) {
+        axios.post('subject-assign', formData).then(function (response) {
+          _this2.showInfo(response.data.message);
+        })["catch"](function (error) {
+          console.log(error.response.data);
+        });
+      }
+    },
+    submitForm: function submitForm() {
+      if (this.selected.length > 0) {
+        var form = this.$refs.subjectForm;
+        var formData = new FormData(form);
+        formData.append('subject_assign', document.querySelector('#selectSubjects').value);
+        formData.append('teacher', this.selected);
+        this.saveSubjectTeacher(formData);
+      }
+    },
+    selectAll: function selectAll() {
+      this.isSelected = !this.isSelected;
+
+      if (this.isSelected) {
+        for (var i = 0; i < this.teachers.length; i++) {
+          this.selected.push(this.teachers[i].id);
+        }
+      } else {
+        this.selected.splice(0, this.selected.length);
+      }
+    },
+    unSelectAll: function unSelectAll() {
+      if (this.selected.length > 0) {
+        this.isSelected = true;
+      } else {
+        this.isSelected = false;
+      }
+    },
+    showInfo: function showInfo(infoText) {
+      if (this.messagesInfo !== null) {
+        this.messagesInfo.push(infoText);
+        this.messagesInfo.splice(1, this.messagesInfo.length);
+        this.showMessageInfo = 'block';
+      }
+    },
     showWarning: function showWarning(warningText) {
       if (warningText !== null) {
         this.messagesWarning.push(warningText);
@@ -17318,7 +17410,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       isOpenActive: false,
-      urls: {}
+      urls: {
+        assignSubjectTeacher: 'assign-subject-teacher'
+      }
     };
   },
   computed: {
@@ -25743,7 +25837,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-20182c7e] {\n    color: #8f8f8f;\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-20182c7e] {\n    color: #8f8f8f;\n}\n.select-all[data-v-20182c7e] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.select-container[data-v-20182c7e] {\n    width: auto;\n    hight: 350px;\n    padding: 0px 0px 25px 0px;\n}\n.select-nested[data-v-20182c7e] {\n    position: relative;\n    left: 37.6%;\n    background-color: #685b4d;\n    border-radius: 5px;\n}\n.teachers-select[data-v-20182c7e] {\n    position: relative;\n    top: 3px;\n    left: 0px;\n    width: 18px;\n    height: 18px;\n    background-color: #fffed5;\n}\n.flash-style-info[data-v-20182c7e] {\n    display: none;\n    position: absolute;\n    top: 120px;\n    left: 42.1%;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.flash-style-warning[data-v-20182c7e] {\n    display: none;\n    position: absolute;\n    top: 120px;\n    left: 42.1%;\n    background-color: rgba(245, 34, 70, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n}\n.error-explode p[data-v-20182c7e] {\n    padding-top: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -59775,51 +59869,240 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _vm.messagesInfo !== undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-info",
+              style: { display: _vm.showMessageInfo }
+            },
+            _vm._l(_vm.messagesInfo, function(messageInfo) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageInfo))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.messagesWarning !== undefined
+        ? _c(
+            "div",
+            {
+              staticClass: "flex flash-container flash-style-warning",
+              style: { display: _vm.showMessageWarning }
+            },
+            _vm._l(_vm.messagesWarning, function(messageWarning) {
+              return _c("div", { staticClass: "error-explode" }, [
+                _c("p", [_vm._v(_vm._s(messageWarning))])
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "col mt-5" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "form",
+          {
+            ref: "subjectForm",
+            staticClass: "form-horizontal",
+            attrs: { method: "POST" },
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.submitForm()
+              }
+            }
+          },
+          [
+            _c(
+              "div",
+              { staticClass: "select-container bg-warning text-center pt-4" },
+              [
+                _c("div", { staticClass: "col-md-3 select-nested" }, [
+                  _c(
+                    "select",
+                    {
+                      staticClass: "show-menu-arrow bg-light",
+                      attrs: { id: "selectSubjects" }
+                    },
+                    [
+                      _c(
+                        "optgroup",
+                        { attrs: { label: "Select Subject" } },
+                        _vm._l(_vm.subjects, function(subject) {
+                          return _c(
+                            "option",
+                            {
+                              staticClass: "overflow-auto",
+                              domProps: { value: subject.id }
+                            },
+                            [
+                              _vm._v(
+                                _vm._s(subject.name) +
+                                  "\n                                "
+                              )
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-warning ml-2 mt-1 mb-1",
+                      attrs: { type: "submit" }
+                    },
+                    [_vm._v("Submit")]
+                  )
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "custom-control text-center pt-2 bg-warning"
+                    },
+                    [
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "select-all ml-2",
+                        attrs: { type: "checkbox" },
+                        on: {
+                          click: function($event) {
+                            return _vm.selectAll()
+                          }
+                        }
+                      })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.teachers, function(teacher, i) {
+                    return _c("tr", [
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.selected,
+                              expression: "selected"
+                            }
+                          ],
+                          staticClass: "teachers-select",
+                          attrs: { type: "checkbox" },
+                          domProps: {
+                            value: teacher.id,
+                            checked: Array.isArray(_vm.selected)
+                              ? _vm._i(_vm.selected, teacher.id) > -1
+                              : _vm.selected
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$a = _vm.selected,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = teacher.id,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 && (_vm.selected = $$a.concat([$$v]))
+                                } else {
+                                  $$i > -1 &&
+                                    (_vm.selected = $$a
+                                      .slice(0, $$i)
+                                      .concat($$a.slice($$i + 1)))
+                                }
+                              } else {
+                                _vm.selected = $$c
+                              }
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(teacher.id))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(_vm.users[i].name))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center pt-3" }, [
+                        _vm._v(_vm._s(_vm.subjectAssign[i].name))
+                      ])
+                    ])
+                  })
+                ],
+                2
+              )
+            ])
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col mt-5" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("h5", [
-              _c("strong", { staticClass: "header-text" }, [
-                _vm._v("List Subjects for Teachers")
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("table", { staticClass: "table table-striped" }, [
-            _c("thead", { staticClass: "bg-dark" }, [
-              _c("tr", [
-                _c("th", { staticClass: "text-center" }),
-                _vm._v(" "),
-                _c("th", { staticClass: "text-center" }),
-                _vm._v(" "),
-                _c("th", { staticClass: "text-center" }),
-                _vm._v(" "),
-                _c("th", { staticClass: "text-center" })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("tbody", [
-              _c("tr", [
-                _c("td", { staticClass: "text-center pt-3" }),
-                _vm._v(" "),
-                _c("td", { staticClass: "text-center pt-3" }),
-                _vm._v(" "),
-                _c("td", { staticClass: "text-center pt-3" }),
-                _vm._v(" "),
-                _c("td", { staticClass: "text-center" })
-              ])
-            ])
-          ])
+    return _c("div", { staticClass: "card-body" }, [
+      _c("h5", [
+        _c("strong", { staticClass: "header-text" }, [
+          _vm._v("Assign Subject for Teacher")
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "bg-dark" }, [
+      _c("tr", [
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Select Teacher")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Teacher Id")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Teacher Name")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center text-white" }, [
+          _vm._v("Subject Teacher's")
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "check-all-label" }, [
+      _c("strong", [_vm._v("Select All")])
     ])
   }
 ]
@@ -59890,21 +60173,18 @@ var render = function() {
             [_c("i", { staticClass: "fas fa-times" })]
           ),
           _vm._v(" "),
-          _vm._m(0)
+          _c("ul", { staticClass: "navbar" }, [
+            _c("li", { staticClass: "nav" }, [
+              _c("a", { attrs: { href: _vm.urls.assignSubjectTeacher } }, [
+                _vm._v("Assign Subject")
+              ])
+            ])
+          ])
         ])
       : _vm._e()
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "navbar" }, [
-      _c("li", { staticClass: "nav" }, [_c("a")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

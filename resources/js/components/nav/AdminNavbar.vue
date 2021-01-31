@@ -10,7 +10,7 @@
             <button class="close-btn" @click="closeButton()"><i class="fas fa-times"></i></button>
             <ul class="navbar">
                 <li class="nav">
-                    <a></a>
+                   <a :href="urls.assignSubjectTeacher">Assign Subject</a>
                 </li>
             </ul>
         </div>
@@ -23,7 +23,7 @@ export default {
         return {
             isOpenActive: false,
             urls: {
-
+               assignSubjectTeacher: 'assign-subject-teacher',
             }
         }
     },
