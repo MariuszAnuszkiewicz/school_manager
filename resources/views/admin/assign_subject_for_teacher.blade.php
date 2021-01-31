@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    List Subjects for Teachers
+    Assign Subject for Teacher
 @endsection
 @section('content')
      <subject-teacher></subject-teacher>
