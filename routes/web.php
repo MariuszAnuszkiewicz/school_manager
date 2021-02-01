@@ -117,6 +117,8 @@ Route::get('/', function () {
         Route::get('index', [AdminController::class, 'index']);
         Route::get('assign-subject-teacher', [AdminController::class, 'assignSubjectsForTeachers']);
         Route::post('subject-assign', [AdminController::class, 'subjectAssign']);
+        Route::get('search-user', [AdminController::class, 'searchUser']);
+        Route::match(['get', 'post'],'search-run', [AdminController::class, 'searchRun']);
 
     });
 

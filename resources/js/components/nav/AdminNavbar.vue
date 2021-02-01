@@ -12,6 +12,9 @@
                 <li class="nav">
                    <a :href="urls.assignSubjectTeacher">Assign Subject</a>
                 </li>
+                <li class="nav">
+                   <a :href="urls.searchUser">Search User</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -24,6 +27,7 @@ export default {
             isOpenActive: false,
             urls: {
                assignSubjectTeacher: 'assign-subject-teacher',
+               searchUser: 'search-user',
             }
         }
     },

@@ -20,6 +20,7 @@ class AdminController extends Controller
         $data['subjects'] = Subject::all();
         foreach ($data['teachers'] as $teacher) {
             $data['users'][] = User::find($teacher->user_id);
+            $data['roles'] = User::find($teacher->user_id)->roles;
             $data['subjectAssign'] = Teacher::find($teacher->id)->subjects;
         }
         if (!empty($data)) {
@@ -45,5 +46,18 @@ class AdminController extends Controller
             Teacher::find($request->teacher)->subjects()->update(['subject_id' => (int) $request->subject_assign]);
         }
         return response()->json(['message' => 'Subject has been updated successfully.']);
+    }
+
+    public function searchUser()
+    {
+        return view('admin.user.search_user');
+    }
+
+    public function searchRun(Request $request)
+    {
+        if ($request->ajax()) {
+              return User::with('roles')->where('name', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('email', 'LIKE', '%' . $request->search . '%')->get();
+        }
     }
 }
