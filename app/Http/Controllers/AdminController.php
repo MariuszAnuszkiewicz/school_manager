@@ -20,7 +20,6 @@ class AdminController extends Controller
         $data['subjects'] = Subject::all();
         foreach ($data['teachers'] as $teacher) {
             $data['users'][] = User::find($teacher->user_id);
-            $data['roles'] = User::find($teacher->user_id)->roles;
             $data['subjectAssign'] = Teacher::find($teacher->id)->subjects;
         }
         if (!empty($data)) {
@@ -34,7 +33,7 @@ class AdminController extends Controller
             }
         } else {
             if ($request->ajax()) {
-
+                return response()->json(['message' => "There aren't any data"]);
             }
         }
         return view('admin.assign_subject_for_teacher');
