@@ -102,7 +102,7 @@ class TeacherController extends Controller
                         $semester2Id = in_array('2', $semesterIdPivotTable);
                         if ($semester2Id === false) {
                             for ($i = 0; $i < count($ids); $i++) {
-                                Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int)$request->semester]);
+                                Pupil::find($ids[$i])->semesters()->attach(['semester_id' => (int) $request->semester]);
                             }
                         } else {
                             for ($i = 0; $i < count($diffCompare); $i++) {
