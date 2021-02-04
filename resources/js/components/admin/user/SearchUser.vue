@@ -7,7 +7,12 @@
                     <div id="search-bar" class="bg-warning text-center">
                         <div class="form-group">
                             <input type="text" name="search" v-model="search" placeholder="Search...">
-                            <button class="btn btn-success ml-2 mt-1 mb-1" type="submit">Submit</button>
+                            <button id="submit-btn" class="btn btn-success ml-2 mt-1 mb-1" type="submit">Submit</button>
+                        </div>
+                    </div>
+                    <div v-if="validateErrors.length > 0" class="validate-errors">
+                        <div v-for="validateError in validateErrors" class="error-explode">
+                            <p class="text-danger text-center"><b>{{ validateError }}</b></p>
                         </div>
                     </div>
                     <div v-if="results.length > 0" id="search-results">
@@ -30,26 +35,38 @@ export default {
             search: '',
             results: {},
             role: {},
+            validateErrors: [],
         }
     },
     methods: {
         searchRun(formData) {
+            let _this = this;
             axios.post('search-run', formData).then(response => {
                 this.results = response.data;
                 for (let item in this.results){
                     this.role = this.results[item].roles;
                 }
             }).catch(function (error) {
-                console.log(error.response.data);
+                var submitBtn = document.getElementById('submit-btn');
+                submitBtn.addEventListener('click', function () {
+                    if (this.search != '') {
+                        _this.validateErrors.pop();
+                    }
+                });
+                if (error.response.status != 200) {
+                    for (let i = 0; i < error.response.data.errors.search.length; i++) {
+                        _this.validateErrors.push(error.response.data.errors.search[i]);
+                        _this.validateErrors.splice(1, _this.validateErrors.length);
+                        _this.results = '';
+                    }
+                }
             });
         },
         submitForm() {
             var form = this.$refs.searchForm;
             let formData = new FormData(form);
             formData.append('search', this.search);
-            if (this.search != '') {
-                this.searchRun(formData);
-            }
+            this.searchRun(formData);
         }
     },
 }
@@ -60,8 +77,11 @@ export default {
     .header-text {
         color: #8f8f8f;
     }
-    #search-bar {
 
+    .validate-errors {
+        position: relative;
+        top: 5px;
+        left: 0px;
     }
 
 </style>

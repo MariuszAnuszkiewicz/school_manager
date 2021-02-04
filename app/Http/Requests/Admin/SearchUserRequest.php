@@ -27,4 +27,11 @@ class SearchUserRequest extends FormRequest
             'search' => 'required|string|max:255',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'search.required' => 'you must fill in search field',
+        ];
+    }
 }

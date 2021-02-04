@@ -17707,6 +17707,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -17716,31 +17721,46 @@ __webpack_require__.r(__webpack_exports__);
     return {
       search: '',
       results: {},
-      role: {}
+      role: {},
+      validateErrors: []
     };
   },
   methods: {
     searchRun: function searchRun(formData) {
+      var _this2 = this;
+
       var _this = this;
 
       axios.post('search-run', formData).then(function (response) {
-        _this.results = response.data;
+        _this2.results = response.data;
 
-        for (var item in _this.results) {
-          _this.role = _this.results[item].roles;
+        for (var item in _this2.results) {
+          _this2.role = _this2.results[item].roles;
         }
       })["catch"](function (error) {
-        console.log(error.response.data);
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', function () {
+          if (this.search != '') {
+            _this.validateErrors.pop();
+          }
+        });
+
+        if (error.response.status != 200) {
+          for (var i = 0; i < error.response.data.errors.search.length; i++) {
+            _this.validateErrors.push(error.response.data.errors.search[i]);
+
+            _this.validateErrors.splice(1, _this.validateErrors.length);
+
+            _this.results = '';
+          }
+        }
       });
     },
     submitForm: function submitForm() {
       var form = this.$refs.searchForm;
       var formData = new FormData(form);
       formData.append('search', this.search);
-
-      if (this.search != '') {
-        this.searchRun(formData);
-      }
+      this.searchRun(formData);
     }
   }
 });
@@ -26300,7 +26320,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.header-text[data-v-b2c8ba08] {\n    color: #8f8f8f;\n}\n#search-bar[data-v-b2c8ba08] {\n}\n\n", ""]);
+exports.push([module.i, "\n.header-text[data-v-b2c8ba08] {\n    color: #8f8f8f;\n}\n.validate-errors[data-v-b2c8ba08] {\n    position: relative;\n    top: 5px;\n    left: 0px;\n}\n\n", ""]);
 
 // exports
 
@@ -61329,13 +61349,28 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-success ml-2 mt-1 mb-1",
-                      attrs: { type: "submit" }
+                      attrs: { id: "submit-btn", type: "submit" }
                     },
                     [_vm._v("Submit")]
                   )
                 ])
               ]
             ),
+            _vm._v(" "),
+            _vm.validateErrors.length > 0
+              ? _c(
+                  "div",
+                  { staticClass: "validate-errors" },
+                  _vm._l(_vm.validateErrors, function(validateError) {
+                    return _c("div", { staticClass: "error-explode" }, [
+                      _c("p", { staticClass: "text-danger text-center" }, [
+                        _c("b", [_vm._v(_vm._s(validateError))])
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              : _vm._e(),
             _vm._v(" "),
             _vm.results.length > 0
               ? _c(
