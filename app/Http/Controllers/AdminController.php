@@ -7,6 +7,7 @@ use App\Models\ClassInSchool;
 use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Http\Requests\Admin\SearchUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -55,11 +56,12 @@ class AdminController extends Controller
         return view('admin.user.search_user');
     }
 
-    public function searchRun(Request $request)
+    public function searchRun(SearchUserRequest $request)
     {
+        $input = $request->validated();
         if ($request->ajax()) {
-              return User::with('roles')->where('name', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('email', 'LIKE', '%' . $request->search . '%')->get();
+              return User::with('roles')->where('name', 'LIKE', '%' . $input['search'] . '%')
+                  ->orWhere('email', 'LIKE', '%' . $input['search'] . '%')->get();
         }
     }
 
