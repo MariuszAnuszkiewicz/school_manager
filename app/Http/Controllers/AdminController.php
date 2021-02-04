@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LessonPlan;
+use App\Models\ClassInSchool;
 use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -58,5 +61,70 @@ class AdminController extends Controller
               return User::with('roles')->where('name', 'LIKE', '%' . $request->search . '%')
                   ->orWhere('email', 'LIKE', '%' . $request->search . '%')->get();
         }
+    }
+
+    public function createLessonPlan(Request $request, $id)
+    {
+        $data['lessonPlan'] = LessonPlan::where('class_in_school_id', $id)->get();
+        $data['subjects'] = Subject::all();
+        if ($data['lessonPlan']->count() > 0) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'lessonPlan' => $data['lessonPlan'],
+                    'subjects' => $data['subjects'],
+                    'nameClass' => ClassInSchool::find($id),
+                ]);
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'There are no any lesson plan.']);
+            }
+        }
+        return view('admin.lesson_plan.create_lesson_plan');
+    }
+
+    public function updateLessonPlan(Request $request)
+    {
+        $data = [];
+        $x = 0;
+        while ($x < count($request->data)) {
+            $data[] = explode("|", $request->data[$x]);
+            $x++;
+        }
+        for ($i = 0; $i < count($data); $i++) {
+            $day[] = $data[$i][1];
+            $subject[] = $data[$i][2];
+        }
+        $updateSlot = array_combine($day, $subject);
+        if ($request->ajax()) {
+            DB::table('lessons_plans')->where([
+                ['hours', '=', $data[0][0]],
+            ])->update($updateSlot);
+        }
+        return response()->json(['message' => 'lesson plan has been updated']);
+    }
+
+    public function saveLessonPlan(Request $request)
+    {
+        if ($request->ajax()) {
+            $hours = [
+               '8:00 - 8:45',
+               '8:55 - 9:40',
+               '9:50 - 10:35',
+               '10:45 - 11:30',
+               '11:50 - 12:35',
+               '12:45 - 13:30',
+               '13:40 - 14:25',
+               '14:35 - 15:20',
+               '15:30 - 16:15',
+            ];
+            foreach ($hours as $hour) {
+                LessonPlan::create([
+                   'class_in_school_id' => (int) $request->class_in_school_id,
+                   'hours' => $hour,
+                ]);
+            }
+        }
+        return response()->json(['message' => 'lesson plan has been saved']);
     }
 }

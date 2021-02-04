@@ -1,4 +1,12 @@
 <div class="container">
+    @if (Request::segment(1) === 'admin')
+        <a class="navbar-brand" href="{{ url('/admin/index') }}">
+            @php
+                $subName = explode(',', config('app.name'));
+            @endphp
+            {{ $subName[0] . ' ' . $subName[1] }}
+        </a>
+    @endif
     @if (Request::segment(1) === 'pupil')
         <a class="navbar-brand" href="{{ url('/pupil/events') }}">
             @php
@@ -79,6 +87,11 @@
                         </div>
                         @if (Request::segment(1) === 'user_profile')
                             <div class="home-link">
+                                @if (Auth::user()->roles[0]->name == 'admin')
+                                    <div>
+                                        <a class="navbar-link" href="{{ url('/admin/index') }}">Home</a>
+                                    </div>
+                                @endif
                                 @if (Auth::user()->roles[0]->name == 'pupil')
                                     <div>
                                         <a class="navbar-link" href="{{ url('/pupil/events') }}">Home</a>

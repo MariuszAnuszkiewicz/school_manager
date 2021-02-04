@@ -119,6 +119,9 @@ Route::get('/', function () {
         Route::post('subject-assign', [AdminController::class, 'subjectAssign']);
         Route::get('search-user', [AdminController::class, 'searchUser']);
         Route::match(['get', 'post'],'search-run', [AdminController::class, 'searchRun']);
+        Route::get('create-lesson-plan/{id}', [AdminController::class, 'createLessonPlan'])->where('id', '[0-9]+');
+        Route::post('update-lesson-plan', [AdminController::class, 'updateLessonPlan']);
+        Route::post('save-lesson-plan', [AdminController::class, 'saveLessonPlan']);
 
     });
 

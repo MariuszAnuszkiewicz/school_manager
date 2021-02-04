@@ -64,6 +64,8 @@ Vue.component('pagination', require('laravel-vue-pagination'));
    Vue.component('subject-teacher', require('./components/admin/SubjectTeacher.vue').default);
    Vue.component('search-user', require('./components/admin/user/SearchUser.vue').default);
    Vue.component('search-result', require('./components/admin/user/SearchResult.vue').default);
+   Vue.component('create-lesson-plan', require('./components/admin/lesson_plan/CreateLessonPlan.vue').default);
+   Vue.component('new-lesson-plan', require('./components/admin/lesson_plan/NewLessonPlan.vue').default);
 
 
 /*********************************************************************************************************************/
