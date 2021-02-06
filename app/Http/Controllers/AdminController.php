@@ -18,7 +18,7 @@ class AdminController extends Controller
         //dd(auth()->user()->roles->first()->name);
     }
 
-    public function assignSubjectsForTeachers(Request $request)
+    public function assignSubjectsForTeachers(Request $request) : Object
     {
         $data['teachers'] = Teacher::all();
         $data['subjects'] = Subject::all();
@@ -56,7 +56,7 @@ class AdminController extends Controller
         return view('admin.user.search_user');
     }
 
-    public function searchRun(SearchUserRequest $request)
+    public function searchRun(SearchUserRequest $request) : Object
     {
         $input = $request->validated();
         if ($request->ajax()) {
@@ -65,16 +65,16 @@ class AdminController extends Controller
         }
     }
 
-    public function createLessonPlan(Request $request, $id)
+    public function createLessonPlan(Request $request, int $id) : Object
     {
-        $data['lessonPlan'] = LessonPlan::where('class_in_school_id', $id)->get();
+        $data['lessonPlan'] = LessonPlan::where('class_in_school_id', (int) $id)->get();
         $data['subjects'] = Subject::all();
         if ($data['lessonPlan']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
                     'lessonPlan' => $data['lessonPlan'],
                     'subjects' => $data['subjects'],
-                    'nameClass' => ClassInSchool::find($id),
+                    'nameClass' => ClassInSchool::find((int) $id),
                 ]);
             }
         } else {
@@ -87,13 +87,12 @@ class AdminController extends Controller
 
     public function updateLessonPlan(Request $request)
     {
-        $data = [];
-        $x = 0;
-        while ($x < count($request->data)) {
-            $data[] = explode("|", $request->data[$x]);
+        (int) $x = 0;
+        while ($x < count((array) $request->data)) {
+            $data[] = explode("|", (string) $request->data[$x]);
             $x++;
         }
-        for ($i = 0; $i < count($data); $i++) {
+        for ($i = 0; $i < count((array) $data); $i++) {
             $day[] = $data[$i][1];
             $subject[] = $data[$i][2];
         }
