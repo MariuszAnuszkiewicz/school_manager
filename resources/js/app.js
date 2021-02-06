@@ -3,6 +3,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('validate', require('./components/validation/Validate.vue'));
 
 // user profile zone \\
 /*********************************************************************************************************************/

@@ -10,11 +10,7 @@
                             <button id="submit-btn" class="btn btn-success ml-2 mt-1 mb-1" type="submit">Submit</button>
                         </div>
                     </div>
-                    <div v-if="validateErrors.length > 0" class="validate-errors">
-                        <div v-for="validateError in validateErrors" class="error-explode">
-                            <p class="text-danger text-center"><b>{{ validateError }}</b></p>
-                        </div>
-                    </div>
+                    <validate :input="search" ref="validate"></validate>
                     <div v-if="results.length > 0" id="search-results">
                         <search-result :resultsData="results" :role="role"></search-result>
                     </div>
@@ -26,16 +22,17 @@
 
 <script>
 import SearchResult from "./SearchResult";
+import Validate from "../../validation/Validate";
 export default {
     components: {
         SearchResult,
+        Validate,
     },
     data() {
         return {
             search: '',
             results: {},
             role: {},
-            validateErrors: [],
         }
     },
     methods: {
@@ -49,18 +46,17 @@ export default {
             }).catch(function (error) {
                 var submitBtn = document.getElementById('submit-btn');
                 submitBtn.addEventListener('click', function () {
-                    if (this.search != '') {
-                        _this.validateErrors.pop();
-                    }
+                   _this.removeError();
                 });
-                if (error.response.status != 200) {
-                    for (let i = 0; i < error.response.data.errors.search.length; i++) {
-                        _this.validateErrors.push(error.response.data.errors.search[i]);
-                        _this.validateErrors.splice(1, _this.validateErrors.length);
-                        _this.results = '';
-                    }
-                }
+                _this.validateInput(error.response);
+                _this.results = '';
             });
+        },
+        validateInput(errorsResponse) {
+            this.$refs.validate.validateRun(errorsResponse);
+        },
+        removeError() {
+            this.$refs.validate.removeErrorRun();
         },
         submitForm() {
             var form = this.$refs.searchForm;
@@ -76,12 +72,6 @@ export default {
 
     .header-text {
         color: #8f8f8f;
-    }
-
-    .validate-errors {
-        position: relative;
-        top: 5px;
-        left: 0px;
     }
 
 </style>
