@@ -22,7 +22,7 @@
                                 </button>
                             </div>
                         </form>
-                        <validate :input="[message, selected]" ref="validate"></validate>
+                        <validate :inputs="[message, selected]" ref="validate"></validate>
                         <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
                             <div v-for="messageInfo in messagesInfo" class="error-explode">
                                <p>{{ messageInfo }}</p>

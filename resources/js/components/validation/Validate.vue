@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    props: ['input'],
+    props: ['inputs'],
     data() {
         return {
             response: {},
@@ -30,8 +30,8 @@ export default {
             }
         },
         removeErrorRun() {
-            for (let i = 0; i < this.input.length; i++) {
-                if (this.input[i] != '' || this.input[i] != []) {
+            for (let i = 0; i < this.inputs.length; i++) {
+                if (this.inputs[i] != '' || this.inputs[i] != []) {
                     this.validateErrors.pop();
                 }
             }
