@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\SendToTeacher;
 use App\Models\ClassInSchool;
 use App\Models\Subject;
+use App\Http\Requests\Pupil\SendMessageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
@@ -13,16 +14,18 @@ use Illuminate\Pagination\Paginator;
 
 class PupilController extends Controller
 {
-    public function sendEmail(Request $request)
+    public function sendEmail(SendMessageRequest $request)
     {
+        $input = $request->validated();
         if ($request->ajax()) {
             Mail::to($request->email)->send(new SendToTeacher(
                 [
                     'pupil' => auth()->user()->name,
-                    'message' => $request->message,
+                    'email_message' => (string) $input['email_message'],
                 ]
             ));
         }
+        return response()->json(['message' => 'Send email was successfully.']);
     }
 
     public function myGrades(Request $request, $id)

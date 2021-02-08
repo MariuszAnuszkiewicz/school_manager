@@ -23,7 +23,7 @@
                             <td class="text-center pt-3">{{ subjects[i] }}</td>
                             <td class="text-center pt-3">{{ teacher.phone }}</td>
                             <td class="text-center">
-                                <button id="send-email-modal" class="btn btn-success" @click="openModal()">
+                                <button id="send-email-modal" class="btn btn-success" @click="openModal(teacher)">
                                     <i class="fas fa-mail-bulk"></i>
                                 </button>
                             </td>
@@ -32,7 +32,7 @@
                 </table>
             </div>
         </div>
-        <my-teachers-modal :teachers="teachers" v-if="showModal === true">
+        <my-teachers-modal :dataTeacher="dataTeacher" v-if="showModal === true">
             <h3 slot="header" class="modal-title">
                 Send Message
             </h3>
@@ -55,6 +55,7 @@ export default {
     data() {
         return {
             teachers: {},
+            dataTeacher: {},
             subjects: {},
             messagesWarning: [],
             showMessageWarning: 'none',
@@ -76,7 +77,8 @@ export default {
                 this.showMessageWarning = 'block';
             }
         },
-        openModal() {
+        openModal(teacher) {
+            teacher != null ? this.dataTeacher = teacher : null;
             this.showModal = true;
         },
         closeModal() {
