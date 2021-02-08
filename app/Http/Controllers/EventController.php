@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Pupil;
 use App\Models\LessonPlan;
+use App\Http\Requests\Teacher\SaveEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -46,12 +47,12 @@ class EventController extends Controller
     public function eventsByCalendar(Request $request)
     {
         $data['teacher'] = auth()->user()->teacher;
-        $hoursColumn = explode(" - ", LessonPlan::pluck('hours'));
+        $hoursColumn = explode(" - ", LessonPlan::distinct('hours')->pluck('hours'));
         foreach ($hoursColumn as $key => $hour) {
             if ($key > 0) {
                 $data['start'][] = substr(strstr($hour, ','), 2, strlen($hour));
             } else {
-                $data['start'][] = substr(LessonPlan::pluck('hours')->first(), 0, strlen($hour) - 2);
+                $data['start'][] = substr(LessonPlan::distinct('hours')->pluck('hours')->first(), 0, strlen($hour) - 2);
             }
         }
         foreach ($hoursColumn as $key => $hour) {
@@ -93,14 +94,15 @@ class EventController extends Controller
         return view('teacher.event.create_event');
     }
 
-    public function saveEvents(Request $request)
+    public function saveEvents(SaveEventRequest $request)
     {
+        $input = $request->validated();
         if ($request->ajax()) {
             $event = Event::create([
-                'title' => $request->event,
-                'date' => $request->date,
-                'start' => $request->start,
-                'end' => $request->end,
+                'title' => $input['title'],
+                'date' => $input['date'],
+                'start' => $input['start'],
+                'end' => $input['end'],
             ]);
         }
         return response()->json(['message' => $event->id]);

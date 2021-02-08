@@ -7,33 +7,36 @@
                         <div class="modal-header">
                             <slot name="header"></slot>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label id="label-message"><strong><p class="message-paragraph">Content:</p></strong>
-                                    <textarea id="message" name="content" v-model="title" rows="5" cols="35"></textarea>
-                                </label>
+                        <form @submit.prevent="submitForm()" method="POST" ref="saveEventForm" class="form-horizontal">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label id="label-message"><strong><p class="message-paragraph">Title:</p></strong>
+                                        <textarea id="message" name="title" v-model="title" rows="5" cols="35"></textarea>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label id="label-event-start"><strong><p class="start-paragraph">Event Start:</p></strong>
+                                        <select id="start-values" v-model="startModel">
+                                            <option v-for="s in start" :value="s">{{ s }}</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label id="label-event-end"><strong><p class="start-paragraph">Event End:</p></strong>
+                                        <select id="end-values" v-model="endModel">
+                                            <option v-for="e in end" :value="e">{{ e }}</option>
+                                        </select>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label id="label-event-start"><strong><p class="start-paragraph">Event Start:</p></strong>
-                                    <select id="start-values" v-model="startModel">
-                                        <option v-for="s in start" :value="s">{{ s }}</option>
-                                    </select>
-                                </label>
+                            <div class="modal-footer">
+                                <slot name="footer"></slot>
+                                <button type="submit" id="send-email" class="btn btn-primary">
+                                     Save Event
+                                </button>
                             </div>
-                            <div class="form-group">
-                                <label id="label-event-end"><strong><p class="start-paragraph">Event End:</p></strong>
-                                    <select id="end-values" v-model="endModel">
-                                        <option v-for="e in end" :value="e">{{ e }}</option>
-                                    </select>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <slot name="footer"></slot>
-                            <button type="button" id="send-email" class="btn btn-primary" @click="saveMultipleTables">
-                                 Save Event
-                            </button>
-                        </div>
+                        </form>
+                        <validate :input="title" ref="validate"></validate>
                         <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
                             <div v-for="messageInfo in messagesInfo" class="error-explode">
                                 <p>{{ messageInfo }}</p>
@@ -46,8 +49,11 @@
     </transition>
 </template>
 <script>
-
+import Validate from "../../validation/Validate";
 export default {
+    components: {
+        Validate
+    },
     props: ['date', 'start', 'end', 'teacherId'],
     data() {
         return {
@@ -60,34 +66,14 @@ export default {
         }
     },
     methods: {
-        insertEvents() {
-            if (this.title) {
-                let dataStart = '';
-                let dataEnd = '';
-                if (this.startModel.slice(0, 1) == 8 || this.startModel.slice(0, 1) == 9) {
-                    dataStart += '0' + this.startModel;
-                } else {
-                    dataStart = this.startModel;
-                }
-                if (this.endModel.slice(0, 1) == 8 || this.endModel.slice(0, 1) == 9) {
-                    dataEnd += '0' + this.endModel;
-                } else {
-                    dataEnd = this.endModel;
-                }
-                axios.post('save-events',
-                    {
-                        event: this.title,
-                        date: this.date,
-                        start: this.date + ' ' + dataStart,
-                        end: this.date + ' ' + dataEnd,
-                    }
-                ).then(response => {
-                    this.insertEventTeacher(response.data.message)
-                }).catch(function (error) {
-
-                });
-                this.confirm = true;
-            }
+        insertEvents(formData) {
+            let _this = this;
+            axios.post('save-events', formData).then(response => {
+                _this.insertEventTeacher(response.data.message)
+            }).catch(function (error) {
+                _this.validateInput(error.response);
+            });
+            this.confirm = true;
         },
         insertEventTeacher(eventId) {
             axios.post('save-event-teacher',
@@ -101,8 +87,32 @@ export default {
                 console.log(error.response.data)
             });
         },
-        saveMultipleTables() {
-            this.insertEvents();
+        submitForm() {
+            var form = this.$refs.saveEventForm;
+            let formData = new FormData(form);
+            let dataStart = '';
+            let dataEnd = '';
+            if (this.startModel.slice(0, 1) == 8 || this.startModel.slice(0, 1) == 9) {
+                dataStart += '0' + this.startModel;
+            } else {
+                dataStart = this.startModel;
+            }
+            if (this.endModel.slice(0, 1) == 8 || this.endModel.slice(0, 1) == 9) {
+                dataEnd += '0' + this.endModel;
+            } else {
+                dataEnd = this.endModel;
+            }
+            formData.append('title', this.title);
+            formData.append('date', this.date);
+            formData.append('start', this.date + ' ' + dataStart);
+            formData.append('end', this.date + ' ' + dataEnd);
+            this.insertEvents(formData);
+        },
+        validateInput(errorsResponse) {
+            this.$refs.validate.validateRun(errorsResponse);
+        },
+        removeError() {
+            this.$refs.validate.removeErrorRun();
         },
         showInfo(infoText) {
             if (this.messagesInfo !== null) {
@@ -112,9 +122,6 @@ export default {
             }
         },
     },
-    mounted() {
-        this.insertEvents();
-    }
 }
 </script>
 
