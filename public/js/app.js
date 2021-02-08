@@ -20159,6 +20159,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _validation_Validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../validation/Validate */ "./resources/js/components/validation/Validate.vue");
 //
 //
 //
@@ -20206,7 +20207,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Validate: _validation_Validate__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   props: ['date', 'start', 'end', 'teacherId'],
   data: function data() {
     return {
@@ -20219,35 +20227,15 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    insertEvents: function insertEvents() {
+    insertEvents: function insertEvents(formData) {
       var _this = this;
 
-      if (this.title) {
-        var dataStart = '';
-        var dataEnd = '';
-
-        if (this.startModel.slice(0, 1) == 8 || this.startModel.slice(0, 1) == 9) {
-          dataStart += '0' + this.startModel;
-        } else {
-          dataStart = this.startModel;
-        }
-
-        if (this.endModel.slice(0, 1) == 8 || this.endModel.slice(0, 1) == 9) {
-          dataEnd += '0' + this.endModel;
-        } else {
-          dataEnd = this.endModel;
-        }
-
-        axios.post('save-events', {
-          event: this.title,
-          date: this.date,
-          start: this.date + ' ' + dataStart,
-          end: this.date + ' ' + dataEnd
-        }).then(function (response) {
-          _this.insertEventTeacher(response.data.message);
-        })["catch"](function (error) {});
-        this.confirm = true;
-      }
+      axios.post('save-events', formData).then(function (response) {
+        _this.insertEventTeacher(response.data.message);
+      })["catch"](function (error) {
+        _this.validateInput(error.response);
+      });
+      this.confirm = true;
     },
     insertEventTeacher: function insertEventTeacher(eventId) {
       var _this2 = this;
@@ -20261,8 +20249,35 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response.data);
       });
     },
-    saveMultipleTables: function saveMultipleTables() {
-      this.insertEvents();
+    submitForm: function submitForm() {
+      var form = this.$refs.saveEventForm;
+      var formData = new FormData(form);
+      var dataStart = '';
+      var dataEnd = '';
+
+      if (this.startModel.slice(0, 1) == 8 || this.startModel.slice(0, 1) == 9) {
+        dataStart += '0' + this.startModel;
+      } else {
+        dataStart = this.startModel;
+      }
+
+      if (this.endModel.slice(0, 1) == 8 || this.endModel.slice(0, 1) == 9) {
+        dataEnd += '0' + this.endModel;
+      } else {
+        dataEnd = this.endModel;
+      }
+
+      formData.append('title', this.title);
+      formData.append('date', this.date);
+      formData.append('start', this.date + ' ' + dataStart);
+      formData.append('end', this.date + ' ' + dataEnd);
+      this.insertEvents(formData);
+    },
+    validateInput: function validateInput(errorsResponse) {
+      this.$refs.validate.validateRun(errorsResponse);
+    },
+    removeError: function removeError() {
+      this.$refs.validate.removeErrorRun();
     },
     showInfo: function showInfo(infoText) {
       if (this.messagesInfo !== null) {
@@ -20271,9 +20286,6 @@ __webpack_require__.r(__webpack_exports__);
         this.showMessageInfo = 'block';
       }
     }
-  },
-  mounted: function mounted() {
-    this.insertEvents();
   }
 });
 
@@ -65554,178 +65566,210 @@ var render = function() {
           "div",
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [_vm._t("header")], 2),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { id: "label-message" } }, [
-                    _c("strong", [
-                      _c("p", { staticClass: "message-paragraph" }, [
-                        _vm._v("Content:")
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.title,
-                          expression: "title"
-                        }
-                      ],
-                      attrs: {
-                        id: "message",
-                        name: "content",
-                        rows: "5",
-                        cols: "35"
-                      },
-                      domProps: { value: _vm.title },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.title = $event.target.value
-                        }
+            _c(
+              "div",
+              { staticClass: "modal-content" },
+              [
+                _c(
+                  "div",
+                  { staticClass: "modal-header" },
+                  [_vm._t("header")],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    ref: "saveEventForm",
+                    staticClass: "form-horizontal",
+                    attrs: { method: "POST" },
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.submitForm()
                       }
-                    })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { id: "label-event-start" } }, [
-                    _c("strong", [
-                      _c("p", { staticClass: "start-paragraph" }, [
-                        _vm._v("Event Start:")
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { id: "label-message" } }, [
+                          _c("strong", [
+                            _c("p", { staticClass: "message-paragraph" }, [
+                              _vm._v("Title:")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.title,
+                                expression: "title"
+                              }
+                            ],
+                            attrs: {
+                              id: "message",
+                              name: "title",
+                              rows: "5",
+                              cols: "35"
+                            },
+                            domProps: { value: _vm.title },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.title = $event.target.value
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { id: "label-event-start" } }, [
+                          _c("strong", [
+                            _c("p", { staticClass: "start-paragraph" }, [
+                              _vm._v("Event Start:")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.startModel,
+                                  expression: "startModel"
+                                }
+                              ],
+                              attrs: { id: "start-values" },
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.startModel = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            _vm._l(_vm.start, function(s) {
+                              return _c("option", { domProps: { value: s } }, [
+                                _vm._v(_vm._s(s))
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { id: "label-event-end" } }, [
+                          _c("strong", [
+                            _c("p", { staticClass: "start-paragraph" }, [
+                              _vm._v("Event End:")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.endModel,
+                                  expression: "endModel"
+                                }
+                              ],
+                              attrs: { id: "end-values" },
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.endModel = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            _vm._l(_vm.end, function(e) {
+                              return _c("option", { domProps: { value: e } }, [
+                                _vm._v(_vm._s(e))
+                              ])
+                            }),
+                            0
+                          )
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
                     _c(
-                      "select",
-                      {
-                        directives: [
+                      "div",
+                      { staticClass: "modal-footer" },
+                      [
+                        _vm._t("footer"),
+                        _vm._v(" "),
+                        _c(
+                          "button",
                           {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.startModel,
-                            expression: "startModel"
-                          }
-                        ],
-                        attrs: { id: "start-values" },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.startModel = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          }
-                        }
-                      },
-                      _vm._l(_vm.start, function(s) {
-                        return _c("option", { domProps: { value: s } }, [
-                          _vm._v(_vm._s(s))
-                        ])
-                      }),
-                      0
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "submit", id: "send-email" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                 Save Event\n                            "
+                            )
+                          ]
+                        )
+                      ],
+                      2
                     )
-                  ])
-                ]),
+                  ]
+                ),
                 _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { id: "label-event-end" } }, [
-                    _c("strong", [
-                      _c("p", { staticClass: "start-paragraph" }, [
-                        _vm._v("Event End:")
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "select",
+                _c("validate", {
+                  ref: "validate",
+                  attrs: { input: _vm.title }
+                }),
+                _vm._v(" "),
+                _vm.messagesInfo !== undefined
+                  ? _c(
+                      "div",
                       {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.endModel,
-                            expression: "endModel"
-                          }
-                        ],
-                        attrs: { id: "end-values" },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.endModel = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          }
-                        }
+                        staticClass: "flex flash-container flash-style-info",
+                        style: { display: _vm.showMessageInfo }
                       },
-                      _vm._l(_vm.end, function(e) {
-                        return _c("option", { domProps: { value: e } }, [
-                          _vm._v(_vm._s(e))
+                      _vm._l(_vm.messagesInfo, function(messageInfo) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageInfo))])
                         ])
                       }),
                       0
                     )
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "modal-footer" },
-                [
-                  _vm._t("footer"),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button", id: "send-email" },
-                      on: { click: _vm.saveMultipleTables }
-                    },
-                    [
-                      _vm._v(
-                        "\n                             Save Event\n                        "
-                      )
-                    ]
-                  )
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.messagesInfo !== undefined
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "flex flash-container flash-style-info",
-                      style: { display: _vm.showMessageInfo }
-                    },
-                    _vm._l(_vm.messagesInfo, function(messageInfo) {
-                      return _c("div", { staticClass: "error-explode" }, [
-                        _c("p", [_vm._v(_vm._s(messageInfo))])
-                      ])
-                    }),
-                    0
-                  )
-                : _vm._e()
-            ])
+                  : _vm._e()
+              ],
+              1
+            )
           ]
         )
       ])
