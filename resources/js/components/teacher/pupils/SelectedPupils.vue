@@ -21,7 +21,6 @@
                             <th class="text-center text-white">User Id</th>
                             <th class="text-center text-white">Assign Class</th>
                             <th class="text-center text-white">User Name</th>
-                            <th class="text-center text-white">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,17 +45,12 @@
                             <td class="text-center pt-3">{{ user.id }}</td>
                             <td class="text-center pt-3">{{ assign_classes[i].name }}</td>
                             <td class="text-center pt-3">{{ user.name }}</td>
-                            <td class="text-center">
-                                <button id="send-message" class="btn btn-success" @click="openModal(pupils[i])">
-                                    <i class="fas fa-envelope"></i>
-                                </button>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <send-message :selected="selected" :pupilData="pupilData" v-if="showModal === true">
+        <send-message :selected="selected" v-if="showModal === true">
             <h3 slot="header" class="modal-title">
                 Send Message
             </h3>
@@ -74,7 +68,6 @@ export default {
             users: {},
             pupils: {},
             assign_classes: {},
-            pupilData: undefined,
             isSelected: false,
             showModal: false,
             selected: [],
@@ -150,10 +143,7 @@ export default {
                 this.showMessageWarning = 'block';
             }
         },
-        openModal(pupil = null) {
-            if (pupil !== null) {
-                this.pupilData = pupil;
-            }
+        openModal() {
             this.showModal = true;
         },
         closeModal() {

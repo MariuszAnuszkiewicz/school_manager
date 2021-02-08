@@ -7,19 +7,22 @@
                         <div class="modal-header">
                             <slot name="header"></slot>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label id="label-message"><strong><p class="message-paragraph">Message:</p></strong>
-                                   <textarea id="message" name="message" v-model="message" rows="5" cols="35"></textarea>
-                                </label>
+                        <form @submit.prevent="submitForm()" method="POST" ref="saveMessageForm" class="form-horizontal">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label id="label-message"><strong><p class="message-paragraph">Message:</p></strong>
+                                       <textarea id="message" name="message" v-model="message" rows="5" cols="35"></textarea>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <slot name="footer"></slot>
-                            <button type="button" id="send" class="btn btn-primary" @click.once="sendMessage()">
-                               Send
-                            </button>
-                        </div>
+                            <div class="modal-footer">
+                                <slot name="footer"></slot>
+                                <button type="submit" id="submit-btn" class="btn btn-primary">
+                                   Send
+                                </button>
+                            </div>
+                        </form>
+                        <validate :input="[message, selected]" ref="validate"></validate>
                         <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
                             <div v-for="messageInfo in messagesInfo" class="error-explode">
                                <p>{{ messageInfo }}</p>
@@ -33,8 +36,12 @@
 </template>
 
 <script>
+import Validate from "../../validation/Validate";
 export default {
-    props: ['selected', 'pupilData'],
+    components: {
+        Validate
+    },
+    props: ['selected'],
     data() {
         return {
             message: '',
@@ -44,20 +51,30 @@ export default {
         }
     },
     methods: {
-        sendMessage() {
-            if (this.message != '') {
-                axios.post('send-message',
-                   {
-                      selected: this.selected,
-                      pupilId: this.pupilData.id,
-                      message: this.message,
-                    }
-                ).then(response => {
-                    this.showInfo(response.data.message);
-                }).catch(function (error) {
-                    console.log(error.response.data)
+        sendMessage(formData) {
+            let _this = this;
+            axios.post('send-message', formData).then(response => {
+                this.showInfo(response.data.message);
+            }).catch(function (error) {
+                let submitBtn = document.getElementById('submit-btn');
+                submitBtn.addEventListener('click', function () {
+                    _this.removeError();
                 });
-            }
+                _this.validateInput(error.response);
+            });
+        },
+        submitForm() {
+            let form = this.$refs.saveMessageForm;
+            let formData = new FormData(form);
+            formData.append('selected', this.selected);
+            formData.append('message', this.message);
+            this.sendMessage(formData);
+        },
+        validateInput(errorsResponse) {
+            this.$refs.validate.validateRun(errorsResponse);
+        },
+        removeError() {
+            this.$refs.validate.removeErrorRun();
         },
         showInfo(infoText) {
             if (this.messagesInfo !== null) {

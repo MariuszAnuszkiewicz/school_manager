@@ -11,6 +11,7 @@ use App\Models\Presence;
 use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Http\Requests\Teacher\SaveMessageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -179,15 +180,17 @@ class TeacherController extends Controller
         return response()->json(['message' => 'pupils has been deleted']);
     }
 
-    public function sendMessage(Request $request)
+    public function sendMessage(SaveMessageRequest $request)
     {
+        $input = $request->validated();
+
+        dd($input);
         if ($request->ajax()) {
             $message = Message::create([
-                'teacher_id' => auth()->user()->teacher->id,
-                'message' => $request->message,
+                'teacher_id' => (int) auth()->user()->teacher->id,
+                'message' => (string) $input['message'],
             ]);
-            $switchSingleMultipleIds = isset($request->pupilId) ? $request->pupilId : $request->selected;
-            $message->pupils()->attach($switchSingleMultipleIds);
+            $message->pupils()->attach(explode(",", $request->selected));
             return response()->json(['message' => 'Message send successfully']);
         }
     }
