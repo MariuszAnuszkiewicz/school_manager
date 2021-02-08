@@ -31,12 +31,12 @@
                             </div>
                             <div class="modal-footer">
                                 <slot name="footer"></slot>
-                                <button type="submit" id="send-email" class="btn btn-primary">
+                                <button type="submit" id="submit-btn" class="btn btn-primary">
                                      Save Event
                                 </button>
                             </div>
                         </form>
-                        <validate :input="title" ref="validate"></validate>
+                        <validate :inputs="title" ref="validate"></validate>
                         <div v-if="messagesInfo !== undefined" :style="{ display: showMessageInfo }" class="flex flash-container flash-style-info">
                             <div v-for="messageInfo in messagesInfo" class="error-explode">
                                 <p>{{ messageInfo }}</p>
@@ -71,6 +71,10 @@ export default {
             axios.post('save-events', formData).then(response => {
                 _this.insertEventTeacher(response.data.message)
             }).catch(function (error) {
+                let submitBtn = document.getElementById('submit-btn');
+                submitBtn.addEventListener('click', function () {
+                    _this.removeError();
+                });
                 _this.validateInput(error.response);
             });
             this.confirm = true;
@@ -88,7 +92,7 @@ export default {
             });
         },
         submitForm() {
-            var form = this.$refs.saveEventForm;
+            let form = this.$refs.saveEventForm;
             let formData = new FormData(form);
             let dataStart = '';
             let dataEnd = '';
@@ -146,9 +150,6 @@ export default {
         z-index: 9999;
         padding: 10px 10px 10px 10px;
         transition: opacity .3s ease;
-    }
-    .flash-wrapper {
-        margin-bottom: 15px;
     }
     .flash-container {
         display: none;

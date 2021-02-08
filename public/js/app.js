@@ -20233,6 +20233,11 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('save-events', formData).then(function (response) {
         _this.insertEventTeacher(response.data.message);
       })["catch"](function (error) {
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', function () {
+          _this.removeError();
+        });
+
         _this.validateInput(error.response);
       });
       this.confirm = true;
@@ -21907,7 +21912,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['input'],
+  props: ['inputs'],
   data: function data() {
     return {
       response: {},
@@ -21928,8 +21933,8 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     removeErrorRun: function removeErrorRun() {
-      for (var i = 0; i < this.input.length; i++) {
-        if (this.input[i] != '' || this.input[i] != []) {
+      for (var i = 0; i < this.inputs.length; i++) {
+        if (this.inputs[i] != '' || this.inputs[i] != []) {
           this.validateErrors.pop();
         }
       }
@@ -26903,7 +26908,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.overlay[data-v-fb5c4e28] {\n    position: absolute;\n    top: 75px;\n    width: 52.5%;\n    height: 175%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.saveEvent[data-v-fb5c4e28] {\n    display: table;\n    position: relative;\n    top: 200px;\n    left: 32%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-wrapper[data-v-fb5c4e28] {\n    margin-bottom: 15px;\n}\n.flash-container[data-v-fb5c4e28] {\n    display: none;\n}\n.flash-container p[data-v-fb5c4e28] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-info[data-v-fb5c4e28] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    margin: 0px 0px 15px 0px;\n}\n\n", ""]);
+exports.push([module.i, "\n.overlay[data-v-fb5c4e28] {\n    position: absolute;\n    top: 75px;\n    width: 52.5%;\n    height: 175%;\n    background-color: rgba(0, 0, 0, 0.8);\n    z-index: 5;\n}\n.saveEvent[data-v-fb5c4e28] {\n    display: table;\n    position: relative;\n    top: 200px;\n    left: 32%;\n    width: 400px;\n    height: 300px;\n    background-color: #4c6fb1;\n    z-index: 9999;\n    padding: 10px 10px 10px 10px;\n    transition: opacity .3s ease;\n}\n.flash-container[data-v-fb5c4e28] {\n    display: none;\n}\n.flash-container p[data-v-fb5c4e28] {\n    position: relative;\n    top: 5px;\n}\n.flash-style-info[data-v-fb5c4e28] {\n    display: block;\n    position: relative;\n    top: 2px;\n    left: 22px;\n    background-color: rgba(60, 204, 102, 0.3);\n    width: 333px;\n    height: 35px;\n    text-align: center;\n    border-radius: 7px;\n    margin: 0px 0px 15px 0px;\n}\n\n", ""]);
 
 // exports
 
@@ -65744,7 +65749,7 @@ var render = function() {
                           "button",
                           {
                             staticClass: "btn btn-primary",
-                            attrs: { type: "submit", id: "send-email" }
+                            attrs: { type: "submit", id: "submit-btn" }
                           },
                           [
                             _vm._v(
@@ -65760,7 +65765,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("validate", {
                   ref: "validate",
-                  attrs: { input: _vm.title }
+                  attrs: { inputs: _vm.title }
                 }),
                 _vm._v(" "),
                 _vm.messagesInfo !== undefined
@@ -66286,7 +66291,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("validate", {
                   ref: "validate",
-                  attrs: { input: [_vm.message, _vm.selected] }
+                  attrs: { inputs: [_vm.message, _vm.selected] }
                 }),
                 _vm._v(" "),
                 _vm.messagesInfo !== undefined
