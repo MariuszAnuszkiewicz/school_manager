@@ -123,18 +123,7 @@ class AdminController extends Controller
     public function saveLessonPlan(Request $request)
     {
         if ($request->ajax()) {
-            $hours = [
-               '8:00 - 8:45',
-               '8:55 - 9:40',
-               '9:50 - 10:35',
-               '10:45 - 11:30',
-               '11:50 - 12:35',
-               '12:45 - 13:30',
-               '13:40 - 14:25',
-               '14:35 - 15:20',
-               '15:30 - 16:15',
-            ];
-            foreach ($hours as $hour) {
+            foreach (LessonPlan::distinct('hours')->pluck('hours') as $hour) {
                 LessonPlan::create([
                    'class_in_school_id' => (int) $request->class_in_school_id,
                    'hours' => $hour,
