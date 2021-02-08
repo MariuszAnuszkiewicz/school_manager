@@ -24,7 +24,7 @@ export default {
                 for (let item in this.response){
                     for (let i = 0; i < this.response[item].length; i++) {
                         this.validateErrors.push(this.response[item][i]);
-                        this.validateErrors.splice(1, this.validateErrors.length);
+                        this.validateErrors.splice(this.validateErrors.length, this.validateErrors.length);
                     }
                 }
             }

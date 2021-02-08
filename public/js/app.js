@@ -20490,6 +20490,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _validation_Validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../validation/Validate */ "./resources/js/components/validation/Validate.vue");
 //
 //
 //
@@ -20524,8 +20525,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'pupilData'],
+  components: {
+    Validate: _validation_Validate__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['selected'],
   data: function data() {
     return {
       message: '',
@@ -20535,20 +20543,34 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    sendMessage: function sendMessage() {
+    sendMessage: function sendMessage(formData) {
+      var _this2 = this;
+
       var _this = this;
 
-      if (this.message != '') {
-        axios.post('send-message', {
-          selected: this.selected,
-          pupilId: this.pupilData.id,
-          message: this.message
-        }).then(function (response) {
-          _this.showInfo(response.data.message);
-        })["catch"](function (error) {
-          console.log(error.response.data);
+      axios.post('send-message', formData).then(function (response) {
+        _this2.showInfo(response.data.message);
+      })["catch"](function (error) {
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', function () {
+          _this.removeError();
         });
-      }
+
+        _this.validateInput(error.response);
+      });
+    },
+    submitForm: function submitForm() {
+      var form = this.$refs.saveMessageForm;
+      var formData = new FormData(form);
+      formData.append('selected', this.selected);
+      formData.append('message', this.message);
+      this.sendMessage(formData);
+    },
+    validateInput: function validateInput(errorsResponse) {
+      this.$refs.validate.validateRun(errorsResponse);
+    },
+    removeError: function removeError() {
+      this.$refs.validate.removeErrorRun();
     },
     showInfo: function showInfo(infoText) {
       if (this.messagesInfo !== null) {
@@ -21165,19 +21187,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       users: {},
       pupils: {},
       assign_classes: {},
-      pupilData: undefined,
       isSelected: false,
       showModal: false,
       selected: [],
@@ -21264,12 +21279,6 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     openModal: function openModal() {
-      var pupil = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
-      if (pupil !== null) {
-        this.pupilData = pupil;
-      }
-
       this.showModal = true;
     },
     closeModal: function closeModal() {
@@ -21913,7 +21922,7 @@ __webpack_require__.r(__webpack_exports__);
         for (var item in this.response) {
           for (var i = 0; i < this.response[item].length; i++) {
             this.validateErrors.push(this.response[item][i]);
-            this.validateErrors.splice(1, this.validateErrors.length);
+            this.validateErrors.splice(this.validateErrors.length, this.validateErrors.length);
           }
         }
       }
@@ -66186,90 +66195,116 @@ var render = function() {
           "div",
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [_vm._t("header")], 2),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { id: "label-message" } }, [
-                    _c("strong", [
-                      _c("p", { staticClass: "message-paragraph" }, [
-                        _vm._v("Message:")
+            _c(
+              "div",
+              { staticClass: "modal-content" },
+              [
+                _c(
+                  "div",
+                  { staticClass: "modal-header" },
+                  [_vm._t("header")],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    ref: "saveMessageForm",
+                    staticClass: "form-horizontal",
+                    attrs: { method: "POST" },
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.submitForm()
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { id: "label-message" } }, [
+                          _c("strong", [
+                            _c("p", { staticClass: "message-paragraph" }, [
+                              _vm._v("Message:")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.message,
+                                expression: "message"
+                              }
+                            ],
+                            attrs: {
+                              id: "message",
+                              name: "message",
+                              rows: "5",
+                              cols: "35"
+                            },
+                            domProps: { value: _vm.message },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.message = $event.target.value
+                              }
+                            }
+                          })
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.message,
-                          expression: "message"
-                        }
+                    _c(
+                      "div",
+                      { staticClass: "modal-footer" },
+                      [
+                        _vm._t("footer"),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "submit", id: "submit-btn" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                               Send\n                            "
+                            )
+                          ]
+                        )
                       ],
-                      attrs: {
-                        id: "message",
-                        name: "message",
-                        rows: "5",
-                        cols: "35"
+                      2
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("validate", {
+                  ref: "validate",
+                  attrs: { input: [_vm.message, _vm.selected] }
+                }),
+                _vm._v(" "),
+                _vm.messagesInfo !== undefined
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "flex flash-container flash-style-info",
+                        style: { display: _vm.showMessageInfo }
                       },
-                      domProps: { value: _vm.message },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.message = $event.target.value
-                        }
-                      }
-                    })
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "modal-footer" },
-                [
-                  _vm._t("footer"),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button", id: "send" },
-                      on: {
-                        "~click": function($event) {
-                          return _vm.sendMessage()
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                           Send\n                        "
-                      )
-                    ]
-                  )
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.messagesInfo !== undefined
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "flex flash-container flash-style-info",
-                      style: { display: _vm.showMessageInfo }
-                    },
-                    _vm._l(_vm.messagesInfo, function(messageInfo) {
-                      return _c("div", { staticClass: "error-explode" }, [
-                        _c("p", [_vm._v(_vm._s(messageInfo))])
-                      ])
-                    }),
-                    0
-                  )
-                : _vm._e()
-            ])
+                      _vm._l(_vm.messagesInfo, function(messageInfo) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageInfo))])
+                        ])
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ],
+              1
+            )
           ]
         )
       ])
@@ -67289,22 +67324,6 @@ var render = function() {
                         _vm._v(" "),
                         _c("td", { staticClass: "text-center pt-3" }, [
                           _vm._v(_vm._s(user.name))
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success",
-                              attrs: { id: "send-message" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.openModal(_vm.pupils[i])
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "fas fa-envelope" })]
-                          )
                         ])
                       ])
                     })
@@ -67317,33 +67336,29 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm.showModal === true
-        ? _c(
-            "send-message",
-            { attrs: { selected: _vm.selected, pupilData: _vm.pupilData } },
-            [
+        ? _c("send-message", { attrs: { selected: _vm.selected } }, [
+            _c(
+              "h3",
+              {
+                staticClass: "modal-title",
+                attrs: { slot: "header" },
+                slot: "header"
+              },
+              [_vm._v("\n            Send Message\n        ")]
+            ),
+            _vm._v(" "),
+            _c("div", { attrs: { slot: "footer" }, slot: "footer" }, [
               _c(
-                "h3",
+                "button",
                 {
-                  staticClass: "modal-title",
-                  attrs: { slot: "header" },
-                  slot: "header"
+                  staticClass: "btn btn-outline-info",
+                  attrs: { type: "button" },
+                  on: { click: _vm.closeModal }
                 },
-                [_vm._v("\n            Send Message\n        ")]
-              ),
-              _vm._v(" "),
-              _c("div", { attrs: { slot: "footer" }, slot: "footer" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-outline-info",
-                    attrs: { type: "button" },
-                    on: { click: _vm.closeModal }
-                  },
-                  [_vm._v("Close")]
-                )
-              ])
-            ]
-          )
+                [_vm._v("Close")]
+              )
+            ])
+          ])
         : _vm._e()
     ],
     1
@@ -67386,9 +67401,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { staticClass: "text-center text-white" }, [
           _vm._v("User Name")
-        ]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-center text-white" }, [_vm._v("Actions")])
+        ])
       ])
     ])
   },
