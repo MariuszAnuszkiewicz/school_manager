@@ -30,8 +30,10 @@ export default {
             }
         },
         removeErrorRun() {
-            if (this.input != '') {
-                this.validateErrors.pop();
+            for (let i = 0; i < this.input.length; i++) {
+                if (this.input[i] != '' || this.input[i] != []) {
+                    this.validateErrors.pop();
+                }
             }
         },
     },
