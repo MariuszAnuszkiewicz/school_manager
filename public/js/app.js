@@ -21928,8 +21928,10 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     removeErrorRun: function removeErrorRun() {
-      if (this.input != '') {
-        this.validateErrors.pop();
+      for (var i = 0; i < this.input.length; i++) {
+        if (this.input[i] != '' || this.input[i] != []) {
+          this.validateErrors.pop();
+        }
       }
     }
   }

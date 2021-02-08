@@ -183,8 +183,6 @@ class TeacherController extends Controller
     public function sendMessage(SaveMessageRequest $request)
     {
         $input = $request->validated();
-
-        dd($input);
         if ($request->ajax()) {
             $message = Message::create([
                 'teacher_id' => (int) auth()->user()->teacher->id,
