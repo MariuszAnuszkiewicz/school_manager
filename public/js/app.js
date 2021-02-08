@@ -18552,6 +18552,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _validation_Validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../validation/Validate */ "./resources/js/components/validation/Validate.vue");
 //
 //
 //
@@ -18586,43 +18587,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['teachers'],
+  components: {
+    Validate: _validation_Validate__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['dataTeacher'],
   data: function data() {
     return {
-      message_content: '',
-      confirm: false,
+      email_message: '',
       messagesInfo: [],
-      message: {
-        infoText: 'Send message was successfully.'
-      }
+      showMessageInfo: 'none'
     };
   },
   methods: {
-    sendEmail: function sendEmail() {
+    sendEmail: function sendEmail(formData) {
+      var _this2 = this;
+
       var _this = this;
 
-      if (this.message_content !== '') {
-        axios.post('send-email', {
-          email: this.teachers[0].email,
-          message: this.message_content
-        }).then(function (response) {
-          _this.showInfo(_this.message.infoText);
-        })["catch"](function (error) {
-          console.log(error.response.data);
+      axios.post('send-email', formData).then(function (response) {
+        _this2.showInfo(response.data.message);
+      })["catch"](function (error) {
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', function () {
+          _this.removeError();
         });
-      }
+
+        _this.validateInput(error.response);
+      });
+    },
+    submitForm: function submitForm() {
+      var form = this.$refs.sendEmailForm;
+      var formData = new FormData(form);
+      formData.append('email', this.dataTeacher.email);
+      formData.append('email_message', this.email_message);
+      this.sendEmail(formData);
+    },
+    validateInput: function validateInput(errorsResponse) {
+      this.$refs.validate.validateRun(errorsResponse);
+    },
+    removeError: function removeError() {
+      this.$refs.validate.removeErrorRun();
     },
     showInfo: function showInfo(infoText) {
       if (infoText !== null) {
         this.messagesInfo.push(infoText);
         this.messagesInfo.splice(1, this.messagesInfo.length);
-        this.confirm = true;
+        this.showMessageInfo = 'block';
       }
     }
-  },
-  mounted: function mounted() {
-    this.sendEmail();
   }
 });
 
@@ -18847,6 +18862,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       teachers: {},
+      dataTeacher: {},
       subjects: {},
       messagesWarning: [],
       showMessageWarning: 'none',
@@ -18871,7 +18887,8 @@ __webpack_require__.r(__webpack_exports__);
         this.showMessageWarning = 'block';
       }
     },
-    openModal: function openModal() {
+    openModal: function openModal(teacher) {
+      teacher != null ? this.dataTeacher = teacher : null;
       this.showModal = true;
     },
     closeModal: function closeModal() {
@@ -62978,77 +62995,103 @@ var render = function() {
           "div",
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
-            _c("div", { staticClass: "modal-content" }, [
-              _c(
-                "form",
-                { staticClass: "form-horizontal", attrs: { method: "POST" } },
-                [
-                  _c(
-                    "div",
-                    { staticClass: "modal-header" },
-                    [_vm._t("header")],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "modal-body" }, [
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.message_content,
-                          expression: "message_content"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { name: "message_content", rows: "5" },
-                      domProps: { value: _vm.message_content },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.message_content = $event.target.value
-                        }
+            _c(
+              "div",
+              { staticClass: "modal-content" },
+              [
+                _c(
+                  "form",
+                  {
+                    ref: "sendEmailForm",
+                    staticClass: "form-horizontal",
+                    attrs: { method: "POST" },
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.submitForm()
                       }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "modal-footer" },
-                    [
-                      _vm._t("footer"),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: { type: "button" },
+                    }
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "modal-header" },
+                      [_vm._t("header")],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("label", { attrs: { id: "label-message" } }, [
+                        _c("strong", [
+                          _c("p", { staticClass: "message-paragraph" }, [
+                            _vm._v("Email Message:")
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.email_message,
+                              expression: "email_message"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            name: "email_message",
+                            rows: "5",
+                            cols: "35"
+                          },
+                          domProps: { value: _vm.email_message },
                           on: {
-                            click: function($event) {
-                              $event.stopPropagation()
-                              return _vm.sendEmail()
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.email_message = $event.target.value
                             }
                           }
-                        },
-                        [
-                          _vm._v(
-                            "\n                                Submit\n                            "
-                          )
-                        ]
-                      )
-                    ],
-                    2
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "flash-wrapper" }, [
-                this.confirm === true
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "modal-footer" },
+                      [
+                        _vm._t("footer"),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "submit", id: "submit-btn" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                Submit\n                            "
+                            )
+                          ]
+                        )
+                      ],
+                      2
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("validate", {
+                  ref: "validate",
+                  attrs: { inputs: _vm.email_message }
+                }),
+                _vm._v(" "),
+                _vm.messagesInfo !== undefined
                   ? _c(
                       "div",
-                      { staticClass: "flex flash-container flash-style-info" },
+                      {
+                        staticClass: "flex flash-container flash-style-info",
+                        style: { display: _vm.showMessageInfo }
+                      },
                       _vm._l(_vm.messagesInfo, function(messageInfo) {
                         return _c("div", { staticClass: "error-explode" }, [
                           _c("p", [_vm._v(_vm._s(messageInfo))])
@@ -63057,8 +63100,9 @@ var render = function() {
                       0
                     )
                   : _vm._e()
-              ])
-            ])
+              ],
+              1
+            )
           ]
         )
       ])
@@ -63399,7 +63443,7 @@ var render = function() {
                             attrs: { id: "send-email-modal" },
                             on: {
                               click: function($event) {
-                                return _vm.openModal()
+                                return _vm.openModal(teacher)
                               }
                             }
                           },
@@ -63416,7 +63460,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm.showModal === true
-        ? _c("my-teachers-modal", { attrs: { teachers: _vm.teachers } }, [
+        ? _c("my-teachers-modal", { attrs: { dataTeacher: _vm.dataTeacher } }, [
             _c(
               "h3",
               {
