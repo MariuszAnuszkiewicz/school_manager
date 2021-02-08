@@ -7,10 +7,10 @@
                     <div id="search-bar" class="bg-warning text-center">
                         <div class="form-group">
                             <input type="text" name="search" v-model="search" placeholder="Search...">
-                            <button id="submit-btn" class="btn btn-success ml-2 mt-1 mb-1" type="submit">Submit</button>
+                            <button type="submit" id="submit-btn" class="btn btn-success ml-2 mt-1 mb-1">Submit</button>
                         </div>
                     </div>
-                    <validate :input="search" ref="validate"></validate>
+                    <validate :inputs="search" ref="validate"></validate>
                     <div v-if="results.length > 0" id="search-results">
                         <search-result :resultsData="results" :role="role"></search-result>
                     </div>
