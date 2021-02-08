@@ -61896,7 +61896,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-success ml-2 mt-1 mb-1",
-                      attrs: { id: "submit-btn", type: "submit" }
+                      attrs: { type: "submit", id: "submit-btn" }
                     },
                     [_vm._v("Submit")]
                   )
@@ -61904,7 +61904,7 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _c("validate", { ref: "validate", attrs: { input: _vm.search } }),
+            _c("validate", { ref: "validate", attrs: { inputs: _vm.search } }),
             _vm._v(" "),
             _vm.results.length > 0
               ? _c(
