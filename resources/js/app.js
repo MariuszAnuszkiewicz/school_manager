@@ -1,7 +1,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
 
+Vue.component('apexchart', VueApexCharts);
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('validate', require('./components/validation/Validate.vue'));
 
@@ -61,6 +64,7 @@ Vue.component('validate', require('./components/validation/Validate.vue'));
 // admin zone \\
 /*********************************************************************************************************************/
 
+   Vue.component('index-chart', require('./components/admin/Chart.vue').default);
    Vue.component('admin-navbar', require('./components/nav/AdminNavbar.vue').default);
    Vue.component('subject-teacher', require('./components/admin/SubjectTeacher.vue').default);
    Vue.component('search-user', require('./components/admin/user/SearchUser.vue').default);

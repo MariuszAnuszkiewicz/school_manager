@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LessonPlan;
 use App\Models\ClassInSchool;
 use App\Models\User;
+use App\Models\Pupil;
 use App\Models\Teacher;
 use App\Models\Subject;
 use App\Http\Requests\Admin\SearchUserRequest;
@@ -15,7 +16,21 @@ class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        //dd(auth()->user()->roles->first()->name);
+        $data['pupils'] = Pupil::all()->count();
+        $data['teachers'] = Teacher::all()->count();
+        if (!empty($data)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : null,
+                    'teachers' => isset($data['teachers']) ? $data['teachers'] : null,
+                ]);
+            }
+        }else {
+            if ($request->ajax()) {
+                return response()->json(['message' => "There aren't any data"]);
+            }
+        }
+        return view('admin.index');
     }
 
     public function assignSubjectsForTeachers(Request $request) : Object
