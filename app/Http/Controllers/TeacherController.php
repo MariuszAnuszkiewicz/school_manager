@@ -9,8 +9,6 @@ use App\Models\Pupil;
 use App\Models\Message;
 use App\Models\Presence;
 use App\Models\User;
-use App\Models\Teacher;
-use App\Models\Subject;
 use App\Http\Requests\Teacher\SaveMessageRequest;
 use App\Http\Requests\Teacher\SendEmailRequest;
 use Illuminate\Http\Request;
@@ -22,26 +20,25 @@ use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request) : Object
     {
         $pupils = Pupil::with('teachers')->orderBy('user_id', 'ASC')->get();
-        foreach ($pupils as $key => $pupil) {
-            $data['users'][] = isset($pupil->user) ? $pupil->user: null;
-            $data['pupils'][] = isset($pupil) ? $pupil: null;
-            $data['assign_classes'] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
+        foreach ($pupils as $pupil) {
+            $data['users'][] = !is_null($pupil->user) ? $pupil->user: false;
+            $data['pupils'][] = !is_null($pupil) ? $pupil: false;
+            $data['assign_classes'] = !is_null($pupil->classInSchool) ? $pupil->classInSchool: false;
         }
-        $teacher = Teacher::find(auth()->user()->pupil->teachers->first()->id);
-        foreach($teacher->subjects as $subject) {
-            $data['subject'] = $subject->id;
+        foreach(auth()->user()->teacher->subjects as $subject) {
+            $data['subject'] = !is_null($subject->id) ? $subject->id : false;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $data['users'],
-                    'pupils' => $data['pupils'],
-                    'subject' => $data['subject'],
-                    'assign_classes' => $data['assign_classes'],
-                    'classes_in_school' => ClassInSchool::all(),
+                    'users' => isset($data['users']) ? $data['users'] : null,
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : null,
+                    'subject' => isset($data['subject']) ? $data['subject'] : null,
+                    'assign_classes' => isset($data['assign_classes']) ? $data['assign_classes'] : null,
+                    'classes_in_school' => !is_null(ClassInSchool::all()) ? ClassInSchool::all() : false,
                 ]);
             }
         }
@@ -145,16 +142,16 @@ class TeacherController extends Controller
     public function selectedPupils(Request $request)
     {
         foreach (auth()->user()->teacher->pupils as $pupil) {
-            $data['users'][] = isset($pupil->user) ? $pupil->user: null;
-            $data['pupils'][] = isset($pupil) ? $pupil: null;
-            $data['assign_classes'][] = isset($pupil->classInSchool) ? $pupil->classInSchool: null;
+            $data['users'][] = !is_null($pupil->user) ? $pupil->user : false;
+            $data['pupils'][] = !is_null($pupil) ? $pupil : false;
+            $data['assign_classes'][] = !is_null($pupil->classInSchool) ? $pupil->classInSchool : false;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $data['users'],
-                    'pupils' => $data['pupils'],
-                    'assign_classes' => $data['assign_classes'],
+                    'users' => isset($data['users']) ? $data['users'] : null,
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : null,
+                    'assign_classes' => isset($data['assign_classes']) ? $data['assign_classes'] : null,
                 ]);
             }
         } else {
@@ -197,8 +194,8 @@ class TeacherController extends Controller
     public function myMessages(Request $request)
     {
         $teacher = auth()->user()->teacher;
-        $data['teacher'] = $teacher->user->name;
-        $data['myMessages'] = isset($teacher->messages) ? $teacher->messages : null;
+        $data['teacher'] = !is_null($teacher->user->name) ? $teacher->user->name : false;
+        $data['myMessages'] = !is_null($teacher->messages) ? $teacher->messages : false;
         foreach ($data['myMessages'] as $message) {
            if ($message->id) {
                foreach ($message->pupils as $pupil) {
@@ -209,19 +206,17 @@ class TeacherController extends Controller
         for ($i = 0; $i < count($ids); $i++) {
             $data['pupils'][] = $ids[$i];
         }
-        //dd($data['pupils']);
-
         if ($data['myMessages']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
-                    'teacher' => $data['teacher'],
-                    'myMessages' => $this->paginate($data['myMessages']),
-                    'pupils' => $data['pupils'],
+                    'teacher' => isset($data['teacher']) ? $data['teacher'] :null,
+                    'myMessages' => isset($data['myMessages']) ? $this->paginate($data['myMessages']) : false,
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : false,
                 ]);
             }
         } else {
             if ($request->ajax()) {
-                return response()->json(['message' => "There aren't any my messages"]);
+                return response()->json(['message' => "There aren't any messages"]);
             }
         }
         return view('teacher.messages.my_messages');
@@ -251,34 +246,29 @@ class TeacherController extends Controller
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'message' => $data['message'],
+                    'message' => isset($data['message']) ? $data['message'] : null,
                 ]);
             }
         } else {
             if ($request->ajax()) {
-                return response()->json(['message' => "There aren't any my messages"]);
+                return response()->json(['message' => "There aren't any messages"]);
             }
         }
         return view('teacher.messages.single_message');
     }
 
-    public function listEmails(Request $request)
+    public function listEmails(Request $request) : Object
     {
-        $teacher = auth()->user()->teacher;
-        $pupils = $teacher->pupils;
-        $data = [];
-        $userIds = [];
-        foreach($pupils as $pupil) {
-            $userIds[] = $pupil->user_id;
+        foreach(auth()->user()->teacher->pupils as $pupil) {
+            $users[] = $pupil->user;
         }
-        $users = User::whereIn('id', $userIds)->get();
         foreach($users as $user) {
             $data['pupils'][] = $user;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'pupils' => $this->paginate($data['pupils']),
+                    'pupils' => isset($data['pupils']) ? $this->paginate($data['pupils']) : false,
                 ]);
             }
         } else {
@@ -308,20 +298,18 @@ class TeacherController extends Controller
     public function assignRating(Request $request)
     {
         $teacher = auth()->user()->teacher;
-        $pupils = isset($teacher->pupils) ? $teacher->pupils : null;
-        $data = [];
+        $pupils = !is_null($teacher->pupils) ? $teacher->pupils : null;
         foreach($pupils as $pupil) {
-            $data['users'][] = $pupil->user;
-            $data['pupils'][] = $pupil;
+            $data['users'][] = !is_null($pupil->user) ? $pupil->user : false;
+            $data['pupils'][] = !is_null($pupil) ? $pupil : false;
         }
-
         $data['subjects'] = $teacher->subjects;
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $this->paginate($data['users'], 7),
-                    'pupils' => $data['pupils'],
-                    'subjects' => $data['subjects'],
+                    'users' => isset($data['users']) ? $this->paginate($data['users'], 7) : false,
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : null,
+                    'subjects' => isset($data['subjects']) ? $data['subjects'] : null,
                 ]);
             }
         } else {
@@ -334,15 +322,16 @@ class TeacherController extends Controller
 
     public function getRatingsByPupilId(Request $request, $id)
     {
-        foreach (Pupil::find($id)->ratings as $rating) {
-            $data['ratings'][] = $rating->rating;
-            $data['createAt'][] = $rating->pivot->created_at;
+        $ratings = !is_null(Pupil::find($id)->ratings) ? Pupil::find($id)->ratings : false;
+        foreach ($ratings as $rating) {
+            $data['ratings'][] = !is_null($rating->rating) ? $rating->rating : false;
+            $data['createAt'][] = !is_null($rating->pivot->created_at) ? $rating->pivot->created_at : false;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'ratings' => $data['ratings'],
-                    'createAt' => $data['createAt'],
+                    'ratings' => isset($data['ratings']) ? $data['ratings'] : null,
+                    'createAt' => isset($data['createAt']) ? $data['createAt'] : null,
                 ]);
             }
         }
@@ -350,7 +339,7 @@ class TeacherController extends Controller
 
     public function savePupilRating(Request $request)
     {
-        $pupilId = User::find($request->userId)->pupil->id;
+        $pupilId = !is_null(User::find($request->userId)->pupil->id) ? User::find($request->userId)->pupil->id : false;
         if ($request->ajax()) {
             Pupil::find($pupilId)->ratings()->attach(['rating_id' => $request->rating],['semester' => $request->semester]);
         }
@@ -384,25 +373,25 @@ class TeacherController extends Controller
     {
         $userIds = [];
         foreach (auth()->user()->teacher->pupils as $pupil) {
-            $data['users'][] = $pupil->user;
+            $data['users'][] = !is_null($pupil->user) ? $pupil->user : false;
             foreach ($pupil->subjects as $subject) {
-                $data['subject'] = $subject;
+                $data['subject'] = !is_null($subject) ? $subject : false;
             }
             foreach ($pupil->ratings as $key => $rating) {
-                $userIds[$pupil->user->id][] = $rating->rating;
+                $userIds[$pupil->user->id][] = !is_null($rating->rating) ? $rating->rating : null;
             }
         }
         $gradeList = [];
         foreach ($userIds as $key => $ids) {
             $gradeList[$key] = implode(", ", $ids);
         }
-        $data['ratings'] = $gradeList;
+        $data['ratings'] = !is_null($gradeList) ? $gradeList : false;
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $this->paginate($data['users'], 7),
-                    'ratings' => $data['ratings'],
-                    'subject' => $data['subject'],
+                    'users' => isset($data['users']) ? $this->paginate($data['users'], 7) : false,
+                    'ratings' => isset($data['ratings']) ? $data['ratings'] : null,
+                    'subject' => isset($data['subject']) ? $data['subject'] : null,
                 ]);
             }
         }
@@ -412,19 +401,19 @@ class TeacherController extends Controller
     public function detailRating(Request $request, $id)
     {
         $data = [];
-        $pupil = Pupil::find(User::find($id)->pupil->id);
-        $data['users'] = User::find($id);
-        $data['ratings'] = $pupil->ratings;
+        $pupil = !is_null(Pupil::find(User::find($id)->pupil->id)) ? Pupil::find(User::find($id)->pupil->id) : false;
+        $data['users'] = !is_null(User::find($id)) ? User::find($id) : false;
+        $data['ratings'] = !is_null($pupil->ratings) ? $pupil->ratings : false;
         $data['subject'] = auth()->user()->teacher->subjects->last();
         foreach ($data['ratings'] as $rating) {
-            $data['created_at'][] = isset($rating->pivot->created_at) ? $rating->pivot->created_at : null;
+            $data['created_at'][] = !is_null($rating->pivot->created_at) ? $rating->pivot->created_at : false;
         }
         if (!empty($data['ratings'] && !empty($data['created_at']))) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $data['users'],
-                    'ratings' => $data['ratings'],
-                    'subject' => $data['subject'],
+                    'users' => isset($data['users']) ? $data['users'] : null,
+                    'ratings' => isset($data['ratings']) ? $data['ratings'] : null,
+                    'subject' => isset($data['subject']) ? $data['subject'] : null,
                     'createdAt' => isset($data['created_at']) ? $data['created_at'] : null,
                 ]);
             }
@@ -440,14 +429,14 @@ class TeacherController extends Controller
     {
         $pupils = Pupil::with('teachers')->orderBy('user_id', 'ASC')->get();
         foreach ($pupils as $pupil) {
-            $data['pupils'][] = isset($pupil) ? $pupil: null;
-            $data['users'][] = isset($pupil->user) ? $pupil->user: null;
+            $data['pupils'][] = !is_null($pupil) ? $pupil : false;
+            $data['users'][] = !is_null($pupil->user) ? $pupil->user: false;
         }
         if (!empty($data)) {
             if ($request->ajax()) {
                 return response()->json([
-                    'users' => $this->paginate($data['users']),
-                    'pupils' => $data['pupils'],
+                    'users' => isset($data['users']) ? $this->paginate($data['users']) : false,
+                    'pupils' => isset($data['pupils']) ? $data['pupils'] : null,
                 ]);
             }
         }
@@ -457,7 +446,7 @@ class TeacherController extends Controller
     public function savePresence(Request $request)
     {
         $countDate = null;
-        $userId = User::find($request->userId);
+        $userId = !is_null(User::find($request->userId)) ? User::find($request->userId) : false;
         for ($i = 0; $i < count($userId); $i++) {
             $countDate = Presence::where('pupil_id', $userId[$i]->pupil->id)
                 ->whereDate('date', '=', Carbon::now()->format('Y-m-d'))->get()->count();
@@ -472,10 +461,10 @@ class TeacherController extends Controller
             if ($request->ajax()) {
                 for ($i = 0; $i < count($pupilIds); $i++) {
                     Presence::create([
-                        'pupil_id' => $pupilIds[$i],
-                        'teacher_id' => auth()->user()->teacher->id,
-                        'presence' => isset($request->presence) ? (string)$request->presence : null,
-                        'date' => Carbon::now()->format('Y-m-d'),
+                        'pupil_id' => isset($pupilIds[$i]) ? $pupilIds[$i] : null,
+                        'teacher_id' => isset(auth()->user()->teacher->id) ? auth()->user()->teacher->id : null,
+                        'presence' => isset($request->presence) ? (string) $request->presence : null,
+                        'date' => !is_null(Carbon::now()->format('Y-m-d')) ? Carbon::now()->format('Y-m-d') : null,
                     ]);
                 }
             }
@@ -485,10 +474,10 @@ class TeacherController extends Controller
 
     public function detailPresence(Request $request, $id)
     {
-        $user = User::find($id);
-        $pupil = $user->pupil;
-        $data['user'] = $user;
-        $isPresences = isset($pupil->presences) ? $pupil->presences : null;
+        $user = !is_null(User::find($id)) ? User::find($id) : false;
+        $pupil = !is_null($user->pupil) ? $user->pupil : false;
+        $data['user'] = !is_null($user) ? $user : false;
+        $isPresences = !is_null($pupil->presences) ? $pupil->presences : false;
         foreach ($isPresences as $presence) {
             $data['presences'][] = $presence;
         }
