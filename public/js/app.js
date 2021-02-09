@@ -20431,6 +20431,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _validation_Validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../validation/Validate */ "./resources/js/components/validation/Validate.vue");
 //
 //
 //
@@ -20465,37 +20466,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Validate: _validation_Validate__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   props: ['selectedEmails'],
   data: function data() {
     return {
       message: '',
-      confirm: false,
       messagesInfo: [],
       showMessageInfo: 'none'
     };
   },
   methods: {
-    sendEmail: function sendEmail() {
+    sendEmail: function sendEmail(formData) {
+      var _this2 = this;
+
       var _this = this;
 
-      if (this.message != '') {
-        axios.post('send-emails', {
-          selectedEmails: this.selectedEmails,
-          message: this.message
-        }).then(function (response) {
-          _this.showInfo(response.data.message);
-        })["catch"](function (error) {
-          console.log(error.response.data);
+      axios.post('send-emails', formData).then(function (response) {
+        _this2.showInfo(response.data.message);
+      })["catch"](function (error) {
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', function () {
+          _this.removeError();
         });
-      }
+
+        _this.validateInput(error.response);
+      });
+    },
+    submitForm: function submitForm() {
+      var form = this.$refs.sendEmailForm;
+      var formData = new FormData(form);
+      formData.append('selectedEmails', this.selectedEmails);
+      formData.append('message', this.message);
+      this.sendEmail(formData);
+    },
+    validateInput: function validateInput(errorsResponse) {
+      this.$refs.validate.validateRun(errorsResponse);
+    },
+    removeError: function removeError() {
+      this.$refs.validate.removeErrorRun();
     },
     showInfo: function showInfo(infoText) {
       if (infoText !== null) {
         this.messagesInfo.push(infoText);
         this.messagesInfo.splice(1, this.messagesInfo.length);
         this.showMessageInfo = 'block';
-        this.confirm = true;
       }
     }
   }
@@ -66130,87 +66151,116 @@ var render = function() {
           "div",
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [_vm._t("header")], 2),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { id: "label-message" } }, [
-                    _c("strong", [
-                      _c("p", { staticClass: "message-paragraph" }, [
-                        _vm._v("Message:")
+            _c(
+              "div",
+              { staticClass: "modal-content" },
+              [
+                _c(
+                  "div",
+                  { staticClass: "modal-header" },
+                  [_vm._t("header")],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    ref: "sendEmailForm",
+                    staticClass: "form-horizontal",
+                    attrs: { method: "POST" },
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.submitForm()
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { id: "label-message" } }, [
+                          _c("strong", [
+                            _c("p", { staticClass: "message-paragraph" }, [
+                              _vm._v("Email Message:")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.message,
+                                expression: "message"
+                              }
+                            ],
+                            attrs: {
+                              id: "message",
+                              name: "message",
+                              rows: "5",
+                              cols: "35"
+                            },
+                            domProps: { value: _vm.message },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.message = $event.target.value
+                              }
+                            }
+                          })
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.message,
-                          expression: "message"
-                        }
+                    _c(
+                      "div",
+                      { staticClass: "modal-footer" },
+                      [
+                        _vm._t("footer"),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "submit", id: "submit-btn" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                Send Email\n                            "
+                            )
+                          ]
+                        )
                       ],
-                      attrs: {
-                        id: "message",
-                        name: "message",
-                        rows: "5",
-                        cols: "35"
+                      2
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("validate", {
+                  ref: "validate",
+                  attrs: { inputs: _vm.message }
+                }),
+                _vm._v(" "),
+                _vm.messagesInfo !== undefined
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "flex flash-container flash-style-info",
+                        style: { display: _vm.showMessageInfo }
                       },
-                      domProps: { value: _vm.message },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.message = $event.target.value
-                        }
-                      }
-                    })
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "modal-footer" },
-                [
-                  _vm._t("footer"),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button", id: "send-email" },
-                      on: {
-                        "~click": function($event) {
-                          return _vm.sendEmail()
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                            Send Email\n                        "
-                      )
-                    ]
-                  )
-                ],
-                2
-              ),
-              _vm._v(" "),
-              this.confirm === true
-                ? _c(
-                    "div",
-                    { staticClass: "flex flash-container flash-style-info" },
-                    _vm._l(_vm.messagesInfo, function(messageInfo) {
-                      return _c("div", { staticClass: "error-explode" }, [
-                        _c("p", [_vm._v(_vm._s(messageInfo))])
-                      ])
-                    }),
-                    0
-                  )
-                : _vm._e()
-            ])
+                      _vm._l(_vm.messagesInfo, function(messageInfo) {
+                        return _c("div", { staticClass: "error-explode" }, [
+                          _c("p", [_vm._v(_vm._s(messageInfo))])
+                        ])
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ],
+              1
+            )
           ]
         )
       ])
