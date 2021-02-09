@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Subject;
 use App\Http\Requests\Teacher\SaveMessageRequest;
+use App\Http\Requests\Teacher\SendEmailRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -201,11 +202,15 @@ class TeacherController extends Controller
         foreach ($data['myMessages'] as $message) {
            if ($message->id) {
                foreach ($message->pupils as $pupil) {
-                   $ids[$message->id][] = $pupil->id;
+                   $ids[] = $pupil->id;
                }
            }
-           $data['pupils'][] = implode(",", $ids[$message->id]);
         }
+        for ($i = 0; $i < count($ids); $i++) {
+            $data['pupils'][] = $ids[$i];
+        }
+        //dd($data['pupils']);
+
         if ($data['myMessages']->count() > 0) {
             if ($request->ajax()) {
                 return response()->json([
@@ -284,14 +289,15 @@ class TeacherController extends Controller
         return view('teacher.list_emails');
     }
 
-    public function sendEmails(Request $request)
+    public function sendEmails(SendEmailRequest $request)
     {
+        $input = $request->validated();
         if ($request->ajax()) {
-            foreach ($request->selectedEmails as $email) {
+            foreach (explode(",", $input['selectedEmails']) as $email) {
                 Mail::to($email)->send(new SendToPupil(
                     [
                         'teacher' => auth()->user()->name,
-                        'message' => $request->message,
+                        'message' => (string) $input['message'],
                     ]
                 ));
             }
